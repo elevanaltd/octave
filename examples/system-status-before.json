@@ -1,0 +1,54 @@
+{
+  "incident_report": {
+    "timestamp": "2024-03-15T14:23:00Z",
+    "severity": "critical",
+    "description": "System experiencing critical performance degradation due to overallocation of resources stemming from overconfident scaling decisions made without proper capacity planning",
+    "current_state": {
+      "api_gateway": {
+        "status": "degraded",
+        "response_time_ms": 3500,
+        "error_rate": 0.15,
+        "queue_depth": 8500
+      },
+      "database_cluster": {
+        "status": "overloaded", 
+        "connections": 950,
+        "max_connections": 1000,
+        "replication_lag_seconds": 45
+      },
+      "cache_layer": {
+        "status": "thrashing",
+        "hit_rate": 0.12,
+        "eviction_rate": 0.88,
+        "memory_pressure": "high"
+      }
+    },
+    "root_cause_analysis": {
+      "primary": "Premature optimization and scaling without empirical data",
+      "contributing_factors": [
+        "Overconfidence from early success",
+        "Ignored capacity planning warnings",
+        "Assumption that linear scaling would continue"
+      ],
+      "trigger_event": "Marketing campaign drove 10x normal traffic"
+    },
+    "impact": {
+      "users_affected": 150000,
+      "revenue_loss_per_hour": 45000,
+      "sla_breaches": ["99.9% uptime", "200ms p99 latency"],
+      "customer_complaints": 1250
+    },
+    "remediation": {
+      "immediate_actions": [
+        "Enable rate limiting",
+        "Increase cache capacity",
+        "Scale database read replicas"
+      ],
+      "long_term_fixes": [
+        "Implement proper capacity planning",
+        "Add predictive scaling",
+        "Establish load testing protocol"
+      ]
+    }
+  }
+}
