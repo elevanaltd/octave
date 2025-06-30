@@ -1,4 +1,8 @@
 ===OCTAVE_COMPRESSION_RULES_v2.0===
+// This guide provides the authoritative set of rules for compressing natural language into the OCTAVE specification.
+// These rules are designed to ensure that while token count is drastically reduced, the core reasoning, causality,
+// and semantic nuance of the original information are preserved and machine-readable.
+
 // Extended rules for preserving reasoning chains and contextual understanding during compression
 
 0.DEF:
