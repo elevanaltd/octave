@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-OCTAVE Validator - Simple Implementation
+OCTAVE Validator - v2.0 Implementation
 
-This validator checks OCTAVE-formatted documents for structure and syntax compliance.
+This validator checks OCTAVE v2.0 formatted documents for structure and syntax compliance.
 
 Usage:
     python octave_validator.py <file_path>
@@ -17,9 +17,9 @@ import argparse
 from typing import List, Tuple
 
 class OctaveValidator:
-    """Validator for OCTAVE structured documents, updated for the current spec."""
+    """Validator for OCTAVE v2.0 structured documents."""
 
-    def __init__(self, version: str = "1.0.0"):
+    def __init__(self, version: str = "2.0.0"):
         self.version = version
         self.errors = []
         self.warnings = []
@@ -64,18 +64,36 @@ class OctaveValidator:
             if " = " in line or ": " in line or " :" in line:
                 self.errors.append(f"Line {line_num}: Invalid assignment operator. Use '::' with no surrounding spaces.")
 
-            # Validate operator usage
+            # Validate v2.0 operator usage
+            
+            # Check for progression operator -> (only allowed in lists)
+            if '->' in stripped_line:
+                # Check if it's inside a list structure
+                if not re.search(r'\[.*->.*\]', stripped_line):
+                    self.errors.append(f"Line {line_num}: Progression operator '->' can only be used inside lists (e.g., [A->B->C]).")
+            
+            # Check for synthesis operator + (cannot be chained)
+            if '+' in stripped_line and '::' in stripped_line:
+                # Extract the value part after ::
+                value_part = stripped_line.split('::', 1)[1] if '::' in stripped_line else stripped_line
+                # Count + signs not inside quotes
+                plus_count = len(re.findall(r'(?<!")(?<!\w)\+(?!\w)(?!")', value_part))
+                if plus_count > 1:
+                    self.errors.append(f"Line {line_num}: Synthesis operator '+' cannot be chained. Use nested structures for complex synthesis.")
+            
+            # Check for tension operator _VERSUS_ (cannot be chained)
+            if '_VERSUS_' in stripped_line:
+                versus_count = stripped_line.count('_VERSUS_')
+                if versus_count > 1:
+                    self.errors.append(f"Line {line_num}: Tension operator '_VERSUS_' cannot be chained.")
+            
+            # Warn about old operators
             if '→' in stripped_line:
-                if not (stripped_line.startswith('[') and stripped_line.endswith(']')):
-                     self.errors.append(f"Line {line_num}: Progression operator '→' can only be used inside lists (e.g., [A→B→C]).")
-            
+                self.warnings.append(f"Line {line_num}: Found old Unicode operator '→'. Use '->' for v2.0.")
             if '⊕' in stripped_line:
-                if stripped_line.count('⊕') > 1:
-                    self.errors.append(f"Line {line_num}: Synthesis operator '⊕' cannot be chained. Use nested structures for complex synthesis.")
-            
+                self.warnings.append(f"Line {line_num}: Found old Unicode operator '⊕'. Use '+' for v2.0.")
             if '⚡' in stripped_line:
-                if stripped_line.count('⚡') > 1:
-                    self.errors.append(f"Line {line_num}: Tension operator '⚡' cannot be chained.")
+                self.warnings.append(f"Line {line_num}: Found old Unicode operator '⚡'. Use '_VERSUS_' for v2.0.")
 
             # Check for incorrect indentation (must be multiple of 2)
             indentation = len(line) - len(line.lstrip(' '))
@@ -106,14 +124,14 @@ class OctaveValidator:
             return f"❌ OCTAVE document is invalid with {error_count} error{'s' if error_count > 1 else ''}:\n" + "\n".join([f"  - {e}" for e in self.errors])
 
 
-def validate_octave_document(octave_text: str, version: str = "1.0.0") -> str:
-    """Validates an OCTAVE document for structure and format."""
+def validate_octave_document(octave_text: str, version: str = "2.0.0") -> str:
+    """Validates an OCTAVE v2.0 document for structure and format."""
     validator = OctaveValidator(version)
     is_valid, messages = validator.validate_octave_document(octave_text)
     return validator.format_results(is_valid, messages)
 
-def validate_octave_file(file_path: str, version: str = "1.0.0") -> str:
-    """Validates an OCTAVE document file."""
+def validate_octave_file(file_path: str, version: str = "2.0.0") -> str:
+    """Validates an OCTAVE v2.0 document file."""
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             octave_text = f.read()
@@ -123,9 +141,9 @@ def validate_octave_file(file_path: str, version: str = "1.0.0") -> str:
 
 def main() -> None:
     """Command-line interface for OCTAVE validator."""
-    parser = argparse.ArgumentParser(description='Validate OCTAVE documents against the v1.0 specification.')
+    parser = argparse.ArgumentParser(description='Validate OCTAVE documents against the v2.0 specification.')
     parser.add_argument('file', help='Path to OCTAVE document file')
-    parser.add_argument('--version', '-v', default='1.0.0', help='OCTAVE version to validate against (currently ignored).')
+    parser.add_argument('--version', '-v', default='2.0.0', help='OCTAVE version to validate against (default: 2.0.0)')
     
     args = parser.parse_args()
     result = validate_octave_file(args.file, args.version)
