@@ -121,7 +121,9 @@ OCTAVE embodies a synthesis:
 *   **Semantic richness** meets **syntactic precision**.
 *   **Human creativity** meets **machine reliability**.
 
-It's proof that the best protocols often emerge from curiosity, evolve through use, and mature through the rigors of production.
+This protocol is the result of practical experimentation, not formal academic research. It was born from curiosity, evolved through use, and matures through the rigors of production.
+
+As a living, community-driven project, it's designed to be both used and challenged. If you're curious, build with it. If you're skeptical, break it. Either way, share what you discover.
 
 ## License & Resources
 
