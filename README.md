@@ -127,7 +127,9 @@ As a living, community-driven project, it's designed to be both used and challen
 
 ## License & Resources
 
-**MIT License** - Use freely in any project, commercial or otherwise.
+## License
+
+Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You are free to share and adapt this work, but you must give appropriate credit.
 
 *   **[Syntax Specification](./specs/octave-syntax.oct.md)** - The complete v2.0 syntax rules.
 *   **[Semantics Specification](./specs/octave-semantics.oct.md)** - The vocabulary and operators.
