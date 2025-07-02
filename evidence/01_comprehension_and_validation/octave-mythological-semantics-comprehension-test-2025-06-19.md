@@ -1,7 +1,7 @@
 # OCTAVE Mythological Semantics Comprehension Test Results
 
 **Date**: 2025-06-19
-**Source**: /Users/shaunbuswell/dev/hestai-tests/zen-mcp+octave2/results/
+**Source**: /zen-mcp+octave2/results/
 **Type**: REAL TEST - Live testing with zen-mcp tools
 **Category**: Empirical Studies
 **Focus**: OCTAVE mythological semantic layer comprehension and efficiency
