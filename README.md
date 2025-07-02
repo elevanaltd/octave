@@ -137,5 +137,5 @@ Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You ar
 
 *   **[Syntax Specification](./specs/octave-syntax.oct.md)** - The complete v2.0 syntax rules.
 *   **[Semantics Specification](./specs/octave-semantics.oct.md)** - The vocabulary and operators.
-*   **[Evidence & Evolution](./evidence/)** - Data on compression, case studies, and design decisions.
+*   **[Evidence & Evolution](./evidence)** - Data on compression, case studies, and design decisions.
 *   **[Quick Reference](./guides/llm-octave-quick-reference.oct.md)** - A one-page guide for daily use.
