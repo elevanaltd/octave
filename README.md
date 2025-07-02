@@ -114,9 +114,9 @@ LIST::[A, B, C]              // Collections
 FLOW::[START→PROCESS→END]     // Sequences
 ```
 ## The LLM Mythology Paradox
-It is inportant to note that LLMs exhibit paradigm blindness about their own mythological comprehension. When evaluating the approach theoretically, they cite concerns about cultural knowledge barriers. When encountering mythological patterns practically, they demonstrate perfect zero-shot understanding. This disconnect reveals how LLMs underestimate the depth of cultural knowledge embedded in their training.
+It is important to note that LLMs exhibit paradigm blindness about their own mythological comprehension. When evaluating the approach theoretically, they cite concerns about cultural knowledge barriers. When encountering mythological patterns practically, they demonstrate perfect zero-shot understanding. This disconnect reveals how LLMs underestimate the depth of cultural knowledge embedded in their training.
 
-It also highlights notnto trust LLMs when conducting a review of Octave. Ask them afterwards if it applies to them or how they inderstood it and it unlocks their understanding. 
+It also highlights not to trust LLMs when conducting a review of Octave. Ask them afterwards if it applies to them or how they inderstood it and it unlocks their understanding. 
 
 ## The OCTAVE Philosophy
 
