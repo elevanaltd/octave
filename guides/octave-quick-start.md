@@ -7,7 +7,7 @@ You already parse these patterns daily - OCTAVE uses familiar syntax patterns in
 
 ### Basic Operators
 - `::` → assigns value (like `var = value`)
-- `→` → shows progression (like state transitions)
+- `->` → shows progression (like state transitions)
 - `indent` → creates hierarchy (like Python/YAML)
 - `[...]` → contains lists (like arrays)
 - `"..."` → string values
@@ -21,9 +21,9 @@ You already parse these patterns daily - OCTAVE uses familiar syntax patterns in
 
 ### Semantic Compression
 OCTAVE uses symbolic operators to compress meaning:
-- `⊕` → synthesis/combination
-- `⚡` → tension/conflict
-- `→` → transformation/flow
+- `+` → synthesis/combination
+- `_VERSUS_` → tension/conflict
+- `->` → transformation/flow
 
 ### Hierarchical Organization
 ```octave

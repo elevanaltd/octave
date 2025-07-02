@@ -12,10 +12,10 @@ META:
 
 SYNTAX_OPERATORS:
   ASSIGNMENT::"::"              // KEY::VALUE
-  PROGRESSION::"→"              // STATE→STATE (lists only)
+  PROGRESSION::"->"              // STATE->STATE (lists only)
   COMMENT::"//"                 // To end of line
-  SYNTHESIS::"⊕"                // DOMAIN⊕DOMAIN
-  TENSION::"⚡"                  // FORCE⚡FORCE
+  SYNTHESIS::"+"                // DOMAIN+DOMAIN
+  TENSION::"_VERSUS_"                  // FORCE_VERSUS_FORCE
 
 STRUCTURE:
   DOCUMENT::"===NAME==="
@@ -38,9 +38,9 @@ DATA_TYPES:
 ---
 
 SEMANTIC_OPERATORS*:
-  SYNTHESIS:"⊕"::"Combines elements into a greater whole (e.g., ATHENA⊕HEPHAESTUS)"
-  TENSION:"⚡"::"Creative or destructive conflict between forces (e.g., INNOVATION⚡STABILITY)"
-  PROGRESSION:"→"::"Narrative sequence or causal flow (e.g., [PROMETHEAN→HUBRIS→NEMESIS])"
+  SYNTHESIS:"+"::"Combines elements into a greater whole (e.g., ATHENA+HEPHAESTUS)"
+  TENSION:"_VERSUS_"::"Creative or destructive conflict between forces (e.g., INNOVATION_VERSUS_STABILITY)"
+  PROGRESSION:"->"::"Narrative sequence or causal flow (e.g., [PROMETHEAN->HUBRIS->NEMESIS])"
 
 SEMANTIC_PANTHEON*:
   DOMAINS::"Core areas of concern (e.g., APOLLO, HERMES, ATHENA)"
@@ -54,7 +54,7 @@ SEMANTIC_PANTHEON*:
 EXAMPLE_COMPOSITION:
   SYSTEM_STATUS:
     STATE::ICARIAN_TRAJECTORY
-    TENSION::ARES⚡HEPHAESTUS
-    NEXT_ACTION::[ATHENA:PLAN→GORDIAN:EXECUTE]
+    TENSION::ARES _VERSUS_ HEPHAESTUS
+    NEXT_ACTION::[ATHENA:PLAN->GORDIAN:EXECUTE]
 
 ===END_REFERENCE===

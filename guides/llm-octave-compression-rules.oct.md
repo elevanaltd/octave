@@ -101,11 +101,11 @@ SECTION_III:EVIDENCE_PRESERVATION:
 SECTION_IV:NUANCE_CAPTURE:
 
   RULE:TRADEOFF_EXPLICIT:
-    MANDATE::"Major decisions must show GAIN⚡LOSS"
+    MANDATE::"Major decisions must show GAIN _VERSUS_ LOSS"
     FORMAT::CHOICE::option[GAIN::benefit⚡LOSS::sacrifice]
     EXAMPLE:
-      CHOICE:WORKFRONT[GAIN::Adobe_integration⚡LOSS::Enterprise_cost]
-      CHOICE:CUSTOM[GAIN::Perfect_fit⚡LOSS::6_month_development]
+      CHOICE:WORKFRONT[GAIN::Adobe_integration _VERSUS_ LOSS::Enterprise_cost]
+      CHOICE:CUSTOM[GAIN::Perfect_fit _VERSUS_ LOSS::6_month_development]
       
   RULE:HUMAN_FACTORS:
     MANDATE::"Adoption strategies must include PSYCHOLOGY"
@@ -214,7 +214,7 @@ SECTION_X:VALIDATION_CHECKLIST:
     □ RULE:BECAUSE_CHAIN::Every major pattern has BECAUSE clause
     □ RULE:SCENARIO_MINIMUM::One SCENARIO per major section  
     □ RULE:KEY_METRICS::Key metrics preserved with context
-    □ RULE:TRADEOFF_EXPLICIT::Tradeoffs explicit (GAIN⚡LOSS)
+    □ RULE:TRADEOFF_EXPLICIT::Tradeoffs explicit (GAIN _VERSUS_ LOSS)
     □ RULE:HUMAN_FACTORS::Human factors included
     □ RULE:CROSS_DOMAIN_HOW::Transfer mechanisms specified
     □ RULE:SUCCESS_CRITERIA::Success criteria measurable

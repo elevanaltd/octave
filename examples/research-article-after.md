@@ -8,7 +8,7 @@
 ===MACOS_APP_FRAMEWORK_COMPARISON_v1.0===
 // Comparing Desktop App Frameworks for macOS Development
 // HERMES Stewardship Protocol Applied: ANALYZE→VALIDATE→ORGANIZE→OPTIMIZE→PRE_OUTPUT_VALIDATION
-// OCTAVE Enhancement: SEMANTIC_OPERATORS⊕RELATIONSHIP_NETWORKS
+// OCTAVE Enhancement: SEMANTIC_OPERATORS+RELATIONSHIP_NETWORKS
 // Mission: CONFIG_FIDELITY⊕FINDABILITY
 
 META:
@@ -48,7 +48,7 @@ SUMMARY:
 
 FRAMEWORK_COMPARISON_TABLE:
   FRAMEWORK:ELECTRON:
-    TECH_STACK_LANGUAGE::"HTML/CSS⊕JavaScript(Node.js)⊕Chromium_engine"
+    TECH_STACK_LANGUAGE::"HTML/CSS+JavaScript(Node.js)+Chromium_engine"
     MACOS_SUPPORT::SCORE_HIGH[REASON::"Universal (arm64/x64)"]
     PACKAGING_SIGNING::"Uses electron-builder; manual signing/notarization (well-documented)"
     PERFORMANCE_EFFICIENCY::SCORE_LOW[REASON::"Heavy: ~400MB+ bundle, hundreds of MB idle memory, higher CPU/battery drain."]
@@ -57,7 +57,7 @@ FRAMEWORK_COMPARISON_TABLE:
     AI_CODEGEN_COMPAT::SCORE_HIGH[REASON::"Web stack widely known; plenty of examples for GPT/Copilot."]
     NOTABLE_LIMITATIONS::[HIGH_RESOURCE_USAGE, SECURITY_SURFACE[FULL_NODE.JS_ACCESS], COMPLEX_MULTI_PROCESS_DEBUGGING]
   FRAMEWORK:TAURI:
-    TECH_STACK_LANGUAGE::"Rust_backend⊕Web_frontend(any_JS_framework)"
+    TECH_STACK_LANGUAGE::"Rust_backend+Web_frontend(any_JS_framework)"
     MACOS_SUPPORT::SCORE_HIGH[REASON::"Native arm64 build (Rust)"]
     PACKAGING_SIGNING::"Built-in bundler; CLI automates code signing/notarization."
     PERFORMANCE_EFFICIENCY::SCORE_HIGH[REASON::"Lightweight: ~4–8 MB bundle, ~60–80 MB idle memory; efficient system WEBVIEW."]
@@ -66,7 +66,7 @@ FRAMEWORK_COMPARISON_TABLE:
     AI_CODEGEN_COMPAT::SCORE_MODERATE[REASON::"Web frontend easy for LLMs; Rust backend less common, but many tasks need little Rust."]
     NOTABLE_LIMITATIONS::[RUST_LEARNING_CURVE, CROSS_PLATFORM_WEBVIEW_QUIRKS, FEWER_READY_MADE_PLUGINS]
   FRAMEWORK:WAILS:
-    TECH_STACK_LANGUAGE::"Go_backend⊕Web_frontend"
+    TECH_STACK_LANGUAGE::"Go_backend+Web_frontend"
     MACOS_SUPPORT::SCORE_HIGH[REASON::"Native arm64 build (Go)"]
     PACKAGING_SIGNING::"wails build produces .app; signing via standard macOS tools (scripting needed)."
     PERFORMANCE_EFFICIENCY::SCORE_HIGH[REASON::"Lightweight: ~7 MB binary, ~70–80 MB idle memory; fast runtime, quick dev rebuilds."]
@@ -75,7 +75,7 @@ FRAMEWORK_COMPARISON_TABLE:
     AI_CODEGEN_COMPAT::SCORE_MODERATE[REASON::"Go is simple for LLMs; Wails-specific APIs less known, but web UI is standard HTML/JS."]
     NOTABLE_LIMITATIONS::[FEWER_LIBRARIES_TUTORIALS, MUST_KNOW_GO, DEBUGGING_GO_BROWSER_CONSOLE, PAST_FLICKER_ISSUES]
   FRAMEWORK:SWIFTUI_NATIVE:
-    TECH_STACK_LANGUAGE::"Swift⊕SwiftUI(Apple_frameworks)"
+    TECH_STACK_LANGUAGE::"Swift+SwiftUI(Apple_frameworks)"
     MACOS_SUPPORT::SCORE_HIGH[REASON::"Native arm64 (Xcode)"]
     PACKAGING_SIGNING::"Xcode provides one-click .app build, codesigning/notarization (smooth for App Store)."
     PERFORMANCE_EFFICIENCY::SCORE_HIGH[REASON::"High-performance: very efficient native code; minimal overhead; small binary; very battery-friendly."]
@@ -84,7 +84,7 @@ FRAMEWORK_COMPARISON_TABLE:
     AI_CODEGEN_COMPAT::SCORE_MODERATE[REASON::"SwiftUI syntax known to GPT, but rapid API changes require tweaking; Apple-specific idioms less common."]
     NOTABLE_LIMITATIONS::[APPLE_ONLY, SWIFTUI_MAC_BUGS_QUIRKS[TEXT_FIELDS_FOCUS_ISSUES, INCOMPLETE_COMPONENTS], LEARNING_SWIFT_SWIFTUI]
   FRAMEWORK:FLUTTER:
-    TECH_STACK_LANGUAGE::"Dart_language⊕Flutter_engine(Skia)"
+    TECH_STACK_LANGUAGE::"Dart_language+Flutter_engine(Skia)"
     MACOS_SUPPORT::SCORE_HIGH[REASON::"Native arm64; builds Universal macOS app."]
     PACKAGING_SIGNING::"flutter build macos yields .app; signing similar to native (integrates with Xcode/CI)."
     PERFORMANCE_EFFICIENCY::SCORE_MODERATE[REASON::"Good: compiled to native code; high performance UI (GPU-accelerated); moderate binary size (~20–50 MB); uses more memory than pure native but less than Electron."]
@@ -93,7 +93,7 @@ FRAMEWORK_COMPARISON_TABLE:
     AI_CODEGEN_COMPAT::SCORE_HIGH[REASON::"Flutter is popular; many code examples and well-structured patterns, so LLMs handle it well."]
     NOTABLE_LIMITATIONS::[SOME_PLUGINS_LACK_DESKTOP_SUPPORT, INTEGRATING_MACOS_FEATURES_REQUIRES_PLATFORM_CHANNELS, UI_MIGHT_NOT_MATCH_NATIVE_CONVENTIONS]
   FRAMEWORK:PYSIDE6_QT:
-    TECH_STACK_LANGUAGE::"Python⊕Qt6(C++_Qt_bindings)"
+    TECH_STACK_LANGUAGE::"Python+Qt6(C++_Qt_bindings)"
     MACOS_SUPPORT::SCORE_HIGH[REASON::"Qt6 supports arm64; Python runs on M1 (universal Qt binaries needed)."]
     PACKAGING_SIGNING::"PyInstaller/py2app to bundle into .app; must codesign bundled app and Qt frameworks (complex but documented)."
     PERFORMANCE_EFFICIENCY::SCORE_HIGH[REASON::"Very high performance (Qt is C++ under hood); efficient rendering, low CPU overhead. Memory usage moderate (Qt libs ~tens of MB; Python runtime adds overhead)."]
@@ -102,7 +102,7 @@ FRAMEWORK_COMPARISON_TABLE:
     AI_CODEGEN_COMPAT::SCORE_MODERATE[REASON::"Python is common for LLMs; Qt API has many examples, though LLM might confuse PyQt vs PySide syntax."]
     NOTABLE_LIMITATIONS::[LICENSING_FOR_COMMERCIAL_QT_COMPLEX, PACKAGING_PYTHON_APPS_NON_TRIVIAL, PYTHON_GIL_LIMITS_HEAVY_MULTI_THREADING]
   FRAMEWORK:KIVY:
-    TECH_STACK_LANGUAGE::"Python⊕Kivy_framework(OpenGL)"
+    TECH_STACK_LANGUAGE::"Python+Kivy_framework(OpenGL)"
     MACOS_SUPPORT::SCORE_HIGH[REASON::"Runs on M1 (via Python arm64); requires SDL2 etc. compiled for arm64."]
     PACKAGING_SIGNING::"Bundling via PyInstaller/Kivy's tools; signing manual. Cross-compiling tricky."
     PERFORMANCE_EFFICIENCY::SCORE_MODERATE[REASON::"Moderate: Uses GPU for UI; simple apps run fine. Memory use depends on assets; baseline ~100+ MB. Not as optimized as native/Qt."]
@@ -281,8 +281,8 @@ CONCLUSION:
   OVERVIEW::"All frameworks produce working macOS applications; decision based on trade-offs."
   KEY_TRADEOFFS:
     BEST_MAC_EXPERIENCE_PERFORMANCE::SWIFTUI_SWIFT
-    BROAD_REACH_ONE_CODEBASE::FLUTTER⊕ELECTRON[MITIGATED_BY_TAURI_WAILS]
-    LEVERAGING_PYTHON_EXISTING_CODE::PYSIDE6_QT[NATIVE_ISH_UI]⊕KIVY[QUICKER_ROUGHER_CROSS_PLATFORM]
+    BROAD_REACH_ONE_CODEBASE::FLUTTER+ELECTRON[MITIGATED_BY_TAURI_WAILS]
+    LEVERAGING_PYTHON_EXISTING_CODE::PYSIDE6_QT[NATIVE_ISH_UI]+KIVY[QUICKER_ROUGHER_CROSS_PLATFORM]
     MEMORY_BATTERY_SENSITIVE_APPS::TAURI⊕WAILS
   FINAL_ADVICE::"Select framework aligning with project priorities and development team strengths."
 

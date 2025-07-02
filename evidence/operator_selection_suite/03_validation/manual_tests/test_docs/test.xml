@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <test name="Family A" value="DATABASE & CACHE VERSUS LATENCY > PERFORMANCE" />
+    <test name="Family B" value="DATABASE + CACHE VERSUS LATENCY -> PERFORMANCE" />
+</root>

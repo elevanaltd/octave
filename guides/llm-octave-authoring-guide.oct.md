@@ -34,7 +34,7 @@ SECTION_II:AUTHORING_BEST_PRACTICES:
     EXAMPLE:
       PROJECT_STATUS:
         STATE::ODYSSEAN // A long, transformative journey
-        TENSION::INNOVATION⚡STABILITY
+        TENSION::INNOVATION _VERSUS_ STABILITY
 
   DEFINITIONS:
     DESCRIPTION::"Define custom, domain-specific terms in the 0.DEF section."
@@ -82,7 +82,7 @@ SECTION_IV:VALIDATION_CHECKLIST:
 
   SEMANTIC_CHECKS:
     - [ ] The PANTHEON vocabulary is used correctly and appropriately.
-    - [ ] Semantic operators (⊕, ⚡, →) are used according to their defined meanings.
+    - [ ] Semantic operators (+, _VERSUS_, ->) are used according to their defined meanings.
     - [ ] The composition of statements is logical and easy to understand.
 
   QUALITY_CHECKS:
