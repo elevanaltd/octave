@@ -2,6 +2,7 @@
 """
 Minimal OCTAVE v2.0 validator - 30 lines of essential checks
 Returns "OCTAVE_INVALID: <reason>" or "OCTAVE_VALID"
+Handles .oct.md, .octave, and .oct files
 """
 
 import re

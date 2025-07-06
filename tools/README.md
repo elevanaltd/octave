@@ -6,7 +6,7 @@ Minimal utilities for OCTAVE validation and integration.
 
 ### `lint_octave.py`
 **Purpose**: Fast syntax validation for OCTAVE documents  
-**Usage**: `python3 lint_octave.py < document.oct`  
+**Usage**: `python3 lint_octave.py < document.oct.md`  
 **Returns**: `OCTAVE_VALID` or `OCTAVE_INVALID: <reason>`
 
 Checks:
@@ -18,7 +18,7 @@ Checks:
 
 ### `octave_to_json.py`
 **Purpose**: Convert OCTAVE to JSON for system integration  
-**Usage**: `python3 octave_to_json.py document.oct > output.json`
+**Usage**: `python3 octave_to_json.py document.oct.md > output.json`
 
 Features:
 - Preserves semantic operators (synthesis, tension, progression)
@@ -28,7 +28,7 @@ Features:
 
 ### `json_to_octave.py`
 **Purpose**: Convert JSON back to OCTAVE format  
-**Usage**: `python3 json_to_octave.py input.json > document.oct`
+**Usage**: `python3 json_to_octave.py input.json > document.oct.md`
 
 Features:
 - Restores original formatting including blank lines
@@ -43,10 +43,10 @@ Features:
 
 ```bash
 # Convert OCTAVE to JSON and back
-python3 octave_to_json.py input.oct | python3 json_to_octave.py > output.oct
+python3 octave_to_json.py input.oct.md | python3 json_to_octave.py > output.oct.md
 
 # Verify perfect round-trip
-diff input.oct output.oct
+diff input.oct.md output.oct.md
 ```
 
 ## Philosophy

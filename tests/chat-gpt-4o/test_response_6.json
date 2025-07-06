@@ -1,0 +1,105 @@
+{
+  "name": "OCTAVE",
+  "acronym": "Olympian Common Text And Vocabulary Engine",
+  "version": "2.0",
+  "summary": "A constraint-based, semantically compressed protocol for LLM-to-LLM communication and systemic orchestration.",
+  "origin": {
+    "discovery": "Semantic compression via mythological tokens during LLM experiments.",
+    "evolution": "From token-efficient shorthand to auditable system-level instruction protocol.",
+    "design_philosophy": [
+      "Structure = contract",
+      "Compression = clarity",
+      "Myth = machine-parsable logic"
+    ]
+  },
+  "when_to_use": {
+    "simple_prompt": "Direct, context-rich, one-shot interactions (co-pilot mode)",
+    "octave_prompt": "Automated, multi-agent, auditable systems where structure must carry intent"
+  },
+  "core_components": [
+    {
+      "name": "SYNTAX",
+      "operators": {
+        "ASSIGNMENT": "::",
+        "COMMENT": "//",
+        "SYNTHESIS": "+",
+        "TENSION": "_VERSUS_",
+        "PROGRESSION": "->"
+      },
+      "rules": {
+        "indentation": "2 spaces per level",
+        "lists": "square brackets, no trailing commas",
+        "multiline": "triple-quoted strings allowed",
+        "structured_blocks": "KEY: opens a nested block"
+      }
+    },
+    {
+      "name": "SEMANTICS",
+      "compression": {
+        "method": "Use of mythological tokens and structured keys to replace verbose prose",
+        "example": "STATUS::ICARIAN_TRAJECTORY instead of 30-token narrative",
+        "average_gain": "10x–20x compression"
+      },
+      "operators_meaning": {
+        "+": "Synthesis: unifies elements into a greater whole",
+        "_VERSUS_": "Tension: creative opposition between forces",
+        "->": "Progression: sequence or transformation"
+      },
+      "vocabulary": {
+        "domains": ["ZEUS", "ATHENA", "HERMES", "HEPHAESTUS", "ARTEMIS", "APOLLO", "ARES", "POSEIDON", "DEMETER", "DIONYSUS"],
+        "patterns": ["ODYSSEAN", "ICARIAN", "PROMETHEAN", "GORDIAN", "SISYPHEAN", "TROJAN", "PHOENICIAN", "ACHILLEAN"],
+        "forces": ["HUBRIS", "NEMESIS", "KAIROS", "CHAOS", "COSMOS", "MOIRA", "TYCHE"],
+        "relationships": ["HARMONIA", "ERIS", "EROS", "THANATOS"]
+      }
+    },
+    {
+      "name": "USE_CASES",
+      "examples": [
+        {
+          "type": "Knowledge Artifact",
+          "goal": "Compress long documents into structured, queryable form",
+          "benefit": "Preserves argument logic, enables precision querying"
+        },
+        {
+          "type": "High-Density Prompt",
+          "goal": "Inject rich business context or tension into concise prompts",
+          "benefit": "Models respond more insightfully due to structural clarity"
+        }
+      ]
+    },
+    {
+      "name": "FORMAT_RULES",
+      "sections": [
+        "META",
+        "0.DEF",
+        "KEY::VALUE blocks",
+        "Nested hierarchies using KEY:",
+        "Flow sequences using [A->B->C]",
+        "Semantic verdicts like VERDICT::PROMETHEAN_OVERREACH"
+      ],
+      "validation": {
+        "critical_errors": [
+          "Colon in key name",
+          "Improper chaining of binary-only operators",
+          "Malformed hierarchy"
+        ],
+        "warnings": ["Inconsistent indentation", "Non-canonical casing"]
+      }
+    }
+  ],
+  "parser_behavior": {
+    "llm_comprehension_rate": "100%",
+    "training_required": "none",
+    "bias": "LLMs recognize myth patterns better than they admit"
+  },
+  "interoperability": {
+    "tested_models": ["Claude 3", "GPT-4", "Gemini 1.5", "Mistral", "GPT-4o"],
+    "compatibility": "Full zero-shot understanding confirmed"
+  },
+  "license": {
+    "type": "CC BY 4.0",
+    "requirement": "Attribute to creator; free to adapt and build upon"
+  },
+  "author": "Shaun Buswell",
+  "project_status": "Stable, used in production orchestration; growing community feedback loop"
+}

@@ -1,0 +1,76 @@
+{
+  "system": "Microservices Application",
+  "description": "A scalable microservices architecture with authentication, database, and API services.",
+  "services": [
+    {
+      "name": "api-gateway",
+      "type": "gateway",
+      "description": "Entry point for all client requests. Routes traffic to internal services.",
+      "dependencies": ["auth-service", "user-service", "data-service"],
+      "exposed_to": "external"
+    },
+    {
+      "name": "auth-service",
+      "type": "authentication",
+      "description": "Handles login, registration, token issuance, and validation.",
+      "dependencies": ["user-db"],
+      "internal_routes": ["/login", "/register", "/validate-token"],
+      "authentication_method": "JWT",
+      "exposed_to": "internal"
+    },
+    {
+      "name": "user-service",
+      "type": "microservice",
+      "description": "Manages user profiles, preferences, and roles.",
+      "dependencies": ["user-db"],
+      "authentication_required": true,
+      "internal_routes": ["/user/:id", "/user/preferences"],
+      "exposed_to": "internal"
+    },
+    {
+      "name": "data-service",
+      "type": "microservice",
+      "description": "Handles application data and business logic.",
+      "dependencies": ["app-db"],
+      "authentication_required": true,
+      "internal_routes": ["/data/query", "/data/update"],
+      "exposed_to": "internal"
+    }
+  ],
+  "databases": [
+    {
+      "name": "user-db",
+      "type": "PostgreSQL",
+      "used_by": ["auth-service", "user-service"]
+    },
+    {
+      "name": "app-db",
+      "type": "MongoDB",
+      "used_by": ["data-service"]
+    }
+  ],
+  "infrastructure": {
+    "message-broker": {
+      "name": "rabbitmq",
+      "purpose": "Event-driven communication between services (e.g., auth → user-service)"
+    },
+    "service-discovery": {
+      "enabled": true,
+      "tool": "Consul"
+    },
+    "logging": {
+      "tool": "ELK Stack",
+      "description": "Centralized logging for observability"
+    },
+    "monitoring": {
+      "tool": "Prometheus + Grafana",
+      "description": "Tracks uptime, latency, and error rates"
+    }
+  },
+  "security": {
+    "auth_strategy": "JWT",
+    "rate_limiting": true,
+    "gateway_tls": true,
+    "api_key_required": false
+  }
+}
