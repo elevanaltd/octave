@@ -1,0 +1,30 @@
+{
+  "octave": {
+    "title": "SYSTEM_DIAGNOSIS",
+    "version": "2.0",
+    "body": {
+      "STATUS": "ICARIAN_TRAJECTORY",
+      "DOMAINS_AFFECTED": {
+        "APOLLO": "DEGRADED",
+        "HERMES": "OVERWHELMED",
+        "HERMES_blank_after": true
+      },
+      "ROOT_CAUSE": "PROMETHEAN_OVERREACH",
+      "PATTERN_DETECTED": "HUBRIS->NEMESIS",
+      "PATTERN_DETECTED_blank_after": true,
+      "INTERVENTION": {
+        "STRATEGY": "GORDIAN",
+        "TIMING": "KAIROS",
+        "APPROACH": [
+          "ATHENA:STRATEGIC_REDUCTION+APOLLO:METRIC_FOCUS"
+        ],
+        "APPROACH_blank_after": true
+      },
+      "RISK_MITIGATION": {
+        "AVOID": "PANDORAN_CASCADE",
+        "MONITOR": "ACHILLEAN_POINTS",
+        "PREPARE": "PHOENICIAN_CONTINGENCY"
+      }
+    }
+  }
+}

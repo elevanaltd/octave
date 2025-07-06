@@ -1,0 +1,38 @@
+{
+  "octave": {
+    "title": "STRATEGY_EXAMPLE",
+    "version": "2.0",
+    "body": {
+      "CHALLENGE": "SCALING_CRISIS",
+      "TENSION": {
+        "tension": [
+          "PERFORMANCE",
+          "CONSISTENCY"
+        ]
+      },
+      "FORCES": {
+        "CHRONOS": "DEADLINE_PRESSURE",
+        "HUBRIS": "OVERCONFIDENT_ARCHITECTURE",
+        "HUBRIS_blank_after": true
+      },
+      "STRATEGY": {
+        "synthesis": [
+          "ATHENA",
+          "GORDIAN"
+        ]
+      },
+      "APPROACH": {
+        "progression": [
+          "ANALYZE",
+          "SIMPLIFY",
+          "EXECUTE"
+        ]
+      },
+      "SUCCESS_CRITERIA": {
+        "LATENCY": "\"<100ms\"",
+        "AVAILABILITY": "\"99.9%\"",
+        "COST_INCREASE": "\"<20%\""
+      }
+    }
+  }
+}

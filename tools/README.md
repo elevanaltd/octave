@@ -1,24 +1,54 @@
-'''
 # OCTAVE Tools
 
-This directory contains tools for working with the OCTAVE language.
+Minimal utilities for OCTAVE validation and integration.
 
-## `octave_validator.py`
+## Files
 
-This is a Python-based validator for the OCTAVE v2.0 language specification.
+### `lint_octave.py`
+**Purpose**: Fast syntax validation for OCTAVE documents  
+**Usage**: `python3 lint_octave.py < document.oct`  
+**Returns**: `OCTAVE_VALID` or `OCTAVE_INVALID: <reason>`
 
-**Important:** This script validates the current OCTAVE v2.0 syntax with ASCII operators (e.g., `::` assignments, `->` progressions, `+` synthesis, `_VERSUS_` tensions). It has the following features and limitations:
+Checks:
+- Document markers (===NAME=== and ===END===)
+- Indentation (2-space multiples)
+- Assignment syntax (KEY::VALUE)
+- Balanced brackets
+- No trailing commas in lists
 
-*   **Native Format:** Validates v2.0 operators and warns about deprecated Unicode operators from v1.0
-*   **Operator Validation:** Checks proper usage of `+`, `_VERSUS_`, and `->` operators
-*   **Structure Validation:** Validates document structure, indentation, and key formats
-*   **JSON Format:** The JSON validation is currently a **placeholder** that only checks for basic JSON well-formedness
+### `octave_to_json.py`
+**Purpose**: Convert OCTAVE to JSON for system integration  
+**Usage**: `python3 octave_to_json.py document.oct > output.json`
 
-It is provided as a proof-of-concept and a starting point for developing more robust tooling.
+Features:
+- Preserves semantic operators (synthesis, tension, progression)
+- Tracks blank lines for round-trip fidelity
+- Maintains quoted strings
+- Handles nested structures
 
-### Usage
+### `json_to_octave.py`
+**Purpose**: Convert JSON back to OCTAVE format  
+**Usage**: `python3 json_to_octave.py input.json > document.oct`
+
+Features:
+- Restores original formatting including blank lines
+- Reconstructs semantic operators
+- Preserves document structure
+
+### `octave_validator.py`
+**Purpose**: Comprehensive OCTAVE v2.0 validator (existing tool)  
+**Note**: More complex validation with operator checks and v1.0 deprecation warnings
+
+## Round-Trip Example
 
 ```bash
-python octave_validator.py /path/to/your/document.oct.md
+# Convert OCTAVE to JSON and back
+python3 octave_to_json.py input.oct | python3 json_to_octave.py > output.oct
+
+# Verify perfect round-trip
+diff input.oct output.oct
 ```
-'''
+
+## Philosophy
+
+These tools are "scaffolding you fold away" - they enable integration with JSON-based systems while keeping OCTAVE as the primary format for direct model emission.
