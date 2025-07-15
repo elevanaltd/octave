@@ -65,15 +65,18 @@
 
 ### 1. Targeted vs Comprehensive Trade-off
 
-**Targeted Enhancement (+1.0% tokens)**:
-- Minimal improvement over raw output
-- Best for token-constrained environments
-- Insufficient for complex analysis tasks
+**Initial Empirical Results**:
+- Targeted: Appeared to show minimal improvement (10% accuracy)
+- Comprehensive: Showed dramatic improvement (51.2% accuracy)
 
-**Comprehensive Enhancement (+11.4% tokens)**:
-- Dramatic accuracy improvement (10.2×)
-- Enables specific technical identification
-- Optimal balance of cost vs benefit
+**Blind Test Contradiction**:
+- Targeted: 90.7/108 average score across 3 AI models
+- Comprehensive: 90.3/108 average score across 3 AI models
+- **Result**: Targeted actually performed slightly better
+
+**Revised Assessment**:
+- **Targeted Enhancement**: Optimal balance - equivalent performance with 10× lower token cost
+- **Comprehensive Enhancement**: Minimal additional benefit, significantly higher cost
 
 ### 2. Blind Test Validation
 
@@ -114,7 +117,7 @@ Independent testing across three AI models confirmed results:
 
 ## Conclusion
 
-**Primary Finding**: Comprehensive OCTAVE annotation provides **10.2× accuracy improvement** with only **11.4% token overhead**.
+**Primary Finding**: OCTAVE annotation provides **significant accuracy improvement** with targeted enhancement being the optimal approach.
 
 **Practical Impact**:
 - Transforms vague observations into specific technical insights
@@ -122,7 +125,7 @@ Independent testing across three AI models confirmed results:
 - Provides actionable architectural analysis
 - Maintains fast response times
 
-**Recommendation**: Use comprehensive OCTAVE enhancement for any serious code analysis task. The 11.4% token cost delivers transformative accuracy improvements that justify the overhead.
+**Recommendation**: Use targeted OCTAVE enhancement by default. Blind testing shows equivalent performance to comprehensive enhancement with 10× lower token cost, making it the practical choice for all code analysis tasks.
 
 ## Methodology Notes
 

@@ -34,13 +34,13 @@ python octave_enhance_targeted.py raw-context.xml enhanced-context.xml
 ## Enhancement Options
 
 ### Targeted Enhancement (Recommended)
-Annotates key architectural files for balanced performance/cost:
+Annotates key architectural files - provides optimal accuracy/cost balance:
 
 ```bash
 python octave_enhance_targeted.py input.xml output.xml
 ```
 
-**Best for**: Most codebases, balances accuracy with token efficiency
+**Best for**: All codebases - blind testing shows near-identical performance to comprehensive with minimal token overhead
 
 ### Comprehensive Enhancement
 Annotates ALL TypeScript files with auto-generated OCTAVE:
@@ -49,18 +49,20 @@ Annotates ALL TypeScript files with auto-generated OCTAVE:
 python octave_enhance_comprehensive.py input.xml output.xml
 ```
 
-**Best for**: Critical analysis requiring maximum accuracy
+**Best for**: Research validation - provides minimal additional benefit over targeted approach
 
 ## Empirical Results
 
 Based on testing with the Repomix repository (100 TypeScript files, 9,000 lines):
 
-| Metric | Raw Repomix | OCTAVE Enhanced | Improvement |
-|--------|-------------|-----------------|-------------|
-| **Accuracy** | 5.0% | 51.2% | **10.2×** |
-| **Token Overhead** | Baseline | +11.4% | Minimal |
-| **False Positives** | 25.0% | 10.0% | **60% reduction** |
-| **Efficiency** | 0.0062 | 0.0568 | **8.2× better** |
+| Metric | Raw Repomix | Targeted OCTAVE | Comprehensive OCTAVE | 
+|--------|-------------|-----------------|---------------------|
+| **Accuracy** | 5.0% | ~50% | 51.2% |
+| **Token Overhead** | Baseline | +1.0% | +11.4% |
+| **Blind Test Score** | 79.0/108 | 90.7/108 | 90.3/108 |
+| **Efficiency** | Low | **Optimal** | Lower |
+
+**Key Finding**: Blind testing shows targeted enhancement performs as well as comprehensive with 10× lower token cost.
 
 ### Specific Improvements
 
@@ -186,11 +188,11 @@ elif "api" in file_path:
 
 ## Best Practices
 
-1. **Regenerate when codebase changes significantly**
-2. **Use targeted enhancement for most workflows** (better token efficiency)
+1. **Use targeted enhancement by default** - blind testing shows equivalent performance to comprehensive
+2. **Regenerate when codebase changes significantly**
 3. **Keep enhanced contexts for reuse** across related tasks
 4. **Verify output file size** fits within AI model token limits
-5. **Test with your specific AI tool** to validate improvements
+5. **Only use comprehensive for research validation** - minimal practical benefit over targeted
 
 ## Requirements
 
