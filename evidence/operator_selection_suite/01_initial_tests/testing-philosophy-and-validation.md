@@ -87,4 +87,3 @@ The best empirical method is:
 	•	The most robust format is the one that survives these tests with the least friction, error, and cost—not the one any model “claims” is best.
 
 ⸻
-

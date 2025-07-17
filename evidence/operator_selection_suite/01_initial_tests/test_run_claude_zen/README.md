@@ -11,7 +11,7 @@ Like the other tests, it concludes that the initial Unicode and ASCII Math opera
 ## Key Documents
 
 - [Comprehensive Test Report](./comprehensive_test_report.md)
-- [Implementation Specification](./IMPLEMENTATION-SPECIFICATION.md)
+- [Implementation Specification](./implementation-specification.md)
 - [Edge Case and Ambiguity Testing](./edge-case-testing.md)
 - [Readability Assessment](./readability-assessment.md)
 - [Comprehension Test & Results](./comprehension-results.md)

@@ -28,13 +28,13 @@ This family was chosen for its perfect toolchain compatibility (zero escaping ne
 
 The complete evidence trail is organized as follows:
 
-1.  **[Testing Philosophy and Validation Framework](./testing_philosophy_and_validation.md)**: Outlines the rigorous methodology used to evaluate the specification.
+1.  **[Testing Philosophy and Validation Framework](./01_initial_tests/testing-philosophy-and-validation.md)**: Outlines the rigorous methodology used to evaluate the specification.
 
-2.  **[Initial Test Runs](./test_runs/)**: Contains the full, unedited outputs from the four initial model test runs that proved the original operators were flawed.
+2.  **[Initial Test Runs](./01_initial_tests/)**: Contains the full, unedited outputs from the four initial model test runs that proved the original operators were flawed.
 
-3.  **[Final Design Analysis](./final_design_analysis/)**: Documents the two-stage analysis that led to the final recommendation, including the multi-model consensus report.
+3.  **[Final Design Analysis](./02_design_analysis/)**: Documents the two-stage analysis that led to the final recommendation, including the multi-model consensus report.
 
-4.  **[v2.0 Validation and Implementation Plan](./v2_validation_and_implementation_plan.md)**: The final deliverable—a comprehensive plan to validate the recommended operator set before its formal adoption in OCTAVE v2.0.
-*   **[Claude Code (Zen MCP) Results](./test_runs/test_run_claude_zen/)**
-*   **[ChatGPT-4 Results](./test_runs/test_run_chatgpt/)**
+4.  **[v2.0 Validation and Implementation Plan](./03_validation/v2-validation-and-implementation-plan.md)**: The final deliverable—a comprehensive plan to validate the recommended operator set before its formal adoption in OCTAVE v2.0.
+*   **[Claude Code (Zen MCP) Results](./01_initial_tests/test_run_claude_zen/)**
+*   **[ChatGPT-4 Results](./01_initial_tests/test_run_chatgpt/)**
 

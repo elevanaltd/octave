@@ -271,4 +271,3 @@ Conclusion
 The minor trade-off in token density is outweighed by the ease of team adoption and long-term tooling compatibility.
 
 ⸻
-

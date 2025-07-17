@@ -67,7 +67,7 @@ STRATEGY::SPEED~+QUALITY
 - Angle brackets might trigger HTML/XML associations in some contexts
 - Three characters (slightly verbose)
 
-### `[+]` - The Structured Synthesis  
+### `[+]` - The Structured Synthesis
 **Pros:**
 - Square brackets are universally understood as "containers"
 - Extremely clear visual boundaries
@@ -94,7 +94,7 @@ After rigorous analysis, **`<+>` is the optimal synthesis operator** for OCTAVE.
 
 5. **Natural Extensibility:** This creates a coherent operator family:
    - `<+>` for synthesis (combination)
-   - `<->` for tension (opposition)  
+   - `<->` for tension (opposition)
    - `<~>` for approximation (loose coupling)
    - `<=>` for equivalence (bidirectional)
 
@@ -103,7 +103,6 @@ The `<+>` operator represents the best engineering compromise: it's novel enough
 ```octave
 // Real-world OCTAVE example with <+>
 ARCHITECTURE::PATHOS<+>ETHOS<+>LOGOS
-INTEGRATION::FRONTEND<+>API<+>DATABASE  
+INTEGRATION::FRONTEND<+>API<+>DATABASE
 SYNTHESIS::VISION<+>CONSTRAINTS
 ```
-

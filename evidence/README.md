@@ -68,6 +68,19 @@ While models do not spontaneously adopt the OCTAVE *format* in their responses, 
 
 *Source: `octave-generation-analysis-2025.md`*
 
+## 6. Operator Syntax Validation
+
+A rigorous, multi-stage testing process was conducted to determine the optimal operator syntax for OCTAVE v2.0, prioritizing toolchain compatibility and semantic clarity. Initial tests revealed that Unicode (`⊕`) and simple ASCII Math (`*`) operators had critical flaws. A final design and validation phase selected a hybrid "Pragmatic ASCII" set.
+
+**Final v2.0 Operators:**
+- **Synthesis:** `+`
+- **Tension:** `_VERSUS_`
+- **Progression:** `->`
+
+**Result:** This operator set is empirically proven to be the most robust and practical choice, ensuring maximum compatibility and clarity across all development and documentation contexts, especially in toolchains like XML where alternatives failed.
+
+*Source: `operator_selection_suite/03_validation/final-recommendation.md`*
+
 ## Conclusion
 
 The empirical data strongly supports the claims of the OCTAVE protocol. It is a highly effective method for compressing complex information for LLM communication, achieving significant token reduction while simultaneously increasing semantic clarity and analytical depth.

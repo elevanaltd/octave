@@ -22,4 +22,3 @@ The set of operators can be extended by creating new operators with the `_OPERAT
 
 *   **Do not use natural language words without underscores.** For example, use `_AND_` instead of `AND`. This is to avoid ambiguity with natural language and to make the operators easy to parse.
 *   **Do not create operators that are too similar to existing operators.** New operators should have a clear and distinct meaning.
-

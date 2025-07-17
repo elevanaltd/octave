@@ -8,7 +8,7 @@ The goal of this initial suite was to perform a broad, multi-model evaluation of
 
 ## Process
 
-A single, comprehensive prompt was run against four different model configurations. The full prompt can be viewed here: [full_test_prompt.md](./full_test_prompt.md).
+A single, comprehensive prompt was run against four different model configurations. The full prompt can be viewed here: [full-test-prompt.md](./full-test-prompt.md).
 
 ## Conclusion
 

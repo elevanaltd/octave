@@ -1,23 +1,23 @@
-===OCTAVE_SYNTAX_v1.0===
-// OCTAVE (Olympian Common Text And Vocabulary Engine) Syntax Specification - Essential rules for consistent usage
+===OCTAVE_SYNTAX_v2.0===
+// OCTAVE (Olympian Common Text And Vocabulary Engine) Syntax Specification - v2.0
 // This document IS OCTAVE, demonstrating its own format
 
 META:
   NAME::"OCTAVE Syntax Specification"
-  VERSION::"1.0"
-  PURPOSE::"Define OCTAVE syntax through OCTAVE itself"
+  VERSION::"2.0" // Data-driven update based on extensive testing
+  PURPOSE::"Define OCTAVE v2.0 syntax through OCTAVE itself"
   ENCODING::"UTF-8"
   EXTENSIONS::[.oct.md, .octave, .oct]
   VERSIONING::"Increment only on breaking syntax changes"
   SEMANTIC_REFERENCE::"./octave-semantics.oct.md"
 
 0.DEF:
-  // Core operators (symbols only - see semantics file for meanings)
+  // Core operators chosen for clarity, compatibility, and unambiguity
   ASSIGN::"::"         // Double colon for assignment
   COMMENT::"//"        // Comment to end of line
-  PROGRESS::"→"        // Progression arrow in lists
-  SYNTHESIS::"⊕"       // Binary combination operator
-  TENSION::"⚡"        // Binary opposition operator
+  SYNTHESIS::"+"         // Plus sign for combination
+  TENSION::"_VERSUS_"    // Decorated keyword for opposition
+  PROGRESSION::"->"       // ASCII arrow for sequence
 
 // =================================
 // DOCUMENT STRUCTURE
@@ -56,7 +56,7 @@ CORE:
     CAN_USE_OPERATORS::true
     EXAMPLES:
       SIMPLE::[a, b, c]
-      WITH_PROGRESSION::[INIT→BUILD→DEPLOY]
+      WITH_PROGRESSION::[INIT->BUILD->DEPLOY]
       NESTED::[[inner], [another, [deep]]]
       
   COMMENTS:
@@ -180,25 +180,25 @@ OPERATOR_RULES:
   GUIDE_REFERENCE::"../guides/llm-octave-quick-reference.oct.md"
   
   SYNTHESIS:
-    SYMBOL::SYNTHESIS  // ⊕
+    SYMBOL::SYNTHESIS  // +
     USAGE::"Between exactly two elements"
     BINARY_ONLY::true  // No chaining allowed
-    EXAMPLE::APOLLO⊕HERMES
-    INVALID::"A⊕B⊕C"  // Cannot chain
+    EXAMPLE::APOLLO+HERMES
+    INVALID::"A+B+C"  // Cannot chain
     
   TENSION:
-    SYMBOL::TENSION  // ⚡
+    SYMBOL::TENSION  // _VERSUS_
     USAGE::"Between exactly two elements"
     BINARY_ONLY::true  // No chaining allowed
-    EXAMPLE::SPEED⚡RELIABILITY
-    INVALID::"A⚡B⚡C"  // Cannot chain
+    EXAMPLE::SPEED _VERSUS_ RELIABILITY
+    INVALID::"A _VERSUS_ B _VERSUS_ C"  // Cannot chain
     
   PROGRESSION:
-    SYMBOL::PROGRESS  // →
+    SYMBOL::PROGRESSION  // ->
     USAGE::"Inside lists ONLY"
     CAN_CHAIN::true
-    VALID::[START→MIDDLE→END]
-    INVALID::"KEY::START→END"  // Not outside lists
+    VALID::[START->MIDDLE->END]
+    INVALID::"KEY::START->END"  // Not outside lists
 
 // =================================
 // KEY CLARIFICATIONS
@@ -243,7 +243,7 @@ ERROR_MODEL:
     ]
     EXAMPLES::[
       "KEY:NAME::value",  // Colon in key
-      "VALUE::A⊕B⊕C",     // Chained synthesis
+      "VALUE::A+B+C",     // Chained synthesis
       "{{nested:{{bad}}}}",  // Nested inline objects
     ]
     
@@ -278,7 +278,7 @@ FULL_EXAMPLE::"""
 
 META:
   NAME::"Example Configuration"
-  VERSION::"1.0"
+  VERSION::"2.0"
   TYPE::CONFIG
 
 0.DEF:
@@ -299,9 +299,9 @@ CONFIG:
     connection::"postgresql://localhost/mydb"
     pool::{{min:5, max:20, timeout:30}}
     
-  workflow::[CONNECT→VALIDATE→PROCESS→RESPOND]
-  architecture::APOLLO⊕HERMES  // Syntactic example only
-  balance::PERFORMANCE⚡CONSISTENCY
+  workflow::[CONNECT->VALIDATE->PROCESS->RESPOND]
+  architecture::APOLLO+HERMES  // Syntactic example only
+  balance::PERFORMANCE _VERSUS_ CONSISTENCY
   
   description::"""
   Multi-line with \n escapes
@@ -316,8 +316,7 @@ CONFIG:
 // =================================
 
 REFERENCES:
-  SEMANTIC_LAYER::"/config/_system/octave-semantics.oct.md"
-  AUTHORING_GUIDE::"/docs/guides/octave-authoring-guide.oct.md"
-  REVIEW_CHECKLIST::"/docs/guides/octave-review-checklist.oct.md"
+  SEMANTIC_LAYER::"./octave-semantics.oct.md"
+  AUTHORING_GUIDE::"../guides/llm-octave-authoring-guide.oct.md"
 
 ===END_SYNTAX===

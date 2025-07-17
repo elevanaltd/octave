@@ -68,4 +68,3 @@ The optimal OCTAVE operator family is:
 - Documentation-light: Visual symbols are self-documenting
 
 This design represents the best possible compromise between all constraints while creating a distinctive, memorable operator family that will serve OCTAVE well as it evolves.
-

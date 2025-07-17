@@ -47,4 +47,3 @@ The choice of the "Pragmatic ASCII" set was overwhelmingly supported by the evid
 The evidence is conclusive and the design is finalized. The operator set `+`, `_VERSUS_`, `->` provides the best possible foundation for a robust, accessible, and future-proof protocol.
 
 It is strongly recommended that the Octave v2 specification, parser, validator, and all associated documentation and internal files be updated to implement this operator set as the sole, official syntax. This data-driven decision concludes the research phase and provides a stable foundation for the v2.0 release.
-

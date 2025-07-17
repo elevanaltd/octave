@@ -31,3 +31,6 @@ htmlcov/
 *.tmp
 *.bak
 *~
+
+# Claude Code
+CLAUDE.md

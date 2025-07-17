@@ -82,4 +82,3 @@ Adopt **Family A — `|&|`, `|x|`, `|>`** as the OCTAVE core operator set.
 Therefore, `|&|`, `|x|`, and `|>` offer the best long-term balance of clarity, cohesion, and practical tooling compatibility for the OCTAVE DSL.
 
 ⸻
-

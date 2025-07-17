@@ -83,4 +83,3 @@ The Square-Bracket Marks family represents the optimal design compromise for OCT
 5. **Future-Proof Design:** The pattern `[symbol]` leaves room for controlled expansion if needed (e.g., `[*]` for future operators) while maintaining the core family aesthetic.
 
 This design embodies the principle that the best DSL operators are those that feel inevitable in hindsight - simple, robust, and perfectly suited to their purpose.
-

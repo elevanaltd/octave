@@ -2,9 +2,9 @@
 
 ## Test Overview
 
-**Repository**: Repomix (TypeScript codebase)  
-**Scale**: 100 TypeScript files, ~9,000 lines of code  
-**Complexity**: High (workers, parsers, security, CLI)  
+**Repository**: Repomix (TypeScript codebase)
+**Scale**: 100 TypeScript files, ~9,000 lines of code
+**Complexity**: High (workers, parsers, security, CLI)
 **Test Date**: Based on comprehensive blind testing
 
 ## Test Configurations
@@ -28,7 +28,7 @@
 
 ### Overall Performance Metrics
 
-| Metric | Raw | Targeted | Comprehensive | 
+| Metric | Raw | Targeted | Comprehensive |
 |--------|-----|----------|---------------|
 | **Overall Accuracy** | 5.0% | 10.0% | 51.2% |
 | **False Positive Rate** | 25.0% | 10.0% | 10.0% |

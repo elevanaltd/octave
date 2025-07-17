@@ -65,7 +65,7 @@ index 2a869de..251a750 100644
 *   **Result**: ✅ Both families display correctly in browsers
 *   Family A (`&`): Renders properly (browser auto-corrects)
 *   Family B (`+`): Renders properly
-*   **Note**: Browser leniency masks the fact that `&` should be `&amp;` for valid HTML
+*   **Note**: Browser leniency masks the fact that `&` should be `&` for valid HTML
 
 ### XML Findings
 
@@ -81,7 +81,7 @@ index 2a869de..251a750 100644
     - Chrome shows pink error box: "xmlParseEntityRef: no name"
     - Browser completely refuses to parse the XML
     - VS Code syntax highlighting shows the `&` as problematic
-    - Requires escaping `&` as `&amp;` to work
+    - Requires escaping `&` as `&` to work
     
 *   **Family B (`+`)**: ✅ **PERFECT PASS**
     - No errors in any context
@@ -130,11 +130,10 @@ index 2a869de..251a750 100644
 
 **Preferred Operator Family: Family B (`+`, `->`, `VERSUS`)**
 
-**Justification**: 
+**Justification**:
 1. **XML Compatibility**: Family B works in ALL contexts without escaping, while Family A catastrophically fails XML validation
 2. **Universal Toolchain Support**: No escaping needed anywhere
 3. **Equal Performance**: In all other tests, both families performed equally well
 4. **Future-Proof**: Avoids the `&` character's special meaning in markup languages
 
 The XML incompatibility of Family A is a showstopper for any system that might use XML-based configuration, web services, or data exchange.
-

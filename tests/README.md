@@ -93,9 +93,9 @@ BENEFIT::10X_TOKEN_REDUCTION
 
 For each test response:
 
-1. **Syntax Check**: Run through `lint_octave.py`
+1. **Syntax Check**: Run through `lint-octave.py`
    ```bash
-   python3 tools/lint_octave.py < test_response.oct
+   python3 tools/lint-octave.py < test_response.oct
    ```
    Should return: `OCTAVE_VALID`
 

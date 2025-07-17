@@ -45,7 +45,7 @@ This decision is based on a rigorous evaluation against the project's core desig
 **Verdict:** Square-bracket operators (`[&] / [!] / [>]`) best satisfy the stated constraints and downstream-tool pragmatics.
 
 **Key Rationale:**
-- Angle-brackets require frequent HTML-escaping (`&lt;`, `&gt;`) in web IDEs and Markdown renderers.
+- Angle-brackets require frequent HTML-escaping (`<`, `>`) in web IDEs and Markdown renderers.
 - Square-brackets rarely require escaping in modern toolchains.
 - The `[X]` pattern allows for a clean, extensible namespace (`[?]`, `[^]`) without ambiguity.
 
@@ -78,4 +78,3 @@ The unanimous consensus across all three leading models provides the highest pos
 2.  **Tooling Development:** Create syntax highlighters for major editors and build a reference parser.
 3.  **Documentation:** Update all specification documents, guides, and examples to use the new operators. Create a migration guide for users of the v1 Unicode syntax.
 4.  **Quality Assurance:** Develop a linting suite to detect malformed operators and validate correct usage.
-

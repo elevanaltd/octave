@@ -12,7 +12,7 @@ The results from this test run align perfectly with the conclusions from the oth
 
 - [Comprehensive Test Report](./comprehensive_test_report.md)
 - [Comprehension Test Results](./comprehension-test-results.md)
-- [ASCII Text Operator Specification](./ASCII_Text_Operator_Specification.md)
+- [ASCII Text Operator Specification](./ascii-text-operator-specification.md)
 
 ### Test Cases
 - [Scenario 1: Microservices](./test-cases/scenario-1_microservices.md)

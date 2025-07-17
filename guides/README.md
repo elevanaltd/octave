@@ -13,12 +13,12 @@ For immediate use:
 ### Syntax & Rules
 - **[llm-octave-quick-reference.oct.md](llm-octave-quick-reference.oct.md)** - Complete syntax reference
 - **[llm-octave-compression-rules.oct.md](llm-octave-compression-rules.oct.md)** - Semantic compression guidelines
-- **[OCTAVE_LITERACY_PATTERNS.oct.md](OCTAVE_LITERACY_PATTERNS.oct.md)** - Universal literacy patterns
+- **[octave-literacy-patterns.oct.md](octave-literacy-patterns.oct.md)** - Universal literacy patterns
 
 ### Authoring & Mastery
 - **[llm-octave-authoring-guide.oct.md](llm-octave-authoring-guide.oct.md)** - Best practices and principles
 - **[octave-philosophy.md](octave-philosophy.md)** - Design philosophy and effective patterns
-- **[OCTAVE_MASTERY.oct.md](OCTAVE_MASTERY.oct.md)** - Advanced techniques and expertise
+- **[octave-mastery.oct.md](octave-mastery.oct.md)** - Advanced techniques and expertise
 
 ### Examples & Patterns
 - **[octave-canonical-examples.oct.md](octave-canonical-examples.oct.md)** - Standard format examples

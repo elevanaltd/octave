@@ -38,7 +38,7 @@ SECTION_I:SEMANTIC_OPERATORS*:
       DOMAIN::STRATEGY⊕EXECUTION // Planning merged with action
 
   TENSION:
-    OPERATOR::"⚡" // Syntax rules defined in octave-syntax.oct.md  
+    OPERATOR::"⚡" // Syntax rules defined in octave-syntax.oct.md
     CORE_MEANING::"Creative opposition"
     EXTENDED_MEANING::"Creative Conflict: Represents a fundamental, often unresolvable, tension between two concepts. The goal is to manage this tension, not eliminate it."
     WHEN_TO_USE::"When two forces pull in opposite directions, creating productive friction"

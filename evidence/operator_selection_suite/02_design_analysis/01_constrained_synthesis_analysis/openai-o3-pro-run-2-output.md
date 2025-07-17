@@ -66,4 +66,3 @@ Adopt **<~>** as the canonical OCTAVE “synthesis” operator.
 This templating keeps the language visually cohesive while giving each semantic its own clear center token.
 
 Therefore, <~> offers the clearest path forward for a robust, future-proof, and cognitively lightweight OCTAVE operator set.
-

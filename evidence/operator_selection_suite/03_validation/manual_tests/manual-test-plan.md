@@ -133,4 +133,3 @@ For each test case, you will evaluate the following two operator families, which
     > DATABASE + CACHE VERSUS LATENCY -> PERFORMANCE
     ```
 3.  **Record Findings:** Take a screenshot of the rendered Markdown. Does the `>` in Family A accidentally create a nested blockquote? Does `->` render cleanly?
-

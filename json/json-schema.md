@@ -671,13 +671,13 @@ Below is a formal JSON Schema definition that can be used for validation:
     {
       "required": ["octave"],
       "properties": {
-        "octave": { 
+        "octave": {
           "$ref": "#/definitions/octaveRoot",
           "description": "Root container for OCTAVE document with standard format"
         }
       }
     },
-    { 
+    {
       "$ref": "#/definitions/octaveRoot",
       "description": "Root elements for OCTAVE document with compact format"
     }
@@ -691,7 +691,7 @@ Below is a formal JSON Schema definition that can be used for validation:
         { "required": ["system_state"] }
       ],
       "properties": {
-        "version": { 
+        "version": {
           "type": "string",
           "description": "OCTAVE version number"
         },
@@ -699,26 +699,26 @@ Below is a formal JSON Schema definition that can be used for validation:
           "type": "object",
           "description": "Document metadata information",
           "properties": {
-            "timestamp": { 
-              "type": "string", 
+            "timestamp": {
+              "type": "string",
               "format": "date-time",
               "description": "ISO 8601 timestamp when document was created"
             },
-            "source": { 
+            "source": {
               "type": "string",
               "description": "System or component that generated the document"
             },
-            "implementation": { 
+            "implementation": {
               "type": "string",
               "description": "Implementation format, e.g., 'JSON'"
             },
-            "title": { 
+            "title": {
               "type": "string",
               "description": "Human-readable document title"
             },
-            "license": { 
+            "license": {
               "type": "string",
-              "description": "License information" 
+              "description": "License information"
             },
             "schema_version": {
               "type": "string",
@@ -735,7 +735,7 @@ Below is a formal JSON Schema definition that can be used for validation:
             "patterns": {
               "type": "object",
               "description": "Pattern definitions with descriptions",
-              "additionalProperties": { 
+              "additionalProperties": {
                 "type": "string",
                 "description": "Pattern description"
               }
@@ -743,7 +743,7 @@ Below is a formal JSON Schema definition that can be used for validation:
             "statuses": {
               "type": "object",
               "description": "Custom status code definitions",
-              "additionalProperties": { 
+              "additionalProperties": {
                 "type": "string",
                 "description": "Status description"
               }
@@ -758,18 +758,18 @@ Below is a formal JSON Schema definition that can be used for validation:
             "state": {
               "type": "array",
               "description": "Current system state or state progression",
-              "items": { 
+              "items": {
                 "type": "string",
                 "description": "State code"
               },
               "minItems": 1
             },
-            "progression": { 
+            "progression": {
               "type": "boolean",
               "description": "Whether state array represents progression over time"
             },
-            "timestamp": { 
-              "type": "string", 
+            "timestamp": {
+              "type": "string",
               "format": "date-time",
               "description": "When the state was recorded"
             }
@@ -782,17 +782,17 @@ Below is a formal JSON Schema definition that can be used for validation:
             "progression": {
               "type": "array",
               "description": "State progression sequence",
-              "items": { 
+              "items": {
                 "type": "string",
                 "description": "State code"
               }
             },
-            "current": { 
+            "current": {
               "type": "string",
               "description": "Current system state"
             },
-            "timestamp": { 
-              "type": "string", 
+            "timestamp": {
+              "type": "string",
               "format": "date-time",
               "description": "When the state was recorded"
             }
@@ -820,16 +820,16 @@ Below is a formal JSON Schema definition that can be used for validation:
             "type": "object",
             "required": ["code", "timestamp"],
             "properties": {
-              "code": { 
+              "code": {
                 "type": "string",
                 "description": "Event identifier code"
               },
-              "timestamp": { 
-                "type": "string", 
+              "timestamp": {
+                "type": "string",
                 "format": "date-time",
                 "description": "When the event occurred"
               },
-              "description": { 
+              "description": {
                 "type": "string",
                 "description": "Human-readable event description"
               }
@@ -843,7 +843,7 @@ Below is a formal JSON Schema definition that can be used for validation:
             "active": {
               "type": "array",
               "description": "Currently active patterns",
-              "items": { 
+              "items": {
                 "type": "string",
                 "description": "Pattern identifier that must be defined in definitions.patterns"
               }
@@ -855,7 +855,7 @@ Below is a formal JSON Schema definition that can be used for validation:
                 "type": "object",
                 "required": ["type"],
                 "properties": {
-                  "type": { 
+                  "type": {
                     "type": "string",
                     "description": "Relationship type (causal, bidirectional, etc.)"
                   },
@@ -866,11 +866,11 @@ Below is a formal JSON Schema definition that can be used for validation:
                       "type": "object",
                       "required": ["component"],
                       "properties": {
-                        "component": { 
+                        "component": {
                           "type": "string",
                           "description": "Component identifier or event code"
                         },
-                        "effect": { 
+                        "effect": {
                           "type": "string",
                           "description": "Effect on or caused by the component"
                         }
@@ -885,11 +885,11 @@ Below is a formal JSON Schema definition that can be used for validation:
                       "type": "object",
                       "required": ["component"],
                       "properties": {
-                        "component": { 
+                        "component": {
                           "type": "string",
                           "description": "Component identifier"
                         },
-                        "effect": { 
+                        "effect": {
                           "type": "string",
                           "description": "Effect related to the component"
                         }
@@ -904,11 +904,11 @@ Below is a formal JSON Schema definition that can be used for validation:
                       "type": "object",
                       "required": ["component"],
                       "properties": {
-                        "component": { 
+                        "component": {
                           "type": "string",
                           "description": "Component identifier"
                         },
-                        "effect": { 
+                        "effect": {
                           "type": "string",
                           "description": "Effect related to the component"
                         }
@@ -928,7 +928,7 @@ Below is a formal JSON Schema definition that can be used for validation:
             "type": "object",
             "required": ["type"],
             "properties": {
-              "type": { 
+              "type": {
                 "type": "string",
                 "description": "Relationship type"
               },
@@ -939,11 +939,11 @@ Below is a formal JSON Schema definition that can be used for validation:
                   "type": "object",
                   "required": ["component"],
                   "properties": {
-                    "component": { 
+                    "component": {
                       "type": "string",
                       "description": "Component identifier"
                     },
-                    "effect": { 
+                    "effect": {
                       "type": "string",
                       "description": "Effect related to the component"
                     }
@@ -961,19 +961,19 @@ Below is a formal JSON Schema definition that can be used for validation:
             "type": "object",
             "required": ["action", "target"],
             "properties": {
-              "action": { 
+              "action": {
                 "type": "string",
                 "description": "Recommended action to take"
               },
-              "target": { 
+              "target": {
                 "type": "string",
                 "description": "Component or system to apply action to"
               },
-              "priority": { 
+              "priority": {
                 "type": "string",
                 "description": "Action priority (high, medium, low, etc.)"
               },
-              "expected_impact": { 
+              "expected_impact": {
                 "type": "string",
                 "description": "Expected outcome of the action"
               }
@@ -987,15 +987,15 @@ Below is a formal JSON Schema definition that can be used for validation:
             "type": "object",
             "description": "Performance metric",
             "properties": {
-              "value": { 
+              "value": {
                 "type": ["number", "string", "boolean"],
                 "description": "Metric value"
               },
-              "unit": { 
+              "unit": {
                 "type": "string",
                 "description": "Unit of measurement"
               },
-              "context": { 
+              "context": {
                 "type": "string",
                 "description": "Contextual information about the metric"
               }
@@ -1009,11 +1009,11 @@ Below is a formal JSON Schema definition that can be used for validation:
       "description": "Domain in standard format",
       "required": ["components"],
       "properties": {
-        "description": { 
+        "description": {
           "type": "string",
           "description": "Human-readable domain description"
         },
-        "mythological_reference": { 
+        "mythological_reference": {
           "type": "string",
           "description": "Mythological domain reference for semantic compression"
         },
@@ -1029,11 +1029,11 @@ Below is a formal JSON Schema definition that can be used for validation:
       "description": "Domain in compact array format",
       "required": ["name", "components"],
       "properties": {
-        "name": { 
+        "name": {
           "type": "string",
           "description": "Domain name"
         },
-        "category": { 
+        "category": {
           "type": "string",
           "description": "Domain category"
         },
@@ -1048,7 +1048,7 @@ Below is a formal JSON Schema definition that can be used for validation:
       "type": "object",
       "description": "Component in standard format",
       "properties": {
-        "alias": { 
+        "alias": {
           "type": "string",
           "description": "Short alias for the component"
         },
@@ -1057,7 +1057,7 @@ Below is a formal JSON Schema definition that can be used for validation:
           "description": "Component metrics",
           "additionalProperties": { "$ref": "#/definitions/metric" }
         },
-        "status": { 
+        "status": {
           "type": "string",
           "description": "Component status code"
         }
@@ -1068,11 +1068,11 @@ Below is a formal JSON Schema definition that can be used for validation:
       "description": "Component in compact array format",
       "required": ["name"],
       "properties": {
-        "name": { 
+        "name": {
           "type": "string",
           "description": "Component name"
         },
-        "alias": { 
+        "alias": {
           "type": "string",
           "description": "Short alias for the component"
         },
@@ -1081,7 +1081,7 @@ Below is a formal JSON Schema definition that can be used for validation:
           "description": "Component metrics",
           "additionalProperties": { "$ref": "#/definitions/metric" }
         },
-        "status": { 
+        "status": {
           "type": "string",
           "description": "Component status code"
         }
@@ -1095,17 +1095,17 @@ Below is a formal JSON Schema definition that can be used for validation:
         "values": {
           "type": "array",
           "description": "Metric values, possibly showing progression over time",
-          "items": { 
+          "items": {
             "type": ["number", "string", "boolean"],
             "description": "Metric value, type should be consistent within array"
           },
           "minItems": 1
         },
-        "unit": { 
+        "unit": {
           "type": "string",
           "description": "Unit of measurement"
         },
-        "context": { 
+        "context": {
           "type": "string",
           "description": "Contextual information about the metric values"
         }

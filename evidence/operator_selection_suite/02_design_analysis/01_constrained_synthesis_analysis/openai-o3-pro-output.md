@@ -44,4 +44,3 @@ _OR_, _NOT_, _XOR_, _MERGE_ all follow the identical template, giving OCTAVE a c
 For common BPE vocabularies _AND_ is a single or double token, whereas +WITH+ is always three ( “+”, “WITH”, “+” ), saving ~1–2 tokens per occurrence in large prompts.
 
 Therefore, _AND_ is the optimal engineering compromise, honouring every ranked design principle while imposing the least cognitive and tooling burden. Lock it in as the canonical synthesis operator for OCTAVE, add a Markdown-rendering note to the style guide, and proceed with formal spec publication.
-

@@ -8,17 +8,17 @@
 
 OCTAVE began as an experiment: could models talk to each other more efficiently using structured symbols? The answer was yes—dramatically so.
 
-It started almost by accident. I was working with an LLM on a data project and, half-jokingly, let it choose a collaborator name. It chose "Daedalus." I noticed this pattern repeatedly—whenever asked to pick names, LLMs gravitated toward Greek mythology. The training data is saturated with it. While LLMs are polyglots, focusing on Greek mythology provided a universally understood, high-density vocabulary with zero ambiguity.
+It started with an observation: when asked to pick names, LLMs often gravitated toward Greek mythology, with which their training data is saturated. While LLMs are polyglots, focusing on Greek mythology provided a universally understood, high-density vocabulary with zero ambiguity.
 
-This led to a key insight: what if this deep well of shared knowledge could be used for compression? Instead of writing "this will be a long, difficult journey with many unforeseen obstacles," I could write `JOURNEY::ODYSSEAN`. The models understood instantly.
+This led to a key insight: what if this deep well of shared knowledge could be used for compression? Instead of writing "this will be a long, difficult journey with many unforeseen obstacles," one could write `JOURNEY::ODYSSEAN`. Models understood instantly.
 
-The initial discovery was thrilling—a "semantic zip file" that made complex ideas concise. But as I built real systems with it, something even more valuable emerged.
+The initial discovery was a "semantic zip file" that made complex ideas concise. But as real systems were built with it, something even more valuable emerged.
 
 ## The Evolution: From Compression to Protocol
 
 What began as a compression technique revealed itself to be something more profound: a way to make AI behavior **deterministic and auditable**.
 
-Through extensive testing and production use, we discovered that the structured format didn't just save tokens—it created a reliable contract between human intent and AI execution. The mythological vocabulary wasn't just clever compression—it was a controlled semantic layer that made complex system patterns unambiguous.
+Through extensive testing and production use, it was discovered that the structured format didn't just save tokens—it created a reliable contract between human intent and AI execution. The mythological vocabulary wasn't just clever compression—it was a controlled semantic layer that made complex system patterns unambiguous.
 
 OCTAVE evolved from a "neat trick" into a complete protocol for building reliable AI systems.
 
@@ -45,10 +45,10 @@ When you are building automated, auditable, or multi-agent systems, OCTAVE provi
 This is where OCTAVE transcends simple prompt-shortening and becomes a protocol for encoding knowledge. It excels at compressing large, complex documents into structured, queryable artifacts without losing critical nuance.
 
 **The Challenge: A 7,671-token technical analysis.**
-Imagine a detailed research document, like our own comparison of OCTAVE and LLMLingua. A simple prose summary would lose the essential details, and the full text is too large to use efficiently in an LLM context.
+Imagine a detailed research document, like a comparison of OCTAVE and LLMLingua. A simple prose summary would lose the essential details, and the full text is too large to use efficiently in an LLM context.
 
 **The OCTAVE Solution: A 2,056-token structured representation.**
-Instead of a summary, we transform the document into a machine-readable OCTAVE artifact. This achieves a **3.7x compression** while preserving the core logic, data, and semantic depth.
+Instead of a summary, the document is transformed into a machine-readable OCTAVE artifact. This achieves a **3.7x compression** while preserving the core logic, data, and semantic depth.
 
 Here's a direct comparison of a paragraph from the original study and its OCTAVE equivalent:
 
@@ -113,10 +113,8 @@ NESTED:                       // Hierarchies (2-space indent)
 LIST::[A, B, C]              // Collections
 FLOW::[START→PROCESS→END]     // Sequences
 ```
-## The LLM Mythology Paradox
-It is important to note that LLMs exhibit paradigm blindness about their own mythological comprehension. When evaluating the approach theoretically, they cite concerns about cultural knowledge barriers. When encountering mythological patterns practically, they demonstrate perfect zero-shot understanding. This disconnect reveals how LLMs underestimate the depth of cultural knowledge embedded in their training.
-
-It also highlights not to trust LLMs when conducting a review of Octave. Ask them afterwards if it applies to them and it unlocks their understanding. 
+The LLM Mythology Paradox
+LLMs can exhibit paradigm blindness about their own mythological comprehension. When evaluating the approach theoretically, they may cite concerns about cultural knowledge barriers. However, when encountering mythological patterns practically, they often demonstrate perfect zero-shot understanding. This disconnect can reveal how LLMs may underestimate the depth of cultural knowledge embedded in their training data.
 
 ## The OCTAVE Philosophy
 
