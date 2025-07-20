@@ -1,322 +1,157 @@
-===OCTAVE_SYNTAX_v2.0===
-// OCTAVE (Olympian Common Text And Vocabulary Engine) Syntax Specification - v2.0
-// This document IS OCTAVE, demonstrating its own format
+===OCTAVE_SYNTAX_v3.0===
+// OCTAVE syntax specification - comprehensive yet concise
 
 META:
   NAME::"OCTAVE Syntax Specification"
-  VERSION::"2.0" // Data-driven update based on extensive testing
-  PURPOSE::"Define OCTAVE v2.0 syntax through OCTAVE itself"
+  VERSION::"3.0"
+  PURPOSE::"Define OCTAVE syntax through OCTAVE itself"
   ENCODING::"UTF-8"
-  EXTENSIONS::[.oct.md, .octave, .oct]
-  VERSIONING::"Increment only on breaking syntax changes"
-  SEMANTIC_REFERENCE::"./octave-semantics.oct.md"
+  EXTENSIONS::[.oct, .oct.md]
+  EXTENSION_USAGE:
+    .oct::"Pure OCTAVE data and configuration files"
+    .oct.md::"OCTAVE documentation requiring system integration"
 
 0.DEF:
-  // Core operators chosen for clarity, compatibility, and unambiguity
-  ASSIGN::"::"         // Double colon for assignment
-  COMMENT::"//"        // Comment to end of line
-  SYNTHESIS::"+"         // Plus sign for combination
-  TENSION::"_VERSUS_"    // Decorated keyword for opposition
-  PROGRESSION::"->"       // ASCII arrow for sequence
+  ASSIGN::"::"         // Double colon assignment
+  COMMENT::"//"        // To end of line
+  SYNTHESIS::"+"       // Binary combination
+  TENSION::"_VERSUS_"  // Binary opposition
+  PROGRESSION::"->"    // Sequential transformation
 
-// =================================
-// DOCUMENT STRUCTURE
-// =================================
+---
 
-ORDERING:
-  MANDATORY_SEQUENCE:
-    FIRST::"===DOCUMENT_NAME=== marker"
-    SECOND::"0.DEF section (if terms are defined)"
-    THEN::"All other sections in any order"
-  RATIONALE::"Terms must be defined before use"
+DOCUMENT_STRUCTURE:
+  ORDERING::===NAME=== → 0.DEF → SECTIONS → ===END===
+  HIERARCHY::"2-space indent per level"
+  PRECEDENCE::"Define terms in 0.DEF before use"
+  SPECIAL_SECTIONS::[
+    META::"Document metadata",
+    0.DEF::"Term definitions"
+  ]
 
-// =================================
-// SYNTAX RULES
-// =================================
+---
 
-CORE:
-  ASSIGNMENT:
-    OPERATOR::ASSIGN
-    FORMAT::"KEY::VALUE"
-    EXAMPLE::STATUS::ACTIVE
-    
-  HIERARCHY:
-    INDENT::"  "  // Exactly 2 spaces per level
-    CONSISTENT::true
-    EXAMPLE:
-      PARENT:
-        CHILD::value
-        ANOTHER:
-          DEEP::nested_value
-          
-  LISTS:
-    FORMAT::"[item, item, item]"
-    NO_TRAILING_COMMA::true
-    CAN_NEST::true
-    CAN_USE_OPERATORS::true
-    EXAMPLES:
-      SIMPLE::[a, b, c]
-      WITH_PROGRESSION::[INIT->BUILD->DEPLOY]
-      NESTED::[[inner], [another, [deep]]]
-      
-  COMMENTS:
-    OPERATOR::COMMENT
-    SCOPE::"To end of line"
-    ALLOWED_LOCATIONS::[
-      "Start of any line",
-      "After complete value on same line",
-      "Inside indented object blocks"
-    ]
-    FORBIDDEN_LOCATIONS::[
-      "Inside [] list delimiters",
-      "Inside {{}} inline object delimiters", 
-      "Between KEY:: and VALUE"
-    ]
-    EXAMPLES:
-      VALID:
-        // Full line comment
-        KEY::VALUE  // End of line
-        OBJECT:
-          // Comment in nested structure
-          NESTED::VALUE
-      INVALID::"LIST::[a, // NO: inside list]"
+SYNTAX_ELEMENTS:
+  ASSIGNMENT::KEY::VALUE
+  STRUCTURE::KEY: // Starts indented block
+  LISTS::[item1, item2, item3] // No trailing comma
+  COMMENTS::// Valid at line start or after value
+  FORBIDDEN_COMMENT_LOCATIONS::[
+    "Inside [] lists",
+    "Inside {{}} objects",
+    "Between KEY:: and VALUE"
+  ]
+
+---
 
 DATA_TYPES:
   STRING:
     BARE::identifier_no_spaces
-    QUOTED::"\"text with spaces\""
+    QUOTED::"text with spaces"
     MULTILINE::"""
-    Line one
-    Line two (indent preserved)
+    Preserves indentation
+    relative to opening
     """
-    EMPTY::"\"\""  // Must use quotes for empty
-    ESCAPE_SEQUENCES::[
-      "\\\" → quotation mark",
-      "\\\\ → backslash",
-      "\\n → newline", 
-      "\\r → carriage return",
-      "\\t → tab",
-      "\\uXXXX → unicode character"
-    ]
+    EMPTY::"\"\"" // Must quote empty strings
+    ESCAPES::["\\\"", "\\\\", "\\n", "\\r", "\\t", "\\uXXXX"]
     
   NUMBER:
-    SUPPORTED::[42, 3.14, -1e10, Infinity, NaN]
-    UNSUPPORTED:
-      FORMATS::[hex, octal, binary, underscore_separated]
-      RULE::"Must quote as strings"
-      EXAMPLES::[
-        "\"0xFF\"",    // Hex
-        "\"0o755\"",   // Octal  
-        "\"0b1010\"",  // Binary
-        "\"1_000\""    // Underscore
-      ]
-    NEVER_QUOTE::"Supported number formats"
+    VALID::[42, 3.14, -1e10, Infinity, NaN]
+    QUOTE_REQUIRED::["0xFF", "0o755", "0b1010", "1_000"]
     
-  BOOLEAN:
-    VALUES::[true, false]  // Lowercase only
-    NEVER_QUOTE::true
-    INVALID::[True, TRUE, "true"]
-    
-  NULL:
-    VALUE::null  // Lowercase only
-    NEVER_QUOTE::true
-    INVALID::[Null, NULL, "null"]
-    
-  OBJECT:
-    INLINE:
-      FORMAT::{{key:value, key2:value2}}
-      SINGLE_COLON::true
-      NO_NESTED_OBJECTS::"Values cannot be objects"
-      ALLOWED_VALUES::[strings, numbers, booleans, lists]
-      EXAMPLE::{{name:"test", count:42, tags:[a, b]}}
-    STRUCTURED:
-      FORMAT::"Key with indented block"
-      UNLIMITED_NESTING::true
-      ANY_VALUE_TYPES::true
-      EXAMPLE:
-        CONFIG:
-          name::"Example"
-          settings:
-            host::"localhost"
-            nested:
-              deep::true
-
-STRUCTURE:
-  KEYS:
-    ALLOWED_START::[A-Z, a-z, _]
-    ALLOWED_CHARS::[A-Z, a-z, 0-9, _]
-    FORBIDDEN::":"  // No colons in key names
-    CASE_SENSITIVE::true
-    EXAMPLES:
-      VALID::[userName, user_name, _private, KEY2]
-      INVALID::["user:name", "my-key", "123start"]
-      
-  VALUES:
-    WHITESPACE_PRESERVED::true
-    EMPTY_STRING_REQUIRES_QUOTES::true
-    TYPE_DISAMBIGUATION:
-      STRING_42::"\"42\""      // String
-      NUMBER_42::42            // Number
-      STRING_TRUE::"\"true\""  // String  
-      BOOLEAN_TRUE::true       // Boolean
-      
-  DOCUMENT_VS_DATA:
-    HEADERS::"# lines organize content but aren't OCTAVE data"
-    DATA::"Only KEY: and KEY:: patterns create data structure"
-    COMMENTS::"// lines provide context but aren't data"
-    
-  SPECIAL_SECTIONS:
-    META::"Document metadata (usually first)"
-    0.DEF::"Define terms before use"
-
-// =================================
-// SYNTACTIC OPERATORS
-// =================================
-
-OPERATOR_RULES:
-  SEMANTIC_REFERENCE::"./octave-semantics.oct.md#SECTION_I:SEMANTIC_OPERATORS*:
-
-  // For the full list of validated patterns, see the guides
-  GUIDE_REFERENCE::"../guides/llm-octave-quick-reference.oct.md"
+  BOOLEAN::[true, false] // Lowercase only
+  NULL::null // Lowercase only
   
+  OBJECT:
+    INLINE::{{key:value, key2:value2}} // Single colon, no nesting
+    STRUCTURED::KEY: // With indented content
+    EMPTY_SECTION::KEY: // Valid empty object
+
+---
+
+OPERATORS:
   SYNTHESIS:
-    SYMBOL::SYNTHESIS  // +
-    USAGE::"Between exactly two elements"
-    BINARY_ONLY::true  // No chaining allowed
-    EXAMPLE::APOLLO+HERMES
-    INVALID::"A+B+C"  // Cannot chain
+    USAGE::A+B // Binary only, no chaining
+    PURPOSE::"Creates emergent whole from parts"
     
   TENSION:
-    SYMBOL::TENSION  // _VERSUS_
-    USAGE::"Between exactly two elements"
-    BINARY_ONLY::true  // No chaining allowed
-    EXAMPLE::SPEED _VERSUS_ RELIABILITY
-    INVALID::"A _VERSUS_ B _VERSUS_ C"  // Cannot chain
+    USAGE::A _VERSUS_ B // Binary only, no chaining
+    PURPOSE::"Creative opposition driving evolution"
     
   PROGRESSION:
-    SYMBOL::PROGRESSION  // ->
-    USAGE::"Inside lists ONLY"
-    CAN_CHAIN::true
-    VALID::[START->MIDDLE->END]
-    INVALID::"KEY::START->END"  // Not outside lists
+    USAGE::[A->B->C] // Lists only, can chain
+    PURPOSE::"Sequential transformation path"
 
-// =================================
-// KEY CLARIFICATIONS
-// =================================
+---
 
-SINGLE_VS_DOUBLE_COLON:
-  ASSIGNMENT::"KEY::VALUE uses double colon"
-  STRUCTURE::"KEY: starts nested block"
-  IN_OBJECTS::"{{key:value}} uses single colon"
-  IN_DEFINITIONS::"CATEGORY:TERM in 0.DEF only"
+KEY_RULES:
+  ALLOWED_CHARS::[A-Z, a-z, 0-9, _]
+  START_CHARS::[A-Z, a-z, _] // Not digits
+  FORBIDDEN::":"  // No colons in key names
+  CASE_SENSITIVE::true
+  EXAMPLES::[userName, _private, KEY2]
+
+---
+
+VALIDATION:
+  CRITICAL_ERRORS::[
+    "KEY:NAME::value",      // Colon in key
+    "VALUE::A+B+C",        // Chained synthesis/tension
+    "{{nested:{{bad}}}}",  // Nested inline objects
+    "KEY::START->END",     // Progression outside list
+    "Undefined term"       // Using undefined 0.DEF term
+  ]
   
-EMPTY_SECTIONS:
-  SYNTACTIC_BEHAVIOR::"KEY: with no content = empty object"
-  VALID::true
-  EXAMPLE:
-    PLACEHOLDER:
-    NEXT::value
-  SEMANTIC_REFERENCE::"/config/_system/octave-semantics.oct.md#EMPTY_SECTIONS"
-    
-MULTILINE_STRINGS:
-  INDENTATION::"Preserved relative to opening \"\"\""
-  CLOSING::"\"\"\" on its own line"
-  ESCAPES::"Work inside multiline strings"
+  COLON_USAGE:
+    DOUBLE::"KEY::VALUE assignment"
+    SINGLE::"KEY: structure OR {{inline:object}}"
+    CATEGORY::"CATEGORY:TERM in 0.DEF only"
 
-// =================================
-// ERROR HANDLING
-// =================================
+---
 
-ERROR_MODEL:
-  PURPOSE::"Define validity for consistent validation"
-  
-  ERROR_CATEGORIES:
-    CRITICAL::"Document is INVALID - cannot be processed"
-    WARNING::"Document is VALID but has style issues"
-    
-  CRITICAL_ERRORS:
-    SYNTAX_VIOLATIONS::[
-      "Colon in key name",
-      "Invalid operator usage",
-      "Malformed structure",
-      "Undefined term usage"
-    ]
-    EXAMPLES::[
-      "KEY:NAME::value",  // Colon in key
-      "VALUE::A+B+C",     // Chained synthesis
-      "{{nested:{{bad}}}}",  // Nested inline objects
-    ]
-    
-  VALIDATION_BEHAVIOR:
-    ON_CRITICAL::"Stop processing, mark document INVALID"
-    ON_WARNING::"Continue processing, note issues"
-    
-  ERROR_REPORTING:
-    REQUIRED_INFO::[
-      "line: <number>",
-      "column: <position>", 
-      "error_type: <category>",
-      "found: <actual>",
-      "expected: <valid_form>"
-    ]
-    EXAMPLE:
-      ERROR::{{
-        line:45,
-        column:8,
-        error_type:"COLON_IN_KEY",
-        found:"USER:NAME",
-        expected:"USER_NAME"
-      }}
-
-// =================================
-// COMPLETE EXAMPLE
-// =================================
-
-FULL_EXAMPLE::"""
-===CONFIG_EXAMPLE===
+COMPLETE_EXAMPLE:
+===CONFIG===
 // Demonstrates all OCTAVE features
 
 META:
-  NAME::"Example Configuration"
-  VERSION::"2.0"
+  NAME::"System Configuration"
+  VERSION::"3.0"
   TYPE::CONFIG
 
 0.DEF:
   ENV:PROD::"Production environment"
-  HEX_PORT::"\"0x1F90\""  // Hex as quoted string
-  
-### System Configuration
+  HEX_PORT::"0x1F90" // Hex as string
+
+### Configuration Data
 CONFIG:
   environment::ENV:PROD
   server:
     host::"localhost"
-    port::8080  // Decimal number
-    alt_port::HEX_PORT  // Using defined hex string
+    port::8080 // Decimal number
+    alt_port::HEX_PORT
     features::[auth, cache, logs]
     
   database:
-    // Comment inside structured object
     connection::"postgresql://localhost/mydb"
     pool::{{min:5, max:20, timeout:30}}
     
   workflow::[CONNECT->VALIDATE->PROCESS->RESPOND]
-  architecture::APOLLO+HERMES  // Syntactic example only
+  architecture::APOLLO+HERMES
   balance::PERFORMANCE _VERSUS_ CONSISTENCY
   
   description::"""
-  Multi-line with \n escapes
+  Multi-line description with \n escapes
   and preserved   spacing
   """
+  
+  empty_placeholder:
+  
+===END===
 
-===END_EXAMPLE===
-"""
-
-// =================================
-// REFERENCES
-// =================================
+---
 
 REFERENCES:
-  SEMANTIC_LAYER::"./octave-semantics.oct.md"
-  AUTHORING_GUIDE::"../guides/llm-octave-authoring-guide.oct.md"
+  SEMANTICS::"./octave-semantics.oct.md"
+  GUIDES::"../guides/llm-octave-*.oct.md"
 
 ===END_SYNTAX===

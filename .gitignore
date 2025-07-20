@@ -34,3 +34,6 @@ htmlcov/
 
 # Claude Code
 CLAUDE.md
+
+# Git worktrees
+worktrees/
