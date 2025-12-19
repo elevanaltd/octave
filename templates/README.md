@@ -9,10 +9,10 @@ Ready-to-use templates for OCTAVE adoption.
 **Usage**: Copy into system prompt field of your LLM interface
 
 Features:
-- Complete OCTAVE v2.0 syntax rules
+- OCTAVE v4 formatting profile (Rule of Five)
 - Data type specifications
 - Example response format
-- "Answer only in OCTAVE v2.0, no prose" directive
+- "Answer only in OCTAVE v4, no prose" directive
 
 ### `annotation-tiering-rubric.oct.md`
 **Purpose**: Guide for applying OCTAVE annotations strategically  

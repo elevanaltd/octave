@@ -11,6 +11,7 @@ Minimal utilities for OCTAVE validation and integration.
 
 Checks:
 - Document markers (===NAME=== and ===END===)
+- META section presence (META: after optional preface comments)
 - Indentation (2-space multiples)
 - Assignment syntax (KEY::VALUE)
 - Balanced brackets
@@ -36,7 +37,7 @@ Features:
 - Preserves document structure
 
 ### `octave-validator.py`
-**Purpose**: Comprehensive OCTAVE v2.0 validator (existing tool)  
+**Purpose**: Comprehensive OCTAVE v4 validator  
 **Note**: More complex validation with operator checks and v1.0 deprecation warnings
 
 ## Round-Trip Example

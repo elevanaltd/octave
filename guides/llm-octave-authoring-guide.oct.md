@@ -90,4 +90,4 @@ SECTION_IV:VALIDATION_CHECKLIST:
     - [ ] The level of compression is appropriate for the content's complexity.
     - [ ] The overall message is clear, concise, and unambiguous.
 
-===END_GUIDE===
+===END===

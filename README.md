@@ -1,5 +1,5 @@
 # OCTAVE: From Semantic Discovery to Engineering Protocol
-
+OCTAVE (Olympian Common Text And Vocabulary Engine)
 **A protocol born from curiosity, refined by reality, proven in production.**
 
 ---
@@ -131,7 +131,7 @@ As a living, community-driven project, it's designed to be both used and challen
 
 Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You are free to share and adapt this work, but you must give appropriate credit.
 
-*   **[Syntax Specification](./specs/octave-syntax.oct.md)** - The complete v2.0 syntax rules.
-*   **[Semantics Specification](./specs/octave-semantics.oct.md)** - The vocabulary and operators.
+*   **[OCTAVE v4 Specification](./specs/octave-4.oct.md)** - Canonical v4 protocol + dialect guidance.
+*   **[Legacy v3 (Archived)](./specs/_archive/README.md)** - Deprecated syntax/semantics specs retained for reference.
 *   **[Evidence & Evolution](./evidence)** - Data on compression, case studies, and design decisions.
 *   **[Quick Reference](./guides/llm-octave-quick-reference.oct.md)** - A one-page guide for daily use.

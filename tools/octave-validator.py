@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-OCTAVE Validator - v2.0 Implementation
+OCTAVE Validator - v4 Implementation
 
-This validator checks OCTAVE v2.0 formatted documents for structure and syntax compliance.
+This validator checks OCTAVE v4 formatted documents for envelope (markers + META) and formatting compliance.
 
 Usage:
     python octave_validator.py <file_path>
@@ -17,9 +17,19 @@ import argparse
 from typing import List, Tuple
 
 class OctaveValidator:
-    """Validator for OCTAVE v2.0 structured documents."""
+    """Validator for OCTAVE v4 structured documents."""
 
-    def __init__(self, version: str = "2.0.0"):
+    HEADER_RE = re.compile(r"^===([A-Z0-9_]+)===$")
+    FOOTER_RE = re.compile(r"^===END===$")
+    PREFACE_RE = re.compile(r"^\s*(//.*)?$")
+    QUOTED_RE = re.compile(r'"(?:\\.|[^"\\])*"')
+
+    @classmethod
+    def _strip_quoted_strings(cls, line: str) -> str:
+        # Replace quoted content so punctuation/operators inside quotes don't affect structural checks.
+        return cls.QUOTED_RE.sub('""', line)
+
+    def __init__(self, version: str = "4.0.0"):
         self.version = version
         self.errors = []
         self.warnings = []
@@ -47,53 +57,64 @@ class OctaveValidator:
 
     def _validate_native_octave(self, document: str) -> Tuple[bool, List[str]]:
         """Validate a native-formatted OCTAVE document."""
-        lines = document.strip().split('\n')
-        in_list = False
+        lines = document.splitlines()
+        non_ws = [i for i, l in enumerate(lines) if l.strip()]
+        if not non_ws:
+            self.errors.append("Document is empty.")
+            return False, self.errors
 
-        if not lines[0].startswith("===") or not lines[-1].startswith("==="):
-            self.errors.append("Document must begin and end with ===DOCUMENT_NAME=== markers.")
+        first = non_ws[0]
+        last = non_ws[-1]
+
+        if not self.HEADER_RE.match(lines[first].strip()):
+            self.errors.append("First non-whitespace line must be a header marker: ===NAME===")
+        if not self.FOOTER_RE.match(lines[last].strip()):
+            self.errors.append("Last non-whitespace line must be the footer marker: ===END===")
+
+        meta_index = self._validate_and_extract_meta(lines, first, last)
 
         for i, line in enumerate(lines):
             line_num = i + 1
             stripped_line = line.strip()
+            scan_line = self._strip_quoted_strings(stripped_line)
 
             if not stripped_line or stripped_line.startswith("//"):
                 continue
 
-            # Check for incorrect assignment operators
-            if " = " in line or ": " in line or " :" in line:
-                self.errors.append(f"Line {line_num}: Invalid assignment operator. Use '::' with no surrounding spaces.")
+            # Check for incorrect assignment operators (style warning, ignore quoted strings)
+            if " = " in scan_line or ": " in scan_line or " :" in scan_line:
+                self.warnings.append(f"Line {line_num}: Non-canonical assignment style. Prefer 'KEY::VALUE' for assignments.")
 
-            # Validate v2.0 operator usage
+            # Validate core operator usage (v4 guidance)
             
             # Check for progression operator -> (only allowed in lists)
-            if '->' in stripped_line:
+            if '->' in scan_line:
                 # Check if it's inside a list structure
-                if not re.search(r'\[.*->.*\]', stripped_line):
+                if not re.search(r'\[.*->.*\]', scan_line):
                     self.errors.append(f"Line {line_num}: Progression operator '->' can only be used inside lists (e.g., [A->B->C]).")
             
             # Check for synthesis operator + (cannot be chained)
-            if '+' in stripped_line and '::' in stripped_line:
+            if '+' in scan_line and '::' in scan_line:
                 # Extract the value part after ::
-                value_part = stripped_line.split('::', 1)[1] if '::' in stripped_line else stripped_line
+                value_part = scan_line.split('::', 1)[1] if '::' in scan_line else scan_line
                 # Count + signs not inside quotes
                 plus_count = len(re.findall(r'(?<!")(?<!\w)\+(?!\w)(?!")', value_part))
                 if plus_count > 1:
                     self.errors.append(f"Line {line_num}: Synthesis operator '+' cannot be chained. Use nested structures for complex synthesis.")
             
             # Check for tension operator _VERSUS_ (cannot be chained)
-            if '_VERSUS_' in stripped_line:
-                versus_count = stripped_line.count('_VERSUS_')
+            if '_VERSUS_' in scan_line:
+                versus_count = scan_line.count('_VERSUS_')
                 if versus_count > 1:
                     self.errors.append(f"Line {line_num}: Tension operator '_VERSUS_' cannot be chained.")
             
             # Warn about old operators
-            if '→' in stripped_line:
-                self.warnings.append(f"Line {line_num}: Found old Unicode operator '→'. Use '->' for v2.0.")
-            if '⊕' in stripped_line:
-                self.warnings.append(f"Line {line_num}: Found old Unicode operator '⊕'. Use '+' for v2.0.")
-            if '⚡' in stripped_line:
-                self.warnings.append(f"Line {line_num}: Found old Unicode operator '⚡'. Use '_VERSUS_' for v2.0.")
+            if '→' in scan_line:
+                self.warnings.append(f"Line {line_num}: Found Unicode operator '→'. Prefer '->' for maximum toolchain compatibility.")
+            if '⊕' in scan_line:
+                self.warnings.append(f"Line {line_num}: Found Unicode operator '⊕'. Prefer '+' for maximum toolchain compatibility.")
+            if '⚡' in scan_line:
+                self.warnings.append(f"Line {line_num}: Found Unicode operator '⚡'. Prefer '_VERSUS_' for maximum toolchain compatibility.")
 
             # Check for incorrect indentation (must be multiple of 2)
             indentation = len(line) - len(line.lstrip(' '))
@@ -104,13 +125,63 @@ class OctaveValidator:
             if '\t' in line:
                 self.errors.append(f"Line {line_num}: Tab characters are not allowed. Use spaces for indentation.")
 
-            # Basic key format validation
-            if "::" in stripped_line:
-                key = stripped_line.split("::")[0]
+            # Basic key format validation (ignore :: inside quoted strings)
+            if "::" in scan_line:
+                key = scan_line.split("::")[0]
                 if not re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', key):
                     self.warnings.append(f"Line {line_num}: Key '{key}' may not follow best practices (alphanumeric and underscores, starting with a letter or underscore).")
 
         return len(self.errors) == 0, self.errors + self.warnings
+
+    def _validate_and_extract_meta(self, lines: List[str], header_index: int, footer_index: int) -> int:
+        """
+        Validate META placement and required keys.
+        Returns index of the META line if found, otherwise -1.
+        """
+        i = header_index + 1
+        while i < footer_index and self.PREFACE_RE.match(lines[i]):
+            i += 1
+
+        if i >= footer_index or lines[i].strip() != "META:":
+            self.errors.append("Missing META section. Expected META: immediately after optional preface comments/blank lines.")
+            return -1
+
+        meta_line_index = i
+        i += 1
+
+        meta = {}
+        while i < footer_index:
+            line = lines[i]
+            if not line.strip() or line.lstrip().startswith("//"):
+                i += 1
+                continue
+            if not line.startswith("  "):
+                break
+            m = re.match(r"^\s+([A-Za-z_][A-Za-z0-9_]*)::(.*)$", line)
+            if m:
+                key = m.group(1)
+                raw = m.group(2).strip()
+                value = raw.strip('"') if raw.startswith('"') and raw.endswith('"') else raw
+                meta[key] = value
+            i += 1
+
+        meta_type = meta.get("TYPE")
+        if not meta_type:
+            self.errors.append("META.TYPE is required.")
+            return meta_line_index
+
+        if meta_type == "SESSION_CONTEXT":
+            for k in ("SESSION_ID", "ROLE", "DATE"):
+                if k not in meta:
+                    self.errors.append(f"META.{k} is required for TYPE::SESSION_CONTEXT.")
+        elif meta_type == "PROTOCOL_DEFINITION":
+            for k in ("VERSION", "STATUS"):
+                if k not in meta:
+                    self.errors.append(f"META.{k} is required for TYPE::PROTOCOL_DEFINITION.")
+        else:
+            self.warnings.append(f"Unknown META.TYPE '{meta_type}'. No schema validation applied.")
+
+        return meta_line_index
 
     def format_results(self, is_valid: bool, messages: List[str]) -> str:
         """Format validation results into a readable string."""
@@ -124,14 +195,14 @@ class OctaveValidator:
             return f"❌ OCTAVE document is invalid with {error_count} error{'s' if error_count > 1 else ''}:\n" + "\n".join([f"  - {e}" for e in self.errors])
 
 
-def validate_octave_document(octave_text: str, version: str = "2.0.0") -> str:
-    """Validates an OCTAVE v2.0 document for structure and format."""
+def validate_octave_document(octave_text: str, version: str = "4.0.0") -> str:
+    """Validates an OCTAVE v4 document for structure and format."""
     validator = OctaveValidator(version)
     is_valid, messages = validator.validate_octave_document(octave_text)
     return validator.format_results(is_valid, messages)
 
-def validate_octave_file(file_path: str, version: str = "2.0.0") -> str:
-    """Validates an OCTAVE v2.0 document file."""
+def validate_octave_file(file_path: str, version: str = "4.0.0") -> str:
+    """Validates an OCTAVE v4 document file."""
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             octave_text = f.read()
@@ -141,9 +212,9 @@ def validate_octave_file(file_path: str, version: str = "2.0.0") -> str:
 
 def main() -> None:
     """Command-line interface for OCTAVE validator."""
-    parser = argparse.ArgumentParser(description='Validate OCTAVE documents against the v2.0 specification.')
+    parser = argparse.ArgumentParser(description='Validate OCTAVE documents against the v4 specification.')
     parser.add_argument('file', help='Path to OCTAVE document file')
-    parser.add_argument('--version', '-v', default='2.0.0', help='OCTAVE version to validate against (default: 2.0.0)')
+    parser.add_argument('--version', '-v', default='4.0.0', help='OCTAVE version to validate against (default: 4.0.0)')
     
     args = parser.parse_args()
     result = validate_octave_file(args.file, args.version)

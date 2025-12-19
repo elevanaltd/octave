@@ -70,9 +70,9 @@ While models do not spontaneously adopt the OCTAVE *format* in their responses, 
 
 ## 6. Operator Syntax Validation
 
-A rigorous, multi-stage testing process was conducted to determine the optimal operator syntax for OCTAVE v2.0, prioritizing toolchain compatibility and semantic clarity. Initial tests revealed that Unicode (`⊕`) and simple ASCII Math (`*`) operators had critical flaws. A final design and validation phase selected a hybrid "Pragmatic ASCII" set.
+A rigorous, multi-stage testing process was conducted to determine the optimal operator syntax for OCTAVE (carried forward into v4), prioritizing toolchain compatibility and semantic clarity. Initial tests revealed that Unicode (`⊕`) and simple ASCII Math (`*`) operators had critical flaws. A final design and validation phase selected a hybrid "Pragmatic ASCII" set.
 
-**Final v2.0 Operators:**
+**Final Operators (v4):**
 - **Synthesis:** `+`
 - **Tension:** `_VERSUS_`
 - **Progression:** `->`
@@ -81,7 +81,28 @@ A rigorous, multi-stage testing process was conducted to determine the optimal o
 
 *Source: `operator_selection_suite/03_validation/final-recommendation.md`*
 
+## 7. LLM-Native Encoding Patterns Research
+
+Comprehensive meta-analysis of prompt compression and formatting research reveals:
+
+- **Compression Achievement:** LLMLingua achieves 20× reduction with 98.5% retention
+- **Format Sensitivity:** Structured formats (JSON/YAML) improve accuracy by +40% on GPT-3.5
+- **Semantic Density Principle:** LLMs parse dense native encodings effectively when properly structured
+- **Mythological Compression:** Domain terms map to rich pre-trained associations (e.g., PANDORA→unforeseen troubles)
+
+*Source: `llm-native-encoding-patterns-research.oct.md`*
+
+## 8. Subagent Compression Behavioral Study
+
+Empirical testing of OCTAVE-compressed LLM agents reveals critical behavioral calibration requirements:
+
+- **Initial Problem:** Compressed format signals "be concise" causing 1.1 point performance drop
+- **Solution:** Explicit output calibration directives + LOGOS cognition
+- **Result:** 2.1 point performance swing - OCTAVE agents score 9.3/10 vs 8.3/10 for verbose format
+- **Key Insight:** Format influences behavior; calibration enables superior performance
+
+*Source: `subagent-compression-study.md`*
+
 ## Conclusion
 
-The empirical data strongly supports the claims of the OCTAVE protocol. It is a highly effective method for compressing complex information for LLM communication, achieving significant token reduction while simultaneously increasing semantic clarity and analytical depth.
-
+The empirical data strongly supports the claims of the OCTAVE protocol. It is a highly effective method for compressing complex information for LLM communication, achieving significant token reduction while simultaneously increasing semantic clarity and analytical depth. Recent studies further demonstrate that properly calibrated OCTAVE compression can actually enhance agent performance beyond verbose baselines.

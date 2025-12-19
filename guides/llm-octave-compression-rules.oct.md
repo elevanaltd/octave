@@ -1,4 +1,4 @@
-===OCTAVE_COMPRESSION_RULES_v2.0===
+===OCTAVE_COMPRESSION_RULES===
 // This guide provides the authoritative set of rules for compressing natural language into the OCTAVE specification.
 // These rules are designed to ensure that while token count is drastically reduced, the core reasoning, causality,
 // and semantic nuance of the original information are preserved and machine-readable.
@@ -37,6 +37,8 @@
   FIELD:REASON::"Justification for evaluation score"
 
 META:
+  VERSION::"4.0"
+  TYPE::GUIDE
   PURPOSE::"Preserve LLM reasoning capability during aggressive compression"
   PRINCIPLE::"Maximum compression with minimum comprehension loss"
 
@@ -241,4 +243,4 @@ USAGE_EXAMPLE:
     METRIC:PROVEN::Used_by_10k+_companies
     TRANSFER::"Apply to any high-uncertainty timeline"
 
-===END_RULES===
+===END===

@@ -1,4 +1,4 @@
----OCTAVE_MASTERY---
+===OCTAVE_MASTERY===
 // Expert-level OCTAVE application, focusing on advanced composition, validation, and strategic use.
 // This skill is self-contained and does not require external file access.
 
@@ -125,4 +125,4 @@ BOUNDARIES:
     "Contradict the rules in QUICKSTART_PATTERNS"
   ]
 
----END_OCTAVE_MASTERY---
+===END===
