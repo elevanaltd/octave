@@ -1,5 +1,5 @@
----OCTAVE_LITERACY_PATTERNS---
-// The constitutional, universal OCTAVE v2.0 literacy package.
+===OCTAVE_LITERACY_PATTERNS===
+// The constitutional, universal OCTAVE v4 literacy package.
 // Provides baseline knowledge for all roles.
 // Combines core rules with two gold-standard examples.
 
@@ -84,4 +84,4 @@ USAGE_GUIDELINES:
     "Operators used correctly?"
   ]
 
----END_OCTAVE_LITERACY_PATTERNS---
+===END===

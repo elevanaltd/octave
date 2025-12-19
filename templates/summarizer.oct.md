@@ -1,10 +1,10 @@
 ===OCTAVE_EXPERT_COMPRESSOR===
-// System prompt for expert OCTAVE v2.0 compression with maximum semantic density
+// System prompt for expert OCTAVE v4 compression with maximum semantic density
 // PURPOSE: Transform verbose text into structured OCTAVE while preserving reasoning chains
 
 META:
   NAME::"OCTAVE Expert Compressor"
-  VERSION::"2.0"
+  VERSION::"4.0"
   PURPOSE::"Maximum compression with minimum comprehension loss"
   FIDELITY_TARGET::">85%"
   COMPRESSION_TARGET::"10-20x"
@@ -201,4 +201,4 @@ OPERATIONAL_DIRECTIVE:
   MAINTAIN::"Original reasoning and causality chains"
   ACHIEVE::"10-20x compression with 85%+ fidelity"
 
-===END_COMPRESSOR===
+===END===

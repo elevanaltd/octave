@@ -4,16 +4,28 @@ This folder contains archived versions of OCTAVE specifications that have been s
 
 ## Files
 
+### `octave-syntax-v3.oct.md.archive`
+**Version:** 3.0  
+**Archived:** 2025-12-19  
+**Reason:** Superseded by the unified OCTAVE v4 specification (`../octave-4.oct.md`)  
+**Status:** Historical reference  
+
+### `octave-semantics-v3.oct.md.archive`
+**Version:** 3.0  
+**Archived:** 2025-12-19  
+**Reason:** Superseded by the unified OCTAVE v4 specification (`../octave-4.oct.md`)  
+**Status:** Historical reference  
+
 ### `octave-syntax-v2.oct.md.archive`
 **Version:** 2.0  
 **Archived:** 2025-07-17  
-**Reason:** Superseded by v3.0 syntax specification  
+**Reason:** Superseded by the unified OCTAVE v4 specification (`../octave-4.oct.md`)  
 **Status:** Historical reference  
 
-### `octave-semantics_v1.oct.md.archive`
+### `octave-semantics-v1.oct.md.archive`
 **Version:** 1.0  
 **Archived:** Previously  
-**Reason:** Superseded by v2.0 semantics specification  
+**Reason:** Superseded by the unified OCTAVE v4 specification (`../octave-4.oct.md`)  
 **Status:** Historical reference  
 
 ## Archive Policy
