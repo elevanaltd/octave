@@ -1,6 +1,7 @@
 ===OCTAVE_V4_SPEC===
 // OCTAVE v4.0: The HestAI Communication Protocol
 // Philosophy: "Strict Protocol for Machines, Flexible Dialect for Minds."
+// OCTAVE == Olympian Common Text And Vocabulary Engine
 
 META:
   VERSION::"4.0"
