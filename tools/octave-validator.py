@@ -79,6 +79,9 @@ class OctaveValidator:
             self.errors.append("Document is empty.")
             return False, self.errors
 
+        in_list = False
+        list_depth = 0  # Track nested list depth
+
         first = non_ws[0]
         last = non_ws[-1]
 
@@ -97,17 +100,21 @@ class OctaveValidator:
             if not stripped_line or stripped_line.startswith("//"):
                 continue
 
+            # Track list context (opening/closing brackets)
+            list_depth += stripped_line.count('[') - stripped_line.count(']')
+            in_list = list_depth > 0
+
             # Check for incorrect assignment operators (skip marker lines)
             if not stripped_line.startswith("==="):
                 if " = " in scan_line or (": " in scan_line and "::" not in scan_line) or (" :" in scan_line and "::" not in scan_line):
                     self.warnings.append(f"Line {line_num}: Non-canonical assignment style. Prefer 'KEY::VALUE' for assignments.")
 
             # Validate core operator usage (v4 guidance)
-            
+
             # Check for progression operator -> (only allowed in lists)
             if '->' in scan_line:
-                # Check if it's inside a list structure
-                if not re.search(r'\[.*->.*\]', scan_line):
+                # Check if it's inside a list structure (same line or multiline)
+                if not re.search(r'\[.*->.*\]', scan_line) and not in_list:
                     msg = f"Line {line_num}: Progression operator '->' can only be used inside lists (e.g., [A->B->C])."
                     if self.profile in ["hestai-agent", "hestai-skill"]:
                         self.warnings.append(msg)
@@ -250,7 +257,7 @@ def validate_octave_file(file_path: str, version: str = "4.0.0", profile: str = 
         is_valid, messages = validator.validate_octave_document(octave_text)
         return validator.format_results(is_valid, messages)
     except Exception as e:
-        return f"Error reading file: {str(e)}"
+        return f"❌ File error (invalid): {str(e)}"
 
 def scan_directory(directory: str, profile: str = "protocol", version: str = "4.0.0") -> List[dict]:
     """Scan directory for *.oct.md files and validate each."""

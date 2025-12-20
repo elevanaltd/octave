@@ -289,6 +289,47 @@ FLOW::step1->step2
         self.assertTrue(any("Progression operator" in msg for msg in messages))
 
 
+class TestFileErrorHandling(unittest.TestCase):
+    """Test error handling for file I/O issues."""
+
+    def test_missing_file_returns_error_message(self):
+        """Missing file should return error message."""
+        result = validate_octave_file("/tmp/does_not_exist_12345.oct.md")
+        self.assertIn("File error", result)
+
+    def test_missing_file_result_indicates_failure(self):
+        """Missing file should be treated as validation failure."""
+        result = validate_octave_file("/tmp/does_not_exist_12345.oct.md")
+        # Should contain error indication for proper exit code handling
+        self.assertTrue("Error" in result or "error" in result)
+
+
+class TestMultilineListContext(unittest.TestCase):
+    """Test that -> inside multiline lists is correctly recognized."""
+
+    def test_progression_in_multiline_list_is_valid(self):
+        """Progression operator in multiline list should be valid."""
+        doc = """===TEST===
+FLOW::[
+  step1->step2,
+  step3->step4
+]
+===END==="""
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        # Should be valid - progression is inside list structure
+        self.assertTrue(is_valid, f"Expected multiline list with -> to be valid, got: {messages}")
+
+    def test_progression_in_single_line_list_is_valid(self):
+        """Progression operator in single-line list should be valid (baseline)."""
+        doc = """===TEST===
+FLOW::[step1->step2->step3]
+===END==="""
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        self.assertTrue(is_valid)
+
+
 class TestBackwardCompatibility(unittest.TestCase):
     """Test that existing behavior is preserved."""
 
