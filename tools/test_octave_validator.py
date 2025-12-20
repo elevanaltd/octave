@@ -215,6 +215,80 @@ KEY = value
         self.assertIn("1 failed", summary)
 
 
+class TestErrorConsistencyAcrossProfiles(unittest.TestCase):
+    """Test that protocol integrity errors are ALWAYS errors, regardless of profile."""
+
+    def test_tabs_always_error_protocol(self):
+        """Tabs should be errors in protocol profile."""
+        doc = "===TEST===\n\tKEY::value\n===END==="
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("Tab" in msg for msg in messages))
+
+    def test_tabs_always_error_hestai_agent(self):
+        """Tabs should be errors even in hestai-agent profile."""
+        doc = "===TEST===\n\tKEY::value\n===END==="
+        validator = OctaveValidator(profile="hestai-agent")
+        is_valid, messages = validator.validate_octave_document(doc)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("Tab" in msg for msg in messages))
+
+    def test_tabs_always_error_hestai_skill(self):
+        """Tabs should be errors even in hestai-skill profile."""
+        doc = "===TEST===\n\tKEY::value\n===END==="
+        validator = OctaveValidator(profile="hestai-skill")
+        is_valid, messages = validator.validate_octave_document(doc)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("Tab" in msg for msg in messages))
+
+    def test_missing_markers_always_error_all_profiles(self):
+        """Missing ===MARKERS=== should error in all profiles."""
+        doc = "KEY::value"
+        for profile in ["protocol", "hestai-agent", "hestai-skill"]:
+            validator = OctaveValidator(profile=profile)
+            is_valid, messages = validator.validate_octave_document(doc)
+            self.assertFalse(is_valid, f"Expected error for missing markers in {profile} profile")
+            self.assertTrue(any("markers" in msg.lower() for msg in messages))
+
+
+class TestWarningVsErrorBehavior(unittest.TestCase):
+    """Test that warnings don't affect validity but errors do."""
+
+    def test_warnings_only_document_is_valid(self):
+        """Document with only warnings should be valid=True."""
+        doc = """===TEST===
+KEY::value
+_old_unicode_→_operator
+===END==="""
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        self.assertTrue(is_valid)  # Valid despite warnings
+        self.assertTrue(len(validator.warnings) > 0)  # But has warnings
+        self.assertEqual(len(validator.errors), 0)
+
+    def test_errors_make_document_invalid(self):
+        """Document with errors should be valid=False."""
+        doc = """===TEST===
+KEY::value
+	tabbed_line::bad
+===END==="""
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        self.assertFalse(is_valid)
+        self.assertTrue(len(validator.errors) > 0)
+
+    def test_hestai_profile_progression_warning_is_valid(self):
+        """HestAI profile with -> warning should still be valid=True."""
+        doc = """===TEST===
+FLOW::step1->step2
+===END==="""
+        validator = OctaveValidator(profile="hestai-agent")
+        is_valid, messages = validator.validate_octave_document(doc)
+        self.assertTrue(is_valid)  # Valid despite progression warning
+        self.assertTrue(any("Progression operator" in msg for msg in messages))
+
+
 class TestBackwardCompatibility(unittest.TestCase):
     """Test that existing behavior is preserved."""
 
