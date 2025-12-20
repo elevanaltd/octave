@@ -6,6 +6,13 @@ META:
   STATUS::ACTIVE
   PURPOSE::"Canonical protocol+format contract for LLM-authored artifacts"
   TAGLINE::"Strict Protocol for Machines, Flexible Dialect for Minds"
+  REFERENCES::[
+    "/Volumes/OCTAVE/octave/specs/octave-4.oct.md",
+    "hub/library/octave/octave-4-spec.oct.md",
+    "/Volumes/OCTAVE/octave/tools/octave-validator.py",
+    "/Volumes/OCTAVE/octave/guides/octave-micro-primer.oct.md",
+    "/Volumes/OCTAVE/octave/examples/code-review-specialist-claude-subagent.oct.md"
+  ]
 
 // NOTE: The body of this spec is authored in OCTAVE syntax (key constraints, indentation, lists).
 // Section numbers remain as comments for readability; enforcement targets are represented as data below.
