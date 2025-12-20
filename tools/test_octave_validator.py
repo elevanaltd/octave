@@ -27,14 +27,24 @@ validate_octave_document = octave_validator.validate_octave_document
 validate_octave_file = octave_validator.validate_octave_file
 
 
+def make_v4_doc(name, content, meta_type="test"):
+    """Helper to create v4-compliant OCTAVE documents with META section."""
+    return f"""==={name}===
+
+META:
+  TYPE::{meta_type}
+  VERSION::"1.0"
+
+{content}
+===END==="""
+
+
 class TestValidationProfiles(unittest.TestCase):
     """Test profile-based validation behavior."""
 
     def test_protocol_profile_strict_progression_operator(self):
         """Protocol profile should error on '->' outside lists."""
-        doc = """===TEST===
-FLOW::step1->step2->step3
-===END==="""
+        doc = make_v4_doc("TEST", "FLOW::step1->step2->step3")
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertFalse(is_valid)
@@ -42,9 +52,7 @@ FLOW::step1->step2->step3
 
     def test_hestai_agent_profile_allows_progression_in_prose(self):
         """HestAI-agent profile should warn (not error) on '->' outside lists."""
-        doc = """===TEST===
-FLOW::step1->step2->step3
-===END==="""
+        doc = make_v4_doc("TEST", "FLOW::step1->step2->step3")
         validator = OctaveValidator(profile="hestai-agent")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertTrue(is_valid)
@@ -52,9 +60,7 @@ FLOW::step1->step2->step3
 
     def test_hestai_skill_profile_allows_progression_in_prose(self):
         """HestAI-skill profile should warn (not error) on '->' outside lists."""
-        doc = """===TEST===
-FLOW::step1->step2->step3
-===END==="""
+        doc = make_v4_doc("TEST", "FLOW::step1->step2->step3", meta_type="skill")
         validator = OctaveValidator(profile="hestai-skill")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertTrue(is_valid)
@@ -62,9 +68,7 @@ FLOW::step1->step2->step3
 
     def test_default_profile_is_protocol(self):
         """No profile specified should default to strict protocol validation."""
-        doc = """===TEST===
-FLOW::step1->step2->step3
-===END==="""
+        doc = make_v4_doc("TEST", "FLOW::step1->step2->step3")
         validator = OctaveValidator()
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertFalse(is_valid)
@@ -81,6 +85,11 @@ description: Test agent description
 ---
 
 ===AGENT===
+
+META:
+  TYPE::agent
+  VERSION::"1.0"
+
 ROLE::test
 ===END==="""
         validator = OctaveValidator(profile="hestai-agent")
@@ -95,6 +104,11 @@ description: Test skill description
 ---
 
 ===SKILL===
+
+META:
+  TYPE::skill
+  VERSION::"1.0"
+
 PURPOSE::testing
 ===END==="""
         validator = OctaveValidator(profile="hestai-skill")
@@ -108,6 +122,11 @@ name: test
 ---
 
 ===TEST===
+
+META:
+  TYPE::test
+  VERSION::"1.0"
+
 CONTENT::data
 ===END==="""
         validator = OctaveValidator(profile="protocol")
@@ -126,6 +145,11 @@ name: test-skill
 ---
 
 ===SKILL===
+
+META:
+  TYPE::skill
+  VERSION::"1.0"
+
 @1::FIRST_SECTION
 CONTENT::data
 
@@ -144,6 +168,11 @@ name: test-skill
 ---
 
 ===SKILL===
+
+META:
+  TYPE::skill
+  VERSION::"1.0"
+
 SECTION_ORDER::[@1::FIRST, @2::SECOND]
 
 @1::FIRST_SECTION
@@ -166,15 +195,18 @@ class TestScanMode(unittest.TestCase):
 
         # Valid file
         valid_path = Path(self.temp_dir) / "valid.oct.md"
-        valid_path.write_text("""===VALID===
-KEY::value
-===END===""")
+        valid_path.write_text(make_v4_doc("VALID", "KEY::value"))
 
         # Invalid file
         invalid_path = Path(self.temp_dir) / "invalid.oct.md"
         invalid_path.write_text("""===INVALID===
+
+META:
+  TYPE::test
+  VERSION::\"1.0\"
+
 KEY = value
-===END===""")
+===END==""")
 
         # Non-OCTAVE file (should be ignored)
         other_path = Path(self.temp_dir) / "readme.md"
@@ -220,7 +252,7 @@ class TestErrorConsistencyAcrossProfiles(unittest.TestCase):
 
     def test_tabs_always_error_protocol(self):
         """Tabs should be errors in protocol profile."""
-        doc = "===TEST===\n\tKEY::value\n===END==="
+        doc = make_v4_doc("TEST", "	KEY::value")
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertFalse(is_valid)
@@ -228,7 +260,7 @@ class TestErrorConsistencyAcrossProfiles(unittest.TestCase):
 
     def test_tabs_always_error_hestai_agent(self):
         """Tabs should be errors even in hestai-agent profile."""
-        doc = "===TEST===\n\tKEY::value\n===END==="
+        doc = make_v4_doc("TEST", "	KEY::value")
         validator = OctaveValidator(profile="hestai-agent")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertFalse(is_valid)
@@ -236,7 +268,7 @@ class TestErrorConsistencyAcrossProfiles(unittest.TestCase):
 
     def test_tabs_always_error_hestai_skill(self):
         """Tabs should be errors even in hestai-skill profile."""
-        doc = "===TEST===\n\tKEY::value\n===END==="
+        doc = make_v4_doc("TEST", "	KEY::value")
         validator = OctaveValidator(profile="hestai-skill")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertFalse(is_valid)
@@ -249,7 +281,7 @@ class TestErrorConsistencyAcrossProfiles(unittest.TestCase):
             validator = OctaveValidator(profile=profile)
             is_valid, messages = validator.validate_octave_document(doc)
             self.assertFalse(is_valid, f"Expected error for missing markers in {profile} profile")
-            self.assertTrue(any("markers" in msg.lower() for msg in messages))
+            self.assertTrue(any("marker" in msg.lower() for msg in messages))
 
 
 class TestWarningVsErrorBehavior(unittest.TestCase):
@@ -257,10 +289,8 @@ class TestWarningVsErrorBehavior(unittest.TestCase):
 
     def test_warnings_only_document_is_valid(self):
         """Document with only warnings should be valid=True."""
-        doc = """===TEST===
-KEY::value
-_old_unicode_→_operator
-===END==="""
+        doc = make_v4_doc("TEST", """KEY::value
+_old_unicode_→_operator""")
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertTrue(is_valid)  # Valid despite warnings
@@ -269,10 +299,8 @@ _old_unicode_→_operator
 
     def test_errors_make_document_invalid(self):
         """Document with errors should be valid=False."""
-        doc = """===TEST===
-KEY::value
-	tabbed_line::bad
-===END==="""
+        doc = make_v4_doc("TEST", """KEY::value
+	tabbed_line::bad""")
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertFalse(is_valid)
@@ -280,9 +308,7 @@ KEY::value
 
     def test_hestai_profile_progression_warning_is_valid(self):
         """HestAI profile with -> warning should still be valid=True."""
-        doc = """===TEST===
-FLOW::step1->step2
-===END==="""
+        doc = make_v4_doc("TEST", "FLOW::step1->step2")
         validator = OctaveValidator(profile="hestai-agent")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertTrue(is_valid)  # Valid despite progression warning
@@ -309,12 +335,10 @@ class TestMultilineListContext(unittest.TestCase):
 
     def test_progression_in_multiline_list_is_valid(self):
         """Progression operator in multiline list should be valid."""
-        doc = """===TEST===
-FLOW::[
+        doc = make_v4_doc("TEST", """FLOW::[
   step1->step2,
   step3->step4
-]
-===END==="""
+]""")
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         # Should be valid - progression is inside list structure
@@ -322,9 +346,7 @@ FLOW::[
 
     def test_progression_in_single_line_list_is_valid(self):
         """Progression operator in single-line list should be valid (baseline)."""
-        doc = """===TEST===
-FLOW::[step1->step2->step3]
-===END==="""
+        doc = make_v4_doc("TEST", "FLOW::[step1->step2->step3]")
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertTrue(is_valid)
@@ -335,18 +357,14 @@ class TestBackwardCompatibility(unittest.TestCase):
 
     def test_validate_octave_document_function_unchanged(self):
         """Module-level function should work as before."""
-        doc = """===TEST===
-KEY::value
-===END==="""
+        doc = make_v4_doc("TEST", "KEY::value")
         result = validate_octave_document(doc)
         self.assertIn("valid", result.lower())
 
     def test_validate_octave_file_function_unchanged(self):
         """File validation function should work as before."""
         with tempfile.NamedTemporaryFile(mode='w', suffix='.oct.md', delete=False) as f:
-            f.write("""===TEST===
-KEY::value
-===END===""")
+            f.write(make_v4_doc("TEST", "KEY::value"))
             temp_path = f.name
 
         try:
