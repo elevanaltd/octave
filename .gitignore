@@ -35,5 +35,8 @@ htmlcov/
 # Claude Code
 CLAUDE.md
 
+# HestAI session files
+.hestai/
+
 # Git worktrees
 worktrees/
