@@ -3,7 +3,7 @@
 
 META::
   NAME::"LLM-Native Encoding Patterns Research"
-  VERSION::"3.0"
+  VERSION::"5.0.3"
   COMPRESSION::"10:1"
   STATUS::"Active theoretical exploration"
   

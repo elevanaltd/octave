@@ -131,7 +131,7 @@ As a living, community-driven project, it's designed to be both used and challen
 
 Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You are free to share and adapt this work, but you must give appropriate credit.
 
-*   **[OCTAVE v4 Specification](./specs/octave-4.oct.md)** - Canonical v4 protocol + dialect guidance.
-*   **[Legacy v3 (Archived)](./specs/_archive/README.md)** - Deprecated syntax/semantics specs retained for reference.
+*   **[OCTAVE v5.0.3 Specification](./specs/octave-5-holographic.oct.md)** - Canonical v5.0.3 protocol with holographic patterns.
+*   **[Legacy Versions (Archived)](./specs/_archive/README.md)** - Deprecated v3 and v4 specs retained for reference.
 *   **[Evidence & Evolution](./evidence)** - Data on compression, case studies, and design decisions.
 *   **[Quick Reference](./guides/llm-octave-quick-reference.oct.md)** - A one-page guide for daily use.

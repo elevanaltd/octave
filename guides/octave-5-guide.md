@@ -10,7 +10,7 @@ OCTAVE (Olympian Common Text And Vocabulary Engine) is a structured format for L
 
 | File | Tokens | Use When |
 |------|--------|----------|
-| `specs/octave-5-llm.oct.md` | ~200 | Writing or parsing any OCTAVE document |
+| `specs/octave-5-llm-core.oct.md` | "~200" | Writing or parsing any OCTAVE document |
 
 **This is the only file you need for most LLM operations.**
 
