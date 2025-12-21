@@ -4,88 +4,122 @@ META:
   VERSION::"5.0"
   STATUS::ACTIVE
   NAME::"OCTAVE Schema Profile"
-  PURPOSE::"Holographic pattern for validation, extraction, and self-teaching specs"
+  PURPOSE::"Holographic pattern for self-teaching, validating, extractable specs"
   EXTENDS::octave-5.oct.md
 
 // =============================================================================
-// SCHEMA PROFILE: The Holographic Pattern
+// SCHEMA PROFILE: The Holographic Pattern (Annotation Level 4)
 // For specifications that must TEACH + VALIDATE + EXTRACT
-// Activated implicitly for: LANGUAGE_SPECIFICATION, PROTOCOL_DEFINITION,
-//                           AGENT_DEFINITION, SKILL_DEFINITION
+// Heritage: Guardrails RAIL + CUE unified data + BDD self-exemplifying
 // =============================================================================
 
-§1::WHEN_TO_USE
+§1::THREE_AXES_ACHIEVEMENT
+// Research finding: OCTAVE achieves all three where others get only two
+AXES:
+  TEACH::[
+    MECHANISM::"Embedded examples in every field definition",
+    HERITAGE::FROM[CUE_unified_data|OpenAPI_examples],
+    STRENGTH::STRONG
+  ]
+  VALIDATE::[
+    MECHANISM::"Constraints (REQ|OPT|CONST|REGEX|ENUM|TYPE) per field",
+    HERITAGE::FROM[JSON_Schema|SHACL|Pydantic],
+    STRENGTH::STRONG
+  ]
+  EXTRACT::[
+    MECHANISM::"Extraction targets (->§TARGET) route data to handlers",
+    HERITAGE::FROM[function_calling|attribute_grammars],
+    STRENGTH::STRONG
+  ]
+
+COMPARISON::[
+  JSON_Schema::[WEAK,STRONG,NONE],
+  CUE::[MEDIUM,STRONG,PARTIAL],
+  Guardrails::[STRONG,STRONG,STRONG],
+  OCTAVE_SCHEMA::[STRONG,STRONG,STRONG]
+]
+
+§2::WHEN_TO_USE
 USE_CASES::[
-  "Language/protocol specifications",
+  "Language and protocol specifications",
   "Agent constitutions and definitions",
   "Skill definitions with trigger patterns",
-  "Validation schemas",
+  "Validation schemas for data documents",
   "Self-documenting API contracts"
 ]
 
-CHARACTERISTICS:
-  SELF_TEACHING::true   // Document teaches its own format
-  VALIDATION::embedded  // Constraints are part of syntax
-  EXTRACTION::explicit  // Targets specified per field
-  TOKEN_PRIORITY::secondary // Clarity over compression
+IMPLICIT_ACTIVATION::[
+  TYPE::LANGUAGE_SPECIFICATION,
+  TYPE::PROTOCOL_DEFINITION,
+  TYPE::AGENT_DEFINITION,
+  TYPE::SKILL_DEFINITION
+]
 
-§2::HOLOGRAPHIC_PATTERN
+§3::HOLOGRAPHIC_PATTERN
 CORE_PATTERN:
   SYNTAX::"KEY:: [ EXAMPLE + CONSTRAINT -> §TARGET ]"
+  ANNOTATION_LEVEL::L4
 
   COMPONENTS:
     EXAMPLE::"Concrete value demonstrating expected format"
-    CONSTRAINT::"Validation rule (REQ|OPT|CONST|REGEX|ENUM|TYPE)"
-    TARGET::"Extraction destination (§SELF|§INDEXER|§DECISION_LOG|§RISK_LOG)"
+    CONSTRAINT::"Validation rule applied to field"
+    TARGET::"Extraction destination for routing"
 
   MEANING::"One line teaches syntax, defines validation, specifies extraction"
 
-§3::CONSTRAINTS
+  HERITAGE:
+    GUARDRAILS::"RAIL spec compiles to prompt instructions"
+    BDD::"Scenarios ARE concrete examples (Gherkin)"
+    CUE::"Types, values, constraints are all the same"
+
+§4::CONSTRAINTS
 CONSTRAINT_TYPES:
-  REQ::required_field
-  OPT::optional_field
-  CONST::exact_match_only
-  REGEX::pattern_match
-  ENUM::value_from_set
-  TYPE::STRING|NUMBER|BOOLEAN|LIST|TEXT
+  REQ::   [ "required"        + CONST -> §SELF ] // Field must be present
+  OPT::   [ "optional"        + CONST -> §SELF ] // Field may be absent
+  CONST:: [ "exact_match"     + CONST -> §SELF ] // Value must match exactly
+  REGEX:: [ "pattern_match"   + CONST -> §SELF ] // Value must match regex
+  ENUM::  [ "value_from_set"  + CONST -> §SELF ] // Value from allowed list
+  TYPE::  [ "STRING|NUMBER|BOOLEAN|LIST|TEXT" + CONST -> §SELF ]
 
-§4::EXTRACTION_TARGETS
+§5::EXTRACTION_TARGETS
 TARGETS:
-  §SELF::document_internal_reference
-  §META::document_metadata_index
-  §INDEXER::searchable_knowledge_base
-  §DECISION_LOG::architectural_decisions
-  §RISK_LOG::blockers_and_risks
-  §KNOWLEDGE_BASE::learnings_and_insights
+  §SELF::     [ "Document internal reference"    + CONST -> §SELF ]
+  §META::     [ "Document metadata index"        + CONST -> §SELF ]
+  §INDEXER::  [ "Searchable knowledge base"      + CONST -> §SELF ]
+  §DECISION_LOG:: [ "Architectural decisions"    + CONST -> §SELF ]
+  §RISK_LOG::     [ "Blockers and risks"         + CONST -> §SELF ]
+  §KNOWLEDGE_BASE:: [ "Learnings and insights"   + CONST -> §SELF ]
 
-CUSTOM_TARGETS::"Define in META.TARGETS for domain-specific routing"
+CUSTOM::"Define domain-specific targets in META.TARGETS"
 
-§5::PROGRESSIVE_ANNOTATION
-DEFAULTS:
+§6::PROGRESSIVE_ANNOTATION
+// Spectrum from L1 to L4 - add metadata as needed
+LEVELS:
+  L1:: [ "KEY::value"                           + CONST -> §SELF ]
+  L2:: [ "KEY::value+REQ"                       + CONST -> §SELF ]
+  L3:: [ "KEY::value+REQ->§INDEXER"             + CONST -> §SELF ]
+  L4:: [ "KEY:: [ \"example\" + REQ -> §INDEXER ]" + CONST -> §SELF ]
+
+DEFAULTS_WHEN_OMITTED:
   NO_CONSTRAINT::assumes_OPT
   NO_TARGET::assumes_§SELF
-  NO_QUOTES::value_is_literal_not_example
+  NO_QUOTES::value_is_literal[not_example]
 
-SHORTHAND_LEVELS:
-  MINIMAL::"KEY::value"                           // Just data
-  CONSTRAINED::"KEY::value+REQ"                   // Add validation
-  TARGETED::"KEY::value+REQ->§INDEXER"            // Add extraction
-  FULL::"KEY:: [ \"example\" + REQ -> §INDEXER ]" // Full holographic
-
-§6::EXAMPLES
+§7::EXAMPLES
 SIMPLE_SCHEMA:
-  ID::       [ "sess_abc123" + REQ   -> §INDEXER ]
-  STATUS::   [ "ACTIVE"      + ENUM[ACTIVE,DRAFT,ARCHIVED] -> §META ]
-  TAGS::     [ ["ui","auth"] + OPT   -> §INDEXER ]
-  CREATED::  [ "2025-01-01"  + REGEX[^\d{4}-\d{2}-\d{2}$] -> §META ]
+  ID::       [ "sess_abc123"  + REQ   -> §INDEXER ]
+  STATUS::   [ "ACTIVE"       + ENUM[ACTIVE,DRAFT,ARCHIVED] -> §META ]
+  TAGS::     [ ["ui","auth"]  + OPT   -> §INDEXER ]
+  CREATED::  [ "2025-01-01"   + REGEX[^\d{4}-\d{2}-\d{2}$] -> §META ]
 
 NESTED_SCHEMA:
   USER:
-    NAME::   [ "John Doe"    + REQ   -> §INDEXER ]
-    EMAIL::  [ "j@example.com" + REGEX[^.+@.+$] -> §SELF ]
-    ROLES::  [ ["admin"]     + TYPE::LIST -> §SELF ]
+    NAME::   [ "John Doe"       + REQ   -> §INDEXER ]
+    EMAIL::  [ "j@example.com"  + REGEX[^.+@.+$] -> §SELF ]
+    ROLES::  [ ["admin"]        + TYPE::LIST -> §SELF ]
 
-§7::VALIDATION_RULES
+§8::VALIDATION_RULES
+// Failure mode mitigation: ERROR_FEEDBACK_QUALITY
 CRITICAL_ERRORS::[
   "Missing required field (REQ constraint violated)",
   "Value doesn't match REGEX pattern",
@@ -93,24 +127,51 @@ CRITICAL_ERRORS::[
   "Type mismatch (TYPE constraint violated)"
 ]
 
-WARNINGS::[
-  "Unknown extraction target",
-  "Constraint on optional field that's missing"
-]
+ERROR_FEEDBACK:
+  PRINCIPLE::"Minimal-diff messages for retry loops"
+  FORMAT::"FIELD::{field_name} EXPECTED::{constraint} GOT::{actual}"
+  EXAMPLE::"FIELD::STATUS EXPECTED::ENUM[ACTIVE,DRAFT] GOT::active"
 
-§8::SELF_DOCUMENTING_PROPERTY
+§9::SELF_EXEMPLIFYING_PROPERTY
+// Heritage: BDD/Gherkin - "scenarios ARE examples"
 HOLOGRAPHIC_PRINCIPLE:
   STATEMENT::"This document is written in the format it defines"
   IMPLICATION::"Parsers can use the spec as test input"
   BENEFIT::"No separate examples needed; the spec IS the example"
+  VALIDATION::"Run spec through its own validator"
 
-§9::INTEGRATION_WITH_DATA_MODE
+§10::INTEGRATION_WITH_DATA_MODE
 SCHEMA_DATA_RELATIONSHIP:
-  SCHEMA::"Defines structure with holographic pattern"
-  DATA::"Instances validated against schema, use minimal syntax"
+  SCHEMA::"Defines structure with holographic pattern (L4)"
+  DATA::"Instances use minimal syntax (L1), validated against schema"
 
-  DATA_REFERENCES_SCHEMA:
-    MECHANISM::"META.SCHEMA::path/to/schema.oct.md"
-    VALIDATION::"Data fields checked against schema constraints"
+  REFERENCE_MECHANISM:
+    IN_DATA::"META.SCHEMA::path/to/schema.oct.md"
+    EFFECT::"Parser validates DATA fields against SCHEMA constraints"
+
+§11::LLM_ENFORCEMENT_STRATEGY
+// Research: CONSTRAINED_DECODING vs VALIDATE_AND_REPAIR
+RECOMMENDED_APPROACH::HYBRID
+
+STRATEGIES:
+  CONSTRAINED_DECODING::[
+    TOOLS::[Guidance,Outlines,function_calling],
+    USE_WHEN::"Critical fields that must be valid first-pass",
+    INJECT::"L4 fields into system prompt or function schema"
+  ]
+  VALIDATE_AND_REPAIR::[
+    TOOLS::[Guardrails,Pydantic,custom_validators],
+    USE_WHEN::"Large schemas where token budget matters",
+    INJECT::"Minimal L2 hints; validate full schema post-generation"
+  ]
+
+§12::META_COMMENTARY
+// Why this spec uses L4 holographic throughout
+THIS_DOCUMENT:
+  MODE::SCHEMA_L4[full_holographic]
+  WHY::"Maximum teaching; demonstrates every pattern it defines"
+  EXEMPLIFIES::"Self-exemplifying principle; spec IS example"
+  PARADOX::"None - teaching schemas should use teaching mode"
+  TOKEN_COST::"Acceptable; this is reference documentation"
 
 ===END===
