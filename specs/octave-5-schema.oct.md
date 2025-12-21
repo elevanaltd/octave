@@ -13,29 +13,55 @@ PATTERN:
   SYNTAX::KEY::["example"+CONSTRAINT->§TARGET]
   LEVEL::L4
 
-COMPONENTS:
-  EXAMPLE::"concrete_value_showing_format"
-  CONSTRAINT::REQ|OPT|CONST|REGEX|ENUM|TYPE
-  TARGET::§SELF|§META|§INDEXER|§DECISION_LOG|§KNOWLEDGE_BASE
+OPERATORS:
+  INJECT::"»"[scoped_block_injection]
+
+CONSTRAINTS:
+  REQ::required
+  OPT::optional
+  CONST::exact_match
+  REGEX::pattern
+  ENUM::value_set
+  TYPE::STRING|NUMBER|BOOLEAN|LIST
+  DIR::directory_path
+  APPEND_ONLY::immutable_log
+
+TARGETS:
+  §SELF::internal
+  §META::metadata
+  §INDEXER::searchable
+  §DECISION_LOG::decisions
+  §RISK_LOG::blockers
+  §KNOWLEDGE_BASE::learnings
+  §PATH::file_path[§./path/to/file.md]
+
+CUSTOM_TARGETS:
+  DEFINE::META.TARGETS::[§NAME::handler]
 
 DEFAULTS:
   NO_CONSTRAINT::OPT
   NO_TARGET::§SELF
-  NO_QUOTES::literal_value
+  NO_QUOTES::literal
 
-CUSTOM_TARGETS:
-  DEFINE::META.TARGETS::[§CUSTOM_NAME::handler]
+SCOPED_INJECTION:
+  SYNTAX::BLOCK[->§TARGET]»{children}
+  EXAMPLE:
+    RISKS[->§RISK_LOG]»{
+      CRITICAL::["auth_bypass"+OPEN->§SELF]
+      WARNING::["rate_limit"+MITIGATED->§SELF]
+    }
 
 VALIDATION:
   ERRORS::[missing_REQ,REGEX_mismatch,ENUM_invalid,TYPE_wrong]
   FORMAT::FIELD::{name}|EXPECTED::{rule}|GOT::{value}
 
 EXAMPLE_SCHEMA:
-  USER:
-    ID::["usr_123"+REQ->§INDEXER]
-    NAME::["John Doe"+REQ->§INDEXER]
-    EMAIL::["j@test.com"+REGEX[^.+@.+$]->§SELF]
-    STATUS::["ACTIVE"+ENUM[ACTIVE,INACTIVE,PENDING]->§META]
-    ROLES::[["admin","user"]+TYPE::LIST->§SELF]
+  SESSION:
+    ID::["sess_abc123"+REQ->§INDEXER]
+    STATUS::["ACTIVE"+ENUM[ACTIVE,INACTIVE]->§META]
+    ROOT::["/.hestai/inbox"+DIR->§SELF]
+    LOG::["events.jsonl"+APPEND_ONLY->§./processed/index.json]
+    DECISION::["Use Redis"+OPT->§DECISION_LOG]
+    BLOCKER::["auth_bug"+OPT->§RISK_LOG]
 
 ===END===

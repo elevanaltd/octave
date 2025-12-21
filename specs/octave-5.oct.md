@@ -18,6 +18,7 @@ OPERATORS:
   COMBINE::"+"
   TENSION::"_VERSUS_"
   ANCHOR::"§"
+  INJECT::"»"
   COMMENT::"//"
 
 TYPES:
@@ -45,6 +46,7 @@ TARGETS:
   §META::metadata
   §INDEXER::searchable
   §DECISION_LOG::decisions
+  §RISK_LOG::blockers
   §KNOWLEDGE_BASE::learnings
 
 MODES:
