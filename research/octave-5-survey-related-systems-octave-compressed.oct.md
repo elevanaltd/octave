@@ -31,7 +31,8 @@ JSON_SCHEMA:
   VALIDATE::   [ "STRONG: types, required, ranges, patterns" + CONST -> §SELF ]
   EXTRACT::    [ "NONE: no routing/execution semantics" + CONST -> §SELF ]
   LIMITATION:: [ "Validation only; no integrated teaching or execution binding" + CONST -> §SELF ]
-  EXTENSIBILITY:: [ "Custom keywords/vocabularies allow non-validation semantics (UI, docs, policy); not standardized for runtime routing" + OPT -> §SELF ]
+  EXTENSIBILITY:: [ "Custom keywords/vocabularies exist (UI, docs, policy); no concept of binding semantic tokens to runtime behavior in core spec" + OPT -> §SELF ]
+  PRECEDENT:: [ "People attempt extensions for routing intent; this shows the gap exists, but ad-hoc extension fails to unify teach+validate+extract" + OPT -> §SELF ]
 
 OPENAPI:
   SOLVES::     [ "RESTful API contracts with JSON Schema models" + CONST -> §INDEXER ]
@@ -39,7 +40,8 @@ OPENAPI:
   VALIDATE::   [ "STRONG: schema validation at runtime" + CONST -> §SELF ]
   EXTRACT::    [ "PARTIAL: codegen creates stubs, not runtime routing" + CONST -> §SELF ]
   LIMITATION:: [ "Describes API shape, not execution logic" + CONST -> §SELF ]
-  EXTENSIBILITY:: [ "x-* extensions used to encode routing/auth/policy; execution via codegen + conventions, not spec-native" + OPT -> §SELF ]
+  EXTENSIBILITY:: [ "Vendor x-* extensions used to hint routing/auth/policy intent; execution via codegen + conventions, not spec-native" + OPT -> §SELF ]
+  PRECEDENT:: [ "Shows attempted solution to semantic routing problem; but vendor-specific and convention-dependent, not unified" + OPT -> §SELF ]
 
 PROTOBUF_AVRO:
   SOLVES::     [ "Binary serialization with schema definitions" + CONST -> §INDEXER ]
@@ -54,7 +56,7 @@ PROTOBUF_AVRO:
 CUE:
   SOLVES::     [ "Unify schemas, constraints, and data in one artifact" + CONST -> §INDEXER ]
   PHILOSOPHY:: [ "Types, values, constraints are all the same" + CONST -> §SELF ]
-  TEACH::      [ "STRONG: example-shaped instances in spec; LLM teaching depends on prompt framing" + CONST -> §SELF ]
+  TEACH::      [ "STRONG if idiomatic: example-shaped instances in spec; LLM teaching accidental, not designed (vs holographic which designs for AI legibility)" + CONST -> §SELF ]
   VALIDATE::   [ "STRONG: rich constraints, types, defaults" + CONST -> §SELF ]
   EXTRACT::    [ "PARTIAL: computes/emits configs but no side-effects" + CONST -> §SELF ]
   LIMITATION:: [ "No runtime behavior binding; learning curve for unification engine" + CONST -> §SELF ]
@@ -112,9 +114,9 @@ OPENAI_FUNCTION_CALLING:
   SOLVES::     [ "Structured JSON output via function signatures in prompt" + CONST -> §INDEXER ]
   TEACH::      [ "MEDIUM: schema guides model, no explicit examples" + CONST -> §SELF ]
   VALIDATE::   [ "STRONG: JSON mode + schema enforcement ensure valid, conformant output (semantic correctness external)" + CONST -> §SELF ]
-  EXTRACT::    [ "STRONG: model outputs function name + args for dispatch" + CONST -> §SELF ]
-  LIMITATION:: [ "JSON only; no few-shot examples; predefined schemas only" + CONST -> §SELF ]
-  DECISION_2:: [ "Function calling closest LLM technique to validate+execute binding" + OPT -> §DECISION_LOG ]
+  EXTRACT::    [ "STRONG but LIMITED: outputs function name + args for dispatch; only discrete predeclared actions, not document extraction or arbitrary routing" + CONST -> §SELF ]
+  LIMITATION:: [ "JSON only; no few-shot examples; predefined schemas only; cannot produce documents or free-form outputs with embedded fields" + CONST -> §SELF ]
+  DECISION_2:: [ "Function calling closest LLM technique to validate+execute binding, but narrow scope" + OPT -> §DECISION_LOG ]
 
 GUIDANCE:
   SOLVES::     [ "Template-based LLM control with token-level constraints" + CONST -> §INDEXER ]
@@ -200,8 +202,9 @@ ADOPTION:
   MITIGATION:: [ "Clear benefits over piecemeal solutions; leverage existing components" + CONST -> §SELF ]
 
 VALID_BUT_WRONG:
-  RISK::       [ "Schema enforces structure but not semantic correctness; output passes validation yet is factually/logically wrong" + CONST -> §RISK_LOG ]
-  MITIGATION:: [ "Add semantic validators (entailment, fact-checking); validation chain must cover form + content" + CONST -> §SELF ]
+  RISK::       [ "Schema enforces structure but not semantic correctness; model produces garbage in valid format that passes validation undetected" + CONST -> §RISK_LOG ]
+  IMPLICATION:: [ "This is one of most painful real-world failures in LLM pipelines; explains why validation alone insufficient" + CONST -> §SELF ]
+  MITIGATION:: [ "Add semantic validators (entailment, fact-checking); validation chain must cover form + content truth" + CONST -> §SELF ]
 
 ERROR_FEEDBACK_QUALITY:
   RISK::       [ "Validator errors must translate to model-fixable feedback; poor error UX kills retry loops" + CONST -> §RISK_LOG ]
@@ -224,9 +227,10 @@ ARCHITECTURE::  [ "Spec compiler + orchestrator: teach->validate->extract loop" 
 
 §11::OPERATIONAL_CONSTRAINTS
 CONTEXT_AND_LATENCY:
-  OBSERVATION:: [ "Schema-as-teaching consumes prompt tokens and increases latency/cost" + CONST -> §SELF ]
-  SOLUTIONS::   [ [schema_selection, schema_summarization, progressive_disclosure, staged_prompting] + CONST -> §SELF ]
-  IMPLICATION:: [ "Execution layer must support selective spec injection; real systems cannot always use full spec in every call" + CONST -> §SELF ]
+  OBSERVATION:: [ "Schema-as-teaching consumes prompt tokens and increases latency/cost; cannot always stuff entire spec into GPT prompt" + CONST -> §SELF ]
+  SOLUTIONS::   [ [schema_selection, schema_summarization, progressive_disclosure, staged_prompting, compilation_to_efficient_validators] + CONST -> §SELF ]
+  IMPLICATION:: [ "Execution layer must support selective spec injection and two-pass (generate, then validate); single-pass full-spec approach not feasible at scale" + CONST -> §SELF ]
+  REALISM::     [ "This explains why no one just dumps large OpenAPI specs into prompts; applies equally to holographic" + OPT -> §SELF ]
 
 §12::CONCLUSIONS
 VERDICT:
