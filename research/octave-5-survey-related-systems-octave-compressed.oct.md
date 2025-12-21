@@ -19,10 +19,10 @@ DEFINITION:
   EXAMPLE::   [ "ID:: [ \"sess_123\" + REQUIRED -> INDEXER ]" + CONST -> §SELF ]
   PROPERTIES::[ [machine_executable, LLM_legible, self_documenting] + CONST -> §SELF ]
 
-AXES:
-  TEACH::    [ "LLM learns format via embedded examples"    + CONST -> §SELF ]
-  VALIDATE:: [ "Structure/constraints enforced at runtime"  + CONST -> §SELF ]
-  EXTRACT::  [ "Fields route to targets via spec bindings"  + CONST -> §SELF ]
+AXES_DEFINITIONS:
+  TEACH::    [ "Format learning via examples (LLM-legible)" + CONST -> §SELF ]
+  VALIDATE:: [ "Structure/constraint enforcement" + CONST -> §SELF ]
+  EXTRACT::  [ "Routing/execution binding" + CONST -> §SELF ]
 
 §2::DECLARATIVE_SCHEMA_LANGUAGES
 JSON_SCHEMA:
@@ -56,7 +56,8 @@ PROTOBUF_AVRO:
 CUE:
   SOLVES::     [ "Unify schemas, constraints, and data in one artifact" + CONST -> §INDEXER ]
   PHILOSOPHY:: [ "Types, values, constraints are all the same" + CONST -> §SELF ]
-  TEACH::      [ "STRONG if idiomatic: example-shaped instances in spec; LLM teaching accidental, not designed (vs holographic which designs for AI legibility)" + CONST -> §SELF ]
+  TEACH::      [ "MEDIUM: can include example data in spec demonstrating format; readability depends on idiomatic style" + CONST -> §SELF ]
+  NUANCE::     [ "Syntax human-friendly by accident (JSON-like), not designed for LLM comprehension; contrast to holographic" + OPT -> §SELF ]
   VALIDATE::   [ "STRONG: rich constraints, types, defaults" + CONST -> §SELF ]
   EXTRACT::    [ "PARTIAL: computes/emits configs but no side-effects" + CONST -> §SELF ]
   LIMITATION:: [ "No runtime behavior binding; learning curve for unification engine" + CONST -> §SELF ]
@@ -114,8 +115,9 @@ OPENAI_FUNCTION_CALLING:
   SOLVES::     [ "Structured JSON output via function signatures in prompt" + CONST -> §INDEXER ]
   TEACH::      [ "MEDIUM: schema guides model, no explicit examples" + CONST -> §SELF ]
   VALIDATE::   [ "STRONG: JSON mode + schema enforcement ensure valid, conformant output (semantic correctness external)" + CONST -> §SELF ]
-  EXTRACT::    [ "STRONG but LIMITED: outputs function name + args for dispatch; only discrete predeclared actions, not document extraction or arbitrary routing" + CONST -> §SELF ]
-  LIMITATION:: [ "JSON only; no few-shot examples; predefined schemas only; cannot produce documents or free-form outputs with embedded fields" + CONST -> §SELF ]
+  EXTRACT::    [ "STRONG: model outputs function name + args for dispatch; limited to discrete predeclared actions" + CONST -> §SELF ]
+  SCOPE_LIMIT::[ "Does not cover scenarios where model produces documents rather than trigger functions; focused on tool use" + OPT -> §SELF ]
+  LIMITATION:: [ "JSON only; no few-shot examples; predefined schemas only" + CONST -> §SELF ]
   DECISION_2:: [ "Function calling closest LLM technique to validate+execute binding, but narrow scope" + OPT -> §DECISION_LOG ]
 
 GUIDANCE:
@@ -143,20 +145,21 @@ GUARDRAILS:
   DECISION_3:: [ "Guardrails RAIL closest to holographic single-source ideal" + OPT -> §DECISION_LOG ]
 
 §7::COMPARATIVE_MATRIX
-// Coverage: [TEACH, VALIDATE, EXTRACT] scored as [NONE|WEAK|MEDIUM|PARTIAL|STRONG|AUTO]
+// Coverage: [TEACH, VALIDATE, EXTRACT] scored per original matrix
+// Anchors: Ratings grounded in original prose; preserved verbatim per golden rule
 
 COVERAGE:
   JSON_SCHEMA::      [ [WEAK, STRONG, NONE]    + CONST -> §INDEXER ]
   OPENAPI::          [ [MEDIUM, STRONG, PARTIAL] + CONST -> §INDEXER ]
   PROTOBUF_AVRO::    [ [WEAK, STRONG, COMPILE_TIME] + CONST -> §INDEXER ]
-  CUE::              [ [STRONG, STRONG, PARTIAL] + CONST -> §INDEXER ]
+  CUE::              [ [MEDIUM, STRONG, PARTIAL] + CONST -> §INDEXER ]
   JSON_LD_SHACL::    [ [SEMANTIC, STRONG, IMPLICIT] + CONST -> §INDEXER ]
   ZOD_PYDANTIC::     [ [WEAK, STRONG, CODE]    + CONST -> §INDEXER ]
   ATTR_GRAMMARS::    [ [WEAK, STRONG, STRONG]  + CONST -> §INDEXER ]
   BDD_GHERKIN::      [ [STRONG, STRONG, STRONG] + CONST -> §INDEXER ]
   FUNCTION_CALLING:: [ [MEDIUM, STRONG, STRONG] + CONST -> §INDEXER ]
   GUIDANCE::         [ [STRONG, STRONG, STRONG] + CONST -> §INDEXER ]
-  OUTLINES::         [ [AUTO, STRONG, STRONG]  + CONST -> §INDEXER ]
+  OUTLINES::         [ [STRONG, STRONG, STRONG] + CONST -> §INDEXER ]
   GUARDRAILS::       [ [STRONG, STRONG, STRONG] + CONST -> §INDEXER ]
 
 GAP_ANALYSIS:
@@ -202,8 +205,8 @@ ADOPTION:
   MITIGATION:: [ "Clear benefits over piecemeal solutions; leverage existing components" + CONST -> §SELF ]
 
 VALID_BUT_WRONG:
-  RISK::       [ "Schema enforces structure but not semantic correctness; model produces garbage in valid format that passes validation undetected" + CONST -> §RISK_LOG ]
-  IMPLICATION:: [ "This is one of most painful real-world failures in LLM pipelines; explains why validation alone insufficient" + CONST -> §SELF ]
+  RISK::       [ "Schema enforces structure but not semantic correctness; model produces valid-format but incorrect content undetected" + CONST -> §RISK_LOG ]
+  IMPLICATION:: [ "Common challenge: spec catches structural errors but content may be useless (garbage in valid format); validation of intent harder than form" + CONST -> §SELF ]
   MITIGATION:: [ "Add semantic validators (entailment, fact-checking); validation chain must cover form + content truth" + CONST -> §SELF ]
 
 ERROR_FEEDBACK_QUALITY:
