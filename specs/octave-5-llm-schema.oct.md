@@ -22,6 +22,7 @@ TARGET::extraction_destination[§prefixed]
 AVAILABLE::[REQ,OPT,CONST,REGEX,ENUM,TYPE,DIR,APPEND_ONLY]
 CHAIN::constraint&constraint&constraint[left_to_right]
 EVALUATION::fail_fast[stop_on_first_failure]
+REGEX_BRACKETS::quote_if_contains_brackets[REGEX["^[a-z]+$"]_not_REGEX[^[a-z]+$]]
 
 CONFLICT_ERRORS::[
   REQ&OPT[mutually_exclusive],
@@ -40,7 +41,7 @@ VALIDATION::target_must_exist[declared_in_POLICY.TARGETS_or_builtin]
 SYNTAX::BLOCK[->§TARGET]:
 RULE::children_inherit_parent_target_unless_they_specify_own
 OVERRIDE::CHILD[->§OTHER]:[replaces_inherited]
-DEPTH::unlimited[100_level_parser_limit]
+DEPTH::unbounded_semantic[implementation_caps_at_100]
 
 §5::POLICY_BLOCK
 REQUIRED_IN_SCHEMA::[
@@ -49,7 +50,26 @@ REQUIRED_IN_SCHEMA::[
   TARGETS::[list_of_valid_targets]
 ]
 
-§6::REFERENCE
+§6::SCHEMA_SKELETON
+// Minimal valid schema document structure
+TEMPLATE:
+  ===MY_SCHEMA===
+  META:
+    TYPE::PROTOCOL_DEFINITION
+    VERSION::"1.0"
+    STATUS::DRAFT
+
+  POLICY:
+    VERSION::"1.0"
+    UNKNOWN_FIELDS::REJECT
+    TARGETS::[§INDEXER,§DECISION_LOG]
+
+  FIELDS:
+    ID::["abc123"&REQ->§INDEXER]
+    STATUS::["ACTIVE"&REQ&ENUM[ACTIVE,DRAFT]->§INDEXER]
+  ===END===
+
+§7::REFERENCE
 EXAMPLES::see_core.§7.SCHEMA_PATTERN
 BLOCK_EXAMPLE::see_core.§7.BLOCK_INHERITANCE_PATTERN
 

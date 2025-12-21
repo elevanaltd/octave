@@ -24,7 +24,7 @@ SYMBOL::CONTEXT::USAGE::NEVER
   :     block         KEY:[newline,indent_children]  content_on_same_line
   []    list|holo     [a,b,c]|["val"&REQ->§T]        —
   |     or|broadcast  a|b|c|§A|§B                    whitespace_around
-  ->    flow|route    [A->B->C]|->§TARGET            bare[KEY->val]
+  ->    flow|route    [A->B->C]|->§TARGET            bare_flow[KEY->val]
   +     synthesis     A+B|A+B+C[chaining_allowed]    —
   ~     concat        A~B|A~B~C                      —
   &     constraints   REQ&TYPE&REGEX[in_brackets]    outside_brackets
@@ -84,6 +84,12 @@ DATA_PATTERN:
   BLOCKERS::issue_1|issue_2
   QUALITY::[tests::5/5,lint::ok,coverage::87%]
   COMBINED::prefix~middle~suffix
+
+// INLINE_MAP_NESTING (Forbidden pattern)
+BAD::[config::[nested::value]]
+GOOD:
+  CONFIG:
+    NESTED::value
 
 SCHEMA_PATTERN:
   ID::["user_123"&REQ&REGEX[^user_\w+$]->§INDEXER]
