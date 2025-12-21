@@ -60,6 +60,8 @@ def octave_to_json(content):
             elif '_VERSUS_' in value_str:
                 parts = value_str.split('_VERSUS_')
                 parsed_value = {"tension": [parts[0].strip(), parts[1].strip()]}
+            elif '~' in value_str and not value_str.startswith('"'):
+                parsed_value = {"concatenation": [v.strip() for v in value_str.split('~')]}
             elif '+' in value_str and not value_str.startswith('"'):
                 parsed_value = {"synthesis": [v.strip() for v in value_str.split('+')]}
             else:
