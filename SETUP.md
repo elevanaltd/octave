@@ -68,6 +68,7 @@ pytest --cov=octave_mcp
 ```
 .
 ├── pyproject.toml              # Package configuration
+├── setup-mcp.sh                # MCP server setup script for AI clients
 ├── src/octave_mcp/
 │   ├── __init__.py             # Package root (version: 0.1.0)
 │   ├── core/                   # Core parsing/validation
@@ -257,17 +258,40 @@ Implemented in: `src/octave_mcp/cli/main.py`
 octave-mcp-server
 ```
 
-Runs the MCP server for Claude Desktop integration. Configure in Claude settings:
+Runs the MCP server for AI client integration.
+
+**Automatic Setup (recommended):**
+
+Use the setup script to automatically configure all supported AI clients:
+
+```bash
+./setup-mcp.sh              # Interactive setup
+./setup-mcp.sh --all        # Configure all clients at once
+./setup-mcp.sh --show-config # Show copy/paste configuration
+```
+
+**Supported clients:**
+- Claude Desktop (macOS, Linux, Windows/WSL)
+- Claude Code CLI
+- OpenAI Codex CLI
+- Google Gemini CLI
+
+**Manual configuration:**
+
+For Claude Desktop, add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "octave": {
-      "command": "octave-mcp-server"
+      "command": "/path/to/octave/.venv/bin/python",
+      "args": ["/path/to/octave/src/octave_mcp/mcp/server.py"]
     }
   }
 }
 ```
+
+Run `./setup-mcp.sh --show-config` to get the exact paths for your system.
 
 Implemented in: `src/octave_mcp/mcp/server.py`
 
