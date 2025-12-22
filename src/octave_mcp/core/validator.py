@@ -11,7 +11,7 @@ Validates AST against schema definitions with:
 from dataclasses import dataclass
 from typing import Any
 
-from octave_mcp.core.ast_nodes import Assignment, Block, Document
+from octave_mcp.core.ast_nodes import ASTNode, Document
 
 
 @dataclass
@@ -89,9 +89,10 @@ class Validator:
             if field in fields_schema:
                 self._validate_type(field, value, fields_schema[field])
 
-    def _validate_section(self, section: Assignment | Block, strict: bool) -> None:
+    def _validate_section(self, section: ASTNode, strict: bool) -> None:
         """Validate a section."""
         # Basic validation - can be extended
+        # Type narrowing: section is typically Assignment | Block from Document.sections
         pass
 
     def _validate_type(self, field: str, value: Any, field_schema: dict[str, Any]) -> None:
@@ -100,7 +101,7 @@ class Validator:
         if not expected_type:
             return
 
-        type_map = {
+        type_map: dict[str, type | tuple[type, ...]] = {
             "STRING": str,
             "NUMBER": (int, float),
             "BOOLEAN": bool,

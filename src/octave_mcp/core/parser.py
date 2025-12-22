@@ -11,7 +11,7 @@ Parses lexer tokens into AST with:
 
 from typing import Any
 
-from octave_mcp.core.ast_nodes import Assignment, Block, Document, InlineMap, ListValue
+from octave_mcp.core.ast_nodes import Assignment, ASTNode, Block, Document, InlineMap, ListValue
 from octave_mcp.core.lexer import Token, TokenType, tokenize
 
 
@@ -213,7 +213,7 @@ class Parser:
             self.skip_whitespace()
 
             # Parse block children
-            children: list[Assignment | Block] = []
+            children: list[ASTNode] = []
 
             # Expect indentation for children
             if self.current().type == TokenType.INDENT:
