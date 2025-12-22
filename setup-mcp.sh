@@ -182,7 +182,8 @@ ensure_venv_exists() {
             return 1
         fi
 
-        # Try uv first
+        # Try uv first (faster), fall back to python3 -m venv
+        # Note: uv venv doesn't include pip by default, but uv pip install works without it
         if command -v uv &> /dev/null; then
             uv venv --python 3.11 "$script_dir/$VENV_PATH" || uv venv "$script_dir/$VENV_PATH"
         else
@@ -200,11 +201,24 @@ ensure_venv_exists() {
     # Check if package is installed
     if ! "$venv_python" -c "import octave_mcp" 2>/dev/null; then
         print_info "Installing octave-mcp package..."
-        "$venv_python" -m pip install -e "$script_dir" --quiet
-        if [[ $? -ne 0 ]]; then
-            print_error "Failed to install octave-mcp package"
-            return 1
+
+        # Use uv pip if uv is available, otherwise use regular pip
+        if command -v uv &> /dev/null; then
+            # uv pip install works without pip being in the venv
+            uv pip install -e "$script_dir" --quiet
+            if [[ $? -ne 0 ]]; then
+                print_error "Failed to install octave-mcp package with uv"
+                return 1
+            fi
+        else
+            # Traditional pip install
+            "$venv_python" -m pip install -e "$script_dir" --quiet
+            if [[ $? -ne 0 ]]; then
+                print_error "Failed to install octave-mcp package with pip"
+                return 1
+            fi
         fi
+
         print_success "Package installed"
     fi
 
