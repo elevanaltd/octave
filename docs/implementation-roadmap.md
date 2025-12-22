@@ -1,8 +1,8 @@
 # OCTAVE Implementation Roadmap
 
-**Status**: Current implementation ~45% complete by specification coverage
+**Status**: Current implementation ~45% complete by specification coverage (data processing) + reference specs
 **Last Updated**: 2025-12-22
-**Target**: Production-ready schema validation and semantic routing
+**Target**: Production-ready schema validation, semantic routing, and agent architecture support
 
 ---
 
@@ -23,6 +23,14 @@ The OCTAVE MCP server has **strong foundations** (lexer, parser, emitter, canoni
 | **Compression Tiers** | ❌ PLANNED | 0% | MEDIUM |
 | **Repair Logic** | ⚠️ PARTIAL | 10% | MEDIUM |
 | **Error Messages** | ❌ PLANNED | 0% | LOW |
+| **Agent Architecture** | 📖 REFERENCE | N/A | N/A |
+
+### Reference Specifications (No Code Implementation Required)
+
+| Spec | Status | Purpose |
+|------|--------|---------|
+| **octave-5-llm-agents** | ✅ REFERENCE | Agent cognitive architecture patterns |
+| **octave-5-llm-rationale** | ✅ REFERENCE | Design rationale and decision records |
 
 ---
 
@@ -406,8 +414,25 @@ octave-5-llm-core ✅ IMPLEMENTED
   ├── octave-5-llm-data ❌ PLANNED (Gap 6)
   ├── octave-5-llm-schema ❌ PLANNED (Gaps 1-5)
   │   └── octave-5-llm-execution ⚠️ PARTIAL (Gaps 8-9)
-  └── octave-mcp-architecture ⚠️ PARTIAL (Gap 7)
+  ├── octave-mcp-architecture ⚠️ PARTIAL (Gap 7)
+  └── octave-5-llm-agents 📖 REFERENCE (no code implementation)
+      └── octave-5-llm-rationale 📖 REFERENCE (design decisions)
 ```
+
+### Specification Coverage Summary
+
+**Implemented Specs** (Ready for production use):
+- `octave-5-llm-core`: Full syntax, operators, envelope, types (IMPLEMENTED)
+- `octave-mcp-architecture`: MCP tools, canonicalization, normalization rules (PARTIAL - core done, validation deferred)
+
+**Planned Specs** (Require implementation):
+- `octave-5-llm-schema`: Holographic patterns, constraint validation, target routing (PLANNED)
+- `octave-5-llm-data`: Compression tiers LOSSLESS→ULTRA (PLANNED)
+- `octave-5-llm-execution`: Advanced validation, error formatting, retry protocol (PARTIAL)
+
+**Reference Specs** (No code implementation required - reference only):
+- `octave-5-llm-agents`: Agent architecture patterns, cognitive foundations, validation requirements (REFERENCE)
+- `octave-5-llm-rationale`: Design philosophy, syntax decisions, token economics (REFERENCE)
 
 ---
 
