@@ -6,8 +6,13 @@ META:
   COMPRESSION_RATIO::~70%
   ORIGINAL_TOKENS::5600
   COMPRESSED_TOKENS::~1800
+  LOSS_PROFILE::nuance⊕narrative_depth|core_thesis∧conclusions_preserved
 
 ---
+
+NOTE::This compression preserves comparative conclusions and system coverage;
+      explanatory_depth, historical_context, execution_tradeoff_narratives are intentionally compressed.
+      See OCTAVE_DATA.§1.COMPRESSION_INTENT for loss tolerance definitions.
 
 // Holographic Document Language: Survey Related Systems
 // Compressed using OCTAVE 5.1.0 rules (core + data profiles)

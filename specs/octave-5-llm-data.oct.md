@@ -17,6 +17,12 @@ LEVELS::L1∨L2[never_L3_L4]
 BRACKETS::lists∨inline_maps[never_holographic]
 FORBIDDEN::["example"∧CONSTRAINT→§TARGET][use_schema_mode]
 
+COMPRESSION_INTENT::
+  LOSSLESS_DOMAIN::[facts,numbers,names,operators,boundaries,code]
+  LOSSY_DOMAIN::[prose_nuance,historical_context,explanatory_depth,edge_cases]
+  ACCEPTABLE_LOSS::[~30%_at_70%_compression,nuance∨narrative_depth]
+  UNACCEPTABLE_LOSS::[structural_mischaracterization,analytical_conclusions,core_thesis]
+
 §2::COMPRESSION
 PRESERVE::[
   numbers[exact],
