@@ -1,13 +1,37 @@
 # OCTAVE MCP Placeholder Implementation Audit
 
 ## Summary
-This audit identifies all stub and placeholder implementations that prevent MCP tools from working as described. Found **5 key placeholders** across the codebase.
+This audit identifies all stub and placeholder implementations that prevent MCP tools from working as described. Found **6 key placeholders** across the codebase, with 2 HIGH severity issues.
 
 ---
 
 ## Critical Placeholders
 
-### 1. **Schema Validation NotImplementedError**
+### 1. **Fake Filtering in Projector (Executive/Developer Modes)**
+**File:** `src/octave_mcp/core/projector.py:45-54`
+**Severity:** HIGH - False Functionality
+**Issue:** The `project()` function claims to support `executive` and `developer` modes with field filtering, but returns the entire document while only setting `fields_omitted` metadata. No actual filtering occurs.
+
+```python
+elif mode == "executive":
+    # Executive view: STATUS, RISKS, DECISIONS only
+    # For minimal implementation, return canonical with note
+    output = emit(doc)
+    return ProjectionResult(output=output, lossy=True, fields_omitted=["TESTS", "CI", "DEPS"])
+
+elif mode == "developer":
+    # Developer view: TESTS, CI, DEPS only
+    output = emit(doc)
+    return ProjectionResult(output=output, lossy=True, fields_omitted=["STATUS", "RISKS", "DECISIONS"])
+```
+
+**Impact:** The eject tool falsely advertises these projection modes. Users request executive or developer views but receive the full document with only metadata indicating what should have been filtered. This is a critical UX failure.
+
+**Context:** Comments at lines 47 and 52 indicate "minimal implementation". The lossy flag is set to `True` but no actual filtering happens.
+
+---
+
+### 2. **Schema Validation NotImplementedError**
 **File:** `src/octave_mcp/core/schema.py:35`
 **Severity:** HIGH - Blocking
 **Issue:** The `validate()` function raises `NotImplementedError` for the core schema validation feature.
@@ -126,6 +150,7 @@ The following are **intentional test stubs** that are not placeholders:
 
 | File | Line | Type | Severity | Status |
 |------|------|------|----------|--------|
+| `src/octave_mcp/core/projector.py` | 45-54 | fake filtering | HIGH | False Functionality |
 | `src/octave_mcp/core/schema.py` | 35 | NotImplementedError | HIGH | Blocking |
 | `src/octave_mcp/core/validator.py` | 96 | pass (stub) | MEDIUM | Partial |
 | `src/octave_mcp/schemas/repository.py` | 24 | pass (TODO) | MEDIUM | Incomplete |
@@ -138,23 +163,32 @@ The following are **intentional test stubs** that are not placeholders:
 ## Recommendations
 
 ### High Priority
-1. Implement `schema.py:validate()` function with constraint checking
-2. Uncomment and implement `_load_builtin_schemas()` in SchemaRepository
+1. **Implement actual field filtering in `projector.py:project()`** - Executive and developer modes must filter sections, not just return full document
+2. Implement `schema.py:validate()` function with constraint checking
+3. Uncomment and implement `_load_builtin_schemas()` in SchemaRepository
 
 ### Medium Priority
-3. Implement actual schema parsing in `loader.py:load_schema()`
-4. Implement `validator.py:_validate_section()` with proper validation logic
+4. Implement actual schema parsing in `loader.py:load_schema()`
+5. Implement `validator.py:_validate_section()` with proper validation logic
 
 ### Low Priority
-5. Implement JSON/YAML/Markdown output formats in eject tool
+6. Implement JSON/YAML/Markdown output formats in eject tool
 
 ---
 
 ## P-Level Mapping
 Based on the codebase naming convention:
 - **P1.5**: Schema validator with constraint checking (HIGH PRIORITY)
+- **P1.9**: Projection modes/filtering (HIGH PRIORITY - currently fake)
 - **P1.11**: Schema loader (MEDIUM PRIORITY)
 - **P2.1**: Base tool infrastructure (✓ Complete)
 - **P2.2**: Ingest tool (✓ Complete)
 - **P2.3**: Eject tool (Partial - missing output formats)
 - **P2.5**: Schema repository (MEDIUM PRIORITY)
+
+---
+
+## Notes
+
+### Discovery Process
+The fake filtering issue in `projector.py` was not caught by automated search for "placeholder", "TODO", or "NotImplementedError" patterns. It was only discovered by manual code review, highlighting that placeholder stubs can be hidden behind misleading success returns with false metadata.
