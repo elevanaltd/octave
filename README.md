@@ -22,6 +22,95 @@ Through extensive testing and production use, it was discovered that the structu
 
 OCTAVE evolved from a "neat trick" into a complete protocol for building reliable AI systems.
 
+---
+
+## OCTAVE MCP Architecture (v1.0.0)
+
+OCTAVE is productized as an **MCP (Model Context Protocol) server**, enabling integration with LLM systems as deterministic, auditable tools rather than open-ended assistants.
+
+### The Core Philosophy: One Language, Disciplined Tolerance
+
+The architecture implements a single principle: **one language with deterministic, syntactic-only tolerance**. This means:
+
+*   **One Language:** OCTAVE has a single canonical form (strict mode) used for storage and execution
+*   **Disciplined Tolerance:** Input accepts lenient syntax (ASCII aliases, flexible whitespace) which normalizes deterministically—no semantic inference, no guessing
+*   **Non-Reasoning Control Plane:** The system validates and normalizes without LLM reasoning—it's a finite rewrite system, not an inference engine
+
+### Control Plane Architecture
+
+The MCP server implements this control plane:
+
+```
+REASONING MACHINE (LLM / human)
+    │
+    │  (decides meaning, importance, tier)
+    ▼
+OCTAVE CONTROL PLANE (non-reasoning)
+    │
+    │  (normalizes, validates, projects, routes, logs loss)
+    ▼
+CANONICAL ARTIFACTS + VIEWS
+```
+
+The reasoning machine provides intent and meaning. The control plane handles the mechanical work: syntax normalization, validation against schemas, transformation logging, and loss tracking.
+
+### Two MCP Tools
+
+The OCTAVE MCP server exposes two primitives:
+
+#### octave.ingest()
+Brings information into the system safely.
+
+*   **Purpose:** Accept lenient input (raw text or loose OCTAVE syntax) and produce canonical, validated OCTAVE
+*   **Parameters:**
+    - `content` (required): Raw text or lenient OCTAVE
+    - `schema` (required): Document type (e.g., `DECISION_LOG`) for validation
+    - `tier` (optional): Compression level (`LOSSLESS`, `CONSERVATIVE`, `AGGRESSIVE`, `ULTRA`)
+    - `fix` (optional): Enable schema-driven repairs (`true`/`false`)
+    - `verbose` (optional): Expose pipeline stages for debugging
+*   **Returns:** Canonical OCTAVE + repair log (always present, never silent)
+
+#### octave.eject()
+Presents information out of the system appropriately for different stakeholders.
+
+*   **Purpose:** Generate tailored views from canonical OCTAVE
+*   **Parameters:**
+    - `content` (optional): Canonical OCTAVE (null for template generation)
+    - `schema` (required): Document type for validation
+    - `mode` (optional): Output format (`canonical`, `authoring`, `executive`, `developer`)
+    - `format` (optional): Serialization (`octave`, `json`, `yaml`, `markdown`)
+*   **Returns:** Formatted output + lossy flag + list of omitted fields if applicable
+
+### Three-Tier Repair Classification
+
+Every transformation is classified and logged. This prevents silent drift and makes system behavior auditable:
+
+#### TIER: NORMALIZATION (always-on)
+*   **Scope:** Syntactic and lexical only
+*   **Examples:** ASCII → Unicode (`->` → `→`), whitespace normalization, quote insertion, envelope completion
+*   **Guarantee:** Semantics preserved
+
+#### TIER: REPAIR (opt-in via `fix=true`)
+*   **Scope:** Schema-bounded value transforms only
+*   **Examples:** Enum casefold (`"active"` → `ACTIVE` if unique), type coercion (`"42"` → `42`)
+*   **Guarantee:** May change value, but not structure or meaning
+
+#### TIER: FORBIDDEN (never automatic)
+*   **Scope:** Semantic intent and structure—never touched
+*   **Examples:** Target inference, missing field insertion, structure reparenting, semantic rewriting, schema inference, routing guessing
+*   **Rationale:** Schema constraints cannot tell you what the author intended; autocorrect is safe for syntax, dangerous for meaning
+
+### Projection Modes
+
+The `eject()` tool provides different views for different stakeholders, enabling single-source-of-truth with role-appropriate disclosure:
+
+*   **canonical:** Full document in strict OCTAVE (lossless, for storage and diffing)
+*   **authoring:** Lenient format for human/LLM editing (structure preserved, lossless)
+*   **executive:** High-level summary (status, risks, decisions only; omits tests, CI, technical detail)
+*   **developer:** Implementation focus (tests, CI, dependencies; omits executive summaries)
+
+---
+
 ## When to Use OCTAVE (And When a Simple Prompt is Better)
 
 OCTAVE is a specialized tool. It is not always the best choice for every LLM interaction. Understanding the difference is key.
