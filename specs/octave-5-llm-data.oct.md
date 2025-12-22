@@ -23,6 +23,40 @@ COMPRESSION_INTENT::
   ACCEPTABLE_LOSS::[~30%_at_70%_compression,nuance∨narrative_depth]
   UNACCEPTABLE_LOSS::[structural_mischaracterization,analytical_conclusions,core_thesis]
 
+§1b::COMPRESSION_TIERS
+TIER::LOSSLESS[target:100%_fidelity,preserve:everything,drop:none]
+  USE::critical_reasoning,legal_documents,safety_analysis,audit_trails
+  METHOD::preserve_all_prose,keep_examples,document_tradeoffs
+  OUTCOME::original≡compressed[except_whitespace∨formatting]
+
+TIER::CONSERVATIVE[target:85-90%_compression,preserve:explanatory_depth,drop:redundancy]
+  USE::research_summaries,design_decisions,technical_analysis
+  METHOD::drop_stopwords,compress_examples→inline,keep_tradeoff_narratives,remove_verbose_transitions
+  LOSS::~10-15%[repetition,some_edge_cases,verbose_phrasing]
+  EXAMPLE::5000_tokens→450-700_tokens[keep_depth,lose_redundancy]
+
+TIER::AGGRESSIVE[target:70%_compression,preserve:core_thesis∧conclusions,drop:nuance∨narrative]
+  USE::context_window_scarcity,quick_reference,decision_support
+  METHOD::drop_stopwords,compress_narratives→assertions,inline_all_examples,remove_historical_context
+  LOSS::~30%[explanatory_depth,execution_tradeoff_narratives,edge_case_exploration,lineage]
+  EXAMPLE::5600_tokens→1800_tokens[keep_landscape∧conclusions,lose_depth]
+
+TIER::ULTRA[target:50%_compression,preserve:facts∧structure,drop:all_narrative]
+  USE::extreme_scarcity,embedding_generation,dense_reference
+  METHOD::bare_assertions,minimal_lists,no_examples,no_prose
+  LOSS::~50%[almost_all_explanatory_content,some_nuance,tradeoff_reasoning]
+  OUTCOME::structure_∧_facts_only,poor_readability
+
+SELECTION_GUIDE::
+  IF[critical_decision→safety_implications]→use_LOSSLESS
+  IF[research_artifact→audience_needs_context]→use_CONSERVATIVE
+  IF[context_token_budget→loss_acceptable]→use_AGGRESSIVE
+  IF[embedding∨dense_index→readability_irrelevant]→use_ULTRA
+
+METADATA_REQUIREMENT::
+  ALL_COMPRESSED_DOCS::include_TIER_in_META[enables_reader_expectations]
+  EXAMPLE::COMPRESSION_TIER::CONSERVATIVE|LOSS_PROFILE::redundancy_removed|NARRATIVE_DEPTH::preserved
+
 §2::COMPRESSION
 PRESERVE::[
   numbers[exact],

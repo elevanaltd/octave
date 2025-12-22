@@ -3,16 +3,18 @@ META:
   TYPE::RESEARCH_SUMMARY
   VERSION::"5.1.0"
   SOURCE::survey-original-raw.oct.md
+  COMPRESSION_TIER::AGGRESSIVE
   COMPRESSION_RATIO::~70%
   ORIGINAL_TOKENS::5600
   COMPRESSED_TOKENS::~1800
-  LOSS_PROFILE::nuance⊕narrative_depth|core_thesis∧conclusions_preserved
+  LOSS_PROFILE::explanatory_depth⊕execution_narratives|core_thesis∧landscape_preserved
+  NARRATIVE_DEPTH::compressed[execution_tradeoffs_implicit,lineage_omitted,edge_cases_summarized]
 
 ---
 
-NOTE::This compression preserves comparative conclusions and system coverage;
+NOTE::AGGRESSIVE tier: preserves comparative conclusions and system coverage;
       explanatory_depth, historical_context, execution_tradeoff_narratives are intentionally compressed.
-      See OCTAVE_DATA.§1.COMPRESSION_INTENT for loss tolerance definitions.
+      For LOSSLESS or CONSERVATIVE tiers, see OCTAVE_DATA.§1b.COMPRESSION_TIERS
 
 // Holographic Document Language: Survey Related Systems
 // Compressed using OCTAVE 5.1.0 rules (core + data profiles)
