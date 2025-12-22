@@ -146,55 +146,7 @@ jobs:
           file: ./coverage.xml
           fail_ci_if_error: false
 
-  integration:
-    name: Integration Tests
-    runs-on: ubuntu-latest
-    needs: [check-changes, test]
-    if: needs.check-changes.outputs.docs_only != 'true'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: 'pip'
-
-      - name: Install package
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"
-
-      - name: Test CLI commands
-        run: |
-          # Create test document
-          cat > test.oct.md <<EOF
-          META:
-            TYPE::"TEST_DOCUMENT"
-            VERSION::"1.0"
-
-          TEST:
-            ID::"TEST-001"
-            STATUS::"active"
-          EOF
-
-          # Test ingest
-          octave ingest test.oct.md
-
-          # Test validate
-          octave validate test.oct.md
-
-          # Test eject
-          octave eject test.oct.md --mode canonical
-
-      - name: Test MCP server startup
-        run: |
-          # Test server can start and respond to initialization
-          timeout 5s octave-mcp-server || true
-          # Exit code 124 means timeout (server started but didn't exit)
-          # This is expected for a server that waits for input
+  # Removed - integration tests now run from wheel in integration-from-wheel job
 
   property-tests:
     name: Property-Based Tests
@@ -224,7 +176,7 @@ jobs:
   build:
     name: Build Distribution
     runs-on: ubuntu-latest
-    needs: [check-changes, test, integration, property-tests]
+    needs: [check-changes, test]
     if: needs.check-changes.outputs.docs_only != 'true'
 
     steps:
@@ -255,11 +207,124 @@ jobs:
           name: dist
           path: dist/
 
+  artifact-validate:
+    name: Validate Distribution Artifact
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Install wheel in clean environment
+        run: |
+          TEMP_DIR="$(mktemp -d)"
+          cd "$TEMP_DIR"
+          python -m pip install "$GITHUB_WORKSPACE"/dist/*.whl
+          python -c "import octave_mcp; print(f'IMPORTED_FROM::{octave_mcp.__file__}')"
+
+      - name: Assert no test files in installed package
+        run: |
+          TEMP_DIR="$(mktemp -d)"
+          cd "$TEMP_DIR"
+          python -m pip install "$GITHUB_WORKSPACE"/dist/*.whl
+          python - <<'PY'
+          import pathlib
+          import octave_mcp
+          pkg = pathlib.Path(octave_mcp.__file__).resolve().parent
+          test_files = list(pkg.rglob("test_*.py"))
+          assert not test_files, f"test_files_found_in_wheel::{test_files}"
+          PY
+
+      - name: Assert no tests/ paths in wheel
+        run: |
+          unzip -l dist/*.whl | grep -E "tests/" && echo "ERROR::tests_paths_found_in_wheel" && exit 1 || echo "OK::no_tests_paths_in_wheel"
+
+      - name: Verify package data included
+        run: |
+          TEMP_DIR="$(mktemp -d)"
+          cd "$TEMP_DIR"
+          python -m pip install "$GITHUB_WORKSPACE"/dist/*.whl
+          python - <<'PY'
+          import pathlib
+          import octave_mcp
+          pkg = pathlib.Path(octave_mcp.__file__).resolve().parent
+          schema_file = pkg / "schemas" / "builtin" / "meta.oct.md"
+          assert schema_file.exists(), f"schema_file_missing::{schema_file}"
+          print(f"OK::schema_file_present::{schema_file}")
+          PY
+
+  integration-from-wheel:
+    name: Integration Tests (from wheel)
+    runs-on: ubuntu-latest
+    needs: [artifact-validate]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Install wheel with test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install dist/*.whl
+          python -m pip install pytest pytest-asyncio
+
+      - name: Test CLI commands
+        run: |
+          # Create test document
+          cat > test.oct.md <<EOF
+          META:
+            TYPE::"TEST_DOCUMENT"
+            VERSION::"1.0"
+
+          TEST:
+            ID::"TEST-001"
+            STATUS::"active"
+          EOF
+
+          # Test ingest
+          octave ingest test.oct.md
+
+          # Test validate
+          octave validate test.oct.md
+
+          # Test eject
+          octave eject test.oct.md --mode canonical
+
+      - name: Test MCP server startup
+        run: |
+          # Test server can start and respond to initialization
+          timeout 5s octave-mcp-server || true
+          # Exit code 124 means timeout (server started but didn't exit)
+          # This is expected for a server that waits for input
+
   final-gate:
     name: Final Gate
     runs-on: ubuntu-latest
     if: always()
-    needs: [check-changes, docs, test, integration, property-tests, build]
+    needs: [check-changes, docs, test, property-tests, build, artifact-validate, integration-from-wheel]
 
     steps:
       - name: Determine required checks
@@ -270,9 +335,10 @@ jobs:
           echo "docs_only=$DOCS_ONLY"
           echo "docs_result=${{ needs.docs.result }}"
           echo "test_result=${{ needs.test.result }}"
-          echo "integration_result=${{ needs.integration.result }}"
           echo "property_tests_result=${{ needs.property-tests.result }}"
           echo "build_result=${{ needs.build.result }}"
+          echo "artifact_validate_result=${{ needs.artifact-validate.result }}"
+          echo "integration_from_wheel_result=${{ needs.integration-from-wheel.result }}"
 
       - name: Validate results
         run: |
@@ -296,11 +362,6 @@ jobs:
             exit 1
           fi
 
-          if [ "${{ needs.integration.result }}" != "success" ]; then
-            echo "ERROR::required_job_failed::integration::${{ needs.integration.result }}"
-            exit 1
-          fi
-
           if [ "${{ needs.property-tests.result }}" != "success" ]; then
             echo "ERROR::required_job_failed::property-tests::${{ needs.property-tests.result }}"
             exit 1
@@ -308,6 +369,16 @@ jobs:
 
           if [ "${{ needs.build.result }}" != "success" ]; then
             echo "ERROR::required_job_failed::build::${{ needs.build.result }}"
+            exit 1
+          fi
+
+          if [ "${{ needs.artifact-validate.result }}" != "success" ]; then
+            echo "ERROR::required_job_failed::artifact-validate::${{ needs.artifact-validate.result }}"
+            exit 1
+          fi
+
+          if [ "${{ needs.integration-from-wheel.result }}" != "success" ]; then
+            echo "ERROR::required_job_failed::integration-from-wheel::${{ needs.integration-from-wheel.result }}"
             exit 1
           fi
 
