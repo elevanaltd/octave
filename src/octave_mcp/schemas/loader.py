@@ -18,7 +18,7 @@ def load_schema(schema_path: str | Path) -> dict[str, Any]:
     Returns:
         Schema dictionary for validator
     """
-    with open(schema_path, "r") as f:
+    with open(schema_path) as f:
         content = f.read()
 
     # Parse schema document

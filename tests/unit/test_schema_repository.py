@@ -35,8 +35,9 @@ class TestSchemaRepository:
         repository.register("test_schema", None)
 
         # Should be able to retrieve it
-        schema = repository.get("test_schema")
+        result = repository.get("test_schema")
         # Schema can be None for now (minimal implementation)
+        assert result is None  # Registered as None
 
     def test_get_nonexistent_schema_returns_none(self, repository):
         """Getting nonexistent schema returns None."""

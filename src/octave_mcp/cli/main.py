@@ -23,7 +23,7 @@ def ingest(file: str, schema: str | None, fix: bool, verbose: bool):
     from octave_mcp.core.emitter import emit
     from octave_mcp.core.parser import parse
 
-    with open(file, "r") as f:
+    with open(file) as f:
         content = f.read()
 
     try:
@@ -44,7 +44,7 @@ def eject(file: str, schema: str | None, mode: str):
     from octave_mcp.core.emitter import emit
     from octave_mcp.core.parser import parse
 
-    with open(file, "r") as f:
+    with open(file) as f:
         content = f.read()
 
     try:
@@ -65,7 +65,7 @@ def validate(file: str, schema: str | None, strict: bool):
     from octave_mcp.core.parser import parse
     from octave_mcp.core.validator import validate as validate_doc
 
-    with open(file, "r") as f:
+    with open(file) as f:
         content = f.read()
 
     try:

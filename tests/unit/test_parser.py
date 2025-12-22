@@ -7,7 +7,7 @@ and nested block structure.
 import pytest
 
 from octave_mcp.core.ast_nodes import Assignment, Block, ListValue
-from octave_mcp.core.parser import parse, ParserError
+from octave_mcp.core.parser import ParserError, parse
 
 
 class TestEnvelopeInference:
