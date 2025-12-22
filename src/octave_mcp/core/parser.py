@@ -260,12 +260,17 @@ class Parser:
             return self.parse_list()
 
         elif token.type == TokenType.IDENTIFIER:
+            # Check if this starts a flow/synthesis expression
+            next_token = self.peek()
+            if next_token.type in (TokenType.FLOW, TokenType.SYNTHESIS):
+                # Flow expression like A→B→C or synthesis like X⊕Y
+                return self.parse_flow_expression()
             # Bare word
             self.advance()
             return token.value
 
         elif token.type == TokenType.FLOW:
-            # Flow expression like A→B→C
+            # Flow expression starting with operator like →B→C
             return self.parse_flow_expression()
 
         else:
@@ -325,12 +330,12 @@ class Parser:
         return self.parse_value()
 
     def parse_flow_expression(self) -> str:
-        """Parse flow expression like A→B→C."""
+        """Parse flow/synthesis expression like A→B→C or X⊕Y."""
         parts = []
 
-        # Collect all parts of flow
-        while self.current().type in (TokenType.IDENTIFIER, TokenType.FLOW, TokenType.STRING):
-            if self.current().type == TokenType.FLOW:
+        # Collect all parts of flow/synthesis expression
+        while self.current().type in (TokenType.IDENTIFIER, TokenType.FLOW, TokenType.SYNTHESIS, TokenType.STRING):
+            if self.current().type in (TokenType.FLOW, TokenType.SYNTHESIS):
                 parts.append(self.current().value)
                 self.advance()
             elif self.current().type in (TokenType.IDENTIFIER, TokenType.STRING):
