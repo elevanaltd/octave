@@ -121,7 +121,7 @@ pytest --cov-report=html     # Generate coverage report
 
 ## MCP Server Integration
 
-The package provides `octave.ingest` and `octave.eject` MCP tools:
+The package provides `octave_ingest` and `octave_eject` MCP tools:
 
 - **ingest**: Lenient input → canonical OCTAVE + validation
 - **eject**: Canonical OCTAVE → projected views (executive, developer, etc.)

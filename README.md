@@ -22,14 +22,14 @@ See the [main OCTAVE repository](https://github.com/elevanaltd/octave) for full 
 
 This MCP server provides two core tools:
 
-### `octave.ingest` - Bring information in safely
+### `octave_ingest` - Bring information in safely
 - Accepts lenient OCTAVE syntax (ASCII aliases like `->` for `→`)
 - Normalizes to canonical Unicode format
 - Validates against schema requirements
 - Optional schema-driven repairs for common errors
 - Returns canonical OCTAVE + detailed repair log
 
-### `octave.eject` - Present information appropriately
+### `octave_eject` - Present information appropriately
 - Generates tailored views from canonical OCTAVE
 - Multiple projection modes (canonical, authoring, executive, developer)
 - Multiple output formats (octave, json, yaml, markdown)
