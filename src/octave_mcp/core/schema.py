@@ -7,13 +7,19 @@ Stub for P1.5: schema_validator_with_constraint_checking
 class Schema:
     """OCTAVE schema definition."""
 
-    def __init__(self, schema_data: dict):
+    def __init__(self, name: str, version: str, fields: dict, schema_data: dict | None = None):
         """Initialize schema from parsed data.
 
         Args:
-            schema_data: Parsed schema structure
+            name: Schema name
+            version: Schema version
+            fields: Schema field definitions
+            schema_data: Optional parsed schema structure
         """
-        raise NotImplementedError("P1.5: schema_validator_with_constraint_checking")
+        self.name = name
+        self.version = version
+        self.fields = fields
+        self._data = schema_data or {}
 
 
 def validate(ast: dict, schema: Schema) -> dict:

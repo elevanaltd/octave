@@ -1,7 +1,9 @@
-"""Schema repository with builtin and custom schema support.
+"""Schema repository with builtin and custom schema support (P2.5).
 
-Stub for P2.5: schema_repository_integration
+Provides centralized schema storage and retrieval.
 """
+
+from octave_mcp.core.schema import Schema
 
 
 class SchemaRepository:
@@ -9,29 +11,42 @@ class SchemaRepository:
 
     def __init__(self):
         """Initialize schema repository."""
-        raise NotImplementedError("P2.5: schema_repository_integration")
+        self._schemas: dict[str, Schema] = {}
+        # Future: Load builtin schemas from package
+        # self._load_builtin_schemas()
 
-    def load_builtin_schemas(self):
-        """Load builtin schemas from package."""
-        raise NotImplementedError("P2.5: schema_repository_integration")
+    def _load_builtin_schemas(self):
+        """Load builtin schemas from package.
 
-    def register_schema(self, name: str, schema_path: str):
+        Reserved for future implementation when builtin schemas are defined.
+        """
+        # TODO: Load from src/octave_mcp/schemas/builtin/
+        pass
+
+    def register(self, name: str, schema: Schema | None):
         """Register custom schema.
 
         Args:
             name: Schema name
-            schema_path: Path to schema definition
+            schema: Schema object (can be None for stub)
         """
-        raise NotImplementedError("P2.5: schema_repository_integration")
+        self._schemas[name] = schema  # type: ignore
 
-    def get_schema(self, name: str, version: str | None = None):
-        """Retrieve schema by name and version.
+    def get(self, name: str) -> Schema | None:
+        """Retrieve schema by name.
 
         Args:
             name: Schema name
-            version: Optional schema version
 
         Returns:
-            Schema object
+            Schema object or None if not found
         """
-        raise NotImplementedError("P2.5: schema_repository_integration")
+        return self._schemas.get(name)
+
+    def list_schemas(self) -> list[str]:
+        """List all available schema names.
+
+        Returns:
+            List of schema names
+        """
+        return list(self._schemas.keys())
