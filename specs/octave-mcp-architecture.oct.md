@@ -72,6 +72,8 @@ ACCEPTED:
   ASCII_TENSION::A vs B[normalized_to⇌,requires_word_boundaries]
   ASCII_ALTERNATIVE::A | B[normalized_to∨]
   ASCII_CONSTRAINT::A & B[normalized_to∧]
+  ASCII_TARGET_SELECTOR::#TARGET[normalized_to§TARGET]
+  ASCII_FLOW_TARGET::A -> #TARGET[normalized_to→§TARGET]
 
 REJECTED[errors_not_repairs]:
   SINGLE_COLON::key: value[ERROR::ambiguous_with_block_operator]
@@ -349,5 +351,59 @@ PRODUCT_STATEMENT::[
   "Schema-driven validation ensures structural correctness.",
   "Authors provide meaning; tools provide formatting."
 ]
+
+§14::VERSIONING_AND_COMPATIBILITY
+
+POLICY::semver
+
+SURFACES::[
+  SPEC_VERSION::"1.x"[breaking_changes_only_on_major],
+  OCTAVE_VERSION::"5.1.0"[grammar_features],
+  VALIDATOR_DEFAULT::"5.0.3"[backward_compatibility_until_tests_complete],
+  VALIDATOR_FLAGS::["--version 5.1.0"→enable_new_rules]
+]
+
+COMPATIBILITY_MATRIX::[
+  lenient_ascii_aliases::stable_across_5.x,
+  canonicalization_rules::stable_across_1.x,
+  forbidden_repairs::strict_no_change
+]
+
+MIGRATION::[
+  add_tests_for_5.1.0_rules,
+  bump_default_once_tests_green,
+  publish_release_notes
+]
+
+§15::HESTAI_INTEGRATION
+
+ALIGNMENT::[
+  DUAL_LAYER_CONTEXT::compatible[documents_in_.hestai/context, sessions_in_.hestai/sessions],
+  SINGLE_WRITER_RULE::supported_via_MCP_tools[use_document_submit|context_update_when_embedded],
+  ODYSSEAN_ANCHOR::recommended_precondition[bind_agent_identity_before_ingest]
+]
+
+MAPPING::[
+  OCTAVE_MCP::octave.ingest|octave.eject,
+  HESTAI_MCP::document_submit|context_update
+]
+
+NOTE::"When embedded in HestAI-MCP, map tool names to the HestAI equivalents without altering semantics."
+
+§16::ORCHESTRA_MAP_INTEROP
+
+PURPOSE::"Concepts claim Code via imports"
+
+OPTIONAL_FIELDS::[
+  CLAIMS::["import paths or module IDs claimed by this spec"],
+  STALENESS_RULE::"LastCommit(Spec) < LastCommit(Impl) == STALE"
+]
+
+OUTPUTS::[
+  GRAPH::edges[concept→code],
+  STALE_MODULES::[[...]]
+]
+
+INTEGRATION::"Expose GRAPH via eject(mode=developer, format=json) for CI consumption."
 
 ===END===
