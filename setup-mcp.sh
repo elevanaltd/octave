@@ -10,6 +10,11 @@ set -euo pipefail
 # - OpenAI Codex CLI
 # - Google Gemini CLI
 #
+# This script works in both regular repositories and git worktrees.
+# When run in a worktree, it will configure MCP clients to use the
+# worktree-specific paths. If the worktree is deleted, you'll need to
+# reconfigure or run this script from the main repository.
+#
 # Usage:
 #   ./setup-mcp.sh                    # Interactive setup
 #   ./setup-mcp.sh --claude-desktop   # Configure Claude Desktop only
@@ -59,9 +64,17 @@ print_header() {
     echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 }
 
-# Get the script's directory
+# Get the script's directory (handles both regular repos and worktrees)
 get_script_dir() {
     cd "$(dirname "$0")" && pwd
+}
+
+# Detect if we're in a worktree and warn user
+detect_worktree() {
+    if [[ -f .git ]] && grep -q "gitdir:" .git 2>/dev/null; then
+        return 0  # Is a worktree
+    fi
+    return 1  # Not a worktree
 }
 
 # Detect operating system
@@ -154,10 +167,23 @@ ensure_venv_exists() {
     local script_dir=$(get_script_dir)
     local venv_python=$(get_venv_python)
 
+    # Warn if in worktree
+    if detect_worktree; then
+        print_warning "Running in a git worktree - MCP configuration will use worktree-specific paths"
+        print_info "If this worktree is deleted, you'll need to reconfigure the MCP server"
+    fi
+
     if [[ -z "$venv_python" ]]; then
         print_info "Creating virtual environment..."
 
-        # Try uv first
+        # Check if python3 is available
+        if ! command -v python3 &> /dev/null; then
+            print_error "python3 not found in PATH"
+            return 1
+        fi
+
+        # Try uv first (faster), fall back to python3 -m venv
+        # Note: uv venv doesn't include pip by default, but uv pip install works without it
         if command -v uv &> /dev/null; then
             uv venv --python 3.11 "$script_dir/$VENV_PATH" || uv venv "$script_dir/$VENV_PATH"
         else
@@ -175,7 +201,24 @@ ensure_venv_exists() {
     # Check if package is installed
     if ! "$venv_python" -c "import octave_mcp" 2>/dev/null; then
         print_info "Installing octave-mcp package..."
-        "$venv_python" -m pip install -e "$script_dir" --quiet
+
+        # Use uv pip if uv is available, otherwise use regular pip
+        if command -v uv &> /dev/null; then
+            # uv pip install works without pip being in the venv
+            uv pip install -e "$script_dir" --quiet
+            if [[ $? -ne 0 ]]; then
+                print_error "Failed to install octave-mcp package with uv"
+                return 1
+            fi
+        else
+            # Traditional pip install
+            "$venv_python" -m pip install -e "$script_dir" --quiet
+            if [[ $? -ne 0 ]]; then
+                print_error "Failed to install octave-mcp package with pip"
+                return 1
+            fi
+        fi
+
         print_success "Package installed"
     fi
 
@@ -192,6 +235,12 @@ add_to_json_config() {
     local server_name="$2"
     local python_cmd="$3"
     local server_path="$4"
+
+    # Verify python3 is available
+    if ! command -v python3 &> /dev/null; then
+        print_error "python3 not found - required for JSON manipulation"
+        return 1
+    fi
 
     # Create backup
     if [[ -f "$config_path" ]]; then
@@ -253,6 +302,12 @@ remove_from_json_config() {
     local server_name="$2"
 
     if [[ ! -f "$config_path" ]]; then
+        return 0
+    fi
+
+    # Verify python3 is available
+    if ! command -v python3 &> /dev/null; then
+        print_warning "python3 not found - skipping JSON removal"
         return 0
     fi
 
