@@ -97,13 +97,13 @@ class IngestTool(BaseTool):
         if verbose:
             stages["PREPARSE"] = "Tokenizing with ASCII normalization"
 
-        tokens = tokenize(content)
+        tokens, tokenize_repairs = tokenize(content)
 
         if verbose:
             stages["TOKENIZE_COMPLETE"] = f"{len(tokens)} tokens produced"
 
-        # Normalization repairs are tracked during tokenization
-        # and will be included in the repairs list when available
+        # Track normalization repairs from tokenization
+        result["repairs"].extend(tokenize_repairs)
 
         # STAGE 2: PARSE (build AST with envelope inference)
         if verbose:
