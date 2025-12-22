@@ -332,6 +332,19 @@ TEST_VECTORS_REQUIRED::[
   projection_mode_field_omission
 ]
 
+§12A::UNKNOWN_FIELDS_POLICY
+
+POLICY::[
+  STRICT_MODE::reject_unknown_fields[error_with_path],
+  LENIENT_MODE::warn_unknown_fields[logged_only]
+]
+
+SCOPE::initial_META_only[v1];_document_body_in_v1.1
+
+ERROR::
+  E007::"Unknown field '{field}' not allowed in STRICT mode."::
+    "Avoids schema surface drift compromising downstream contracts."
+
 §13::SUMMARY
 
 ARCHITECTURE::"One language, disciplined tolerance"
