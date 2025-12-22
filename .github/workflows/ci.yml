@@ -20,11 +20,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Check changed files
         id: filter
         run: |
           if [ "${{ github.event_name }}" == "pull_request" ]; then
+            git fetch origin ${{ github.base_ref }}
             FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
           else
             FILES=$(git diff --name-only HEAD^ HEAD || echo "")
