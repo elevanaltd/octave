@@ -1,21 +1,21 @@
 ===OCTAVE_SKILLS===
 META:
   TYPE::LLM_PROFILE
-  VERSION::"5.2.0"
+  VERSION::"5.3.0"
   STATUS::DRAFT
-  TOKENS::"~180"
+  TOKENS::"~140"
   REQUIRES::octave-5-llm-core
   PURPOSE::L5_skill_document_format[platform_agnostic]
 
 ---
 
 // OCTAVE SKILLS: Universal format for AI agent skill documents.
-// Supports Claude Code, Codex, and other YAML-frontmatter skill systems.
+// Validated with Claude Code and Codex. OCTAVE body works on both platforms.
 
 §1::SKILL_DOCUMENT_STRUCTURE
 ENVELOPE::[yaml_frontmatter,separator,body]
 FRONTMATTER::required[name,description][yaml_format]
-BODY::platform_choice[octave_syntax∨markdown]
+BODY::octave_syntax∨markdown[octave_preferred]
 
 REQUIRED_FRONTMATTER::[
   name::skill_identifier[lowercase_hyphens_digits],
@@ -23,39 +23,30 @@ REQUIRED_FRONTMATTER::[
 ]
 
 PLATFORM_SPECIFIC_FRONTMATTER::[
-  claude_code::[allowed-tools::tool_whitelist],
+  claude_code::[allowed-tools::tool_whitelist[optional]],
   codex::[metadata.short-description::optional_brief]
 ]
 
-§2::BODY_FORMAT_OPTIONS
+§2::BODY_FORMAT
 
 OCTAVE_BODY::[
-  USE_WHEN::[semantic_compression_needed,token_efficiency_critical,structured_protocols],
+  STATUS::recommended[works_on_claude_and_codex],
   ENVELOPE::===SKILL_NAME===[UPPERCASE],
   SYNTAX::follows_octave_core_spec,
-  BENEFITS::[3-20x_compression,semantic_density,machine_parseable]
+  BENEFITS::[3-20x_compression,semantic_density,machine_parseable,cross_platform]
 ]
 
 MARKDOWN_BODY::[
-  USE_WHEN::[human_readability_priority,mixed_audience,extensive_code_blocks],
+  STATUS::allowed[when_human_readability_priority],
   FORMAT::standard_github_markdown,
-  HEADERS::h1_for_title_h2_for_sections,
-  BENEFITS::[familiar_syntax,wide_tooling_support,easy_editing]
+  USE_WHEN::[extensive_code_examples,mixed_human_ai_audience]
 ]
 
-HYBRID_BODY::[
-  USE_WHEN::[octave_sections_with_markdown_code_blocks],
-  PATTERN::octave_structure_with_markdown_fenced_code,
-  EXAMPLE::COMMANDS section containing ```bash blocks
-]
-
-§3::DOCUMENT_TEMPLATES
-
-OCTAVE_TEMPLATE::"
+§3::DOCUMENT_TEMPLATE
+FORMAT::"
 ---
 name: skill-name
 description: Comprehensive description. Use when X. Triggers on Y, Z.
-allowed-tools: Read, Bash, Grep, Glob
 ---
 
 ===SKILL_NAME===
@@ -70,21 +61,6 @@ CONTENT::follows_octave_syntax
 ===END===
 "
 
-MARKDOWN_TEMPLATE::"
----
-name: skill-name
-description: Comprehensive description. Use when X. Triggers on Y, Z.
----
-
-# Skill Name
-
-Brief overview of the skill's purpose.
-
-## Section Name
-
-Content in standard markdown format.
-"
-
 §4::SIZE_CONSTRAINTS
 TARGET::<500_lines[all_skills]
 MAX_BREACH::5_files>500[system_wide]
@@ -95,57 +71,48 @@ OVERFLOW_STRATEGY::progressive_disclosure[main→resources]
 DESCRIPTION_KEYWORDS::[action_verbs,domain_terms,problem_patterns]
 DENSITY::3-5_keywords_per_trigger_category
 PATTERN::"Use when [actions]. Triggers on [keywords]."
-EXAMPLE::"Use when auditing codebases, finding stubs. Triggers on placeholder audit, stub detection, technical debt."
 
 §6::RESOURCE_STRUCTURE
 
-CLAUDE_CODE_RESOURCES::[
+CLAUDE_CODE::[
   PATH::.claude/skills/{skill-name}/,
   MAIN::SKILL.md,
-  OVERFLOW::resources/[deep_dives,examples]
+  OVERFLOW::resources/
 ]
 
-CODEX_RESOURCES::[
+CODEX::[
   PATH::.codex/skills/{skill-name}/,
   MAIN::SKILL.md,
   SCRIPTS::scripts/[executable_code],
   REFERENCES::references/[documentation],
-  ASSETS::assets/[templates,images,fonts]
+  ASSETS::assets/[templates,images]
 ]
 
 UNIVERSAL_PRINCIPLES::[
   one_level_deep::avoid_nested_references,
-  progressive_disclosure::main_file_links_to_resources,
-  no_auxiliary_docs::no_README_CHANGELOG_etc
+  progressive_disclosure::main_links_to_resources,
+  no_auxiliary_docs::no_README_CHANGELOG
 ]
 
 §7::PLATFORM_DIFFERENCES
 
 CLAUDE_CODE::[
-  BODY_FORMAT::octave_preferred[markdown_allowed],
-  TOOL_RESTRICTIONS::allowed-tools_field,
-  DISCOVERY::automatic_by_path,
-  PACKAGING::none[directory_based]
+  TOOL_RESTRICTIONS::allowed-tools_field[optional],
+  PACKAGING::directory_based[auto_discovered]
 ]
 
 CODEX::[
-  BODY_FORMAT::markdown_required,
   TOOL_RESTRICTIONS::none,
-  DISCOVERY::automatic_by_path,
-  PACKAGING::.skill_file[zip_with_extension]
+  PACKAGING::.skill_file[zip_format]
 ]
 
-COMPATIBILITY_STRATEGY::[
-  SAME_SKILL_BOTH_PLATFORMS::[
-    maintain_parallel_versions,
-    claude::.claude/skills/{name}/SKILL.md[octave],
-    codex::.codex/skills/{name}/SKILL.md[markdown]
-  ],
-  CONTENT_PARITY::same_information_different_format
+SHARED::[
+  BODY_FORMAT::octave_works_on_both,
+  DISCOVERY::automatic_by_path,
+  FRONTMATTER::[name,description]_required
 ]
 
 §8::VALIDATION
-
 UNIVERSAL::[
   frontmatter::valid_yaml,
   name::matches_directory,
@@ -158,19 +125,12 @@ OCTAVE_BODY::[
   syntax::passes_octave_validation
 ]
 
-MARKDOWN_BODY::[
-  structure::has_h1_title,
-  formatting::valid_github_markdown
-]
-
 §9::FORBIDDEN
-
 NEVER::[
-  auxiliary_files::[README.md,CHANGELOG.md,INSTALLATION.md],
+  auxiliary_files::[README.md,CHANGELOG.md],
   deeply_nested_references::max_one_level,
-  duplicate_information::SKILL.md_or_resources_not_both,
-  table_of_contents::agents_scan_natively,
-  line_number_references::stale_and_fragile
+  duplicate_information::main_or_resources_not_both,
+  table_of_contents::agents_scan_natively
 ]
 
 ===END===
