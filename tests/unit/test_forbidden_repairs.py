@@ -80,6 +80,7 @@ EXISTING::value
         # For now, verify parsing doesn't add unexpected fields
 
         from octave_mcp.core.emitter import emit
+
         output = emit(ast)
 
         # Should only contain EXISTING field
@@ -122,10 +123,11 @@ STATUS::UNKNOWN_STATUS
         ast = parse(doc)
 
         # Validation may error, but should NOT rewrite value
-        errors = validate(ast, schema=None)
+        _errors = validate(ast, schema=None)  # Run validation
 
         # Value should remain unchanged
         from octave_mcp.core.emitter import emit
+
         output = emit(ast)
 
         assert "UNKNOWN_STATUS" in output  # Original value preserved
@@ -166,6 +168,7 @@ STATUS -> active
 
         # Should normalize → operator
         from octave_mcp.core.emitter import emit
+
         output = emit(ast)
 
         assert "→" in output or "->" not in output  # Normalized
@@ -184,6 +187,7 @@ STATUS::draft
 
         # Without fix=true, should preserve original case
         from octave_mcp.core.emitter import emit
+
         output = emit(ast)
 
         # Original case preserved (lowercase)
@@ -218,7 +222,7 @@ PARTIAL::data
 ===END==="""
 
         tokens, repairs = tokenize(incomplete)
-        ast = parse(tokens)
+        _ast = parse(tokens)  # Verify parsing succeeds
 
         # Check repairs log doesn't contain forbidden repairs
         # Only normalization repairs should be in log

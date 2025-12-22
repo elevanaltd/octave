@@ -163,12 +163,7 @@ STATUS::active
 
         # Test different modes
         for mode in ["canonical", "authoring"]:
-            result = runner.invoke(cli, [
-                "eject",
-                str(input_file),
-                "--schema", "TEST",
-                "--mode", mode
-            ])
+            result = runner.invoke(cli, ["eject", str(input_file), "--schema", "TEST", "--mode", mode])
 
             assert result.exit_code == 0
             assert len(result.output) > 0
@@ -214,16 +209,11 @@ STATUS :: active
 
         ingest_request = CallToolRequest(
             method="tools/call",
-            params={
-                "name": "octave.ingest",
-                "arguments": {
-                    "content": lenient_content,
-                    "schema": "TEST"
-                }
-            }
+            params={"name": "octave.ingest", "arguments": {"content": lenient_content, "schema": "TEST"}},
         )
 
         from mcp.types import CallToolRequest as CallToolRequestType
+
         ingest_handler = server.request_handlers.get(CallToolRequestType)
         ingest_result = await ingest_handler(ingest_request)
 
@@ -245,12 +235,8 @@ STATUS :: active
             method="tools/call",
             params={
                 "name": "octave.eject",
-                "arguments": {
-                    "content": canonical_content,
-                    "schema": "TEST",
-                    "mode": "authoring"
-                }
-            }
+                "arguments": {"content": canonical_content, "schema": "TEST", "mode": "authoring"},
+            },
         )
 
         eject_handler = server.request_handlers.get(CallToolRequestType)
@@ -279,17 +265,11 @@ FIELD_B::value_b
 
         # Ingest
         request = CallToolRequest(
-            method="tools/call",
-            params={
-                "name": "octave.ingest",
-                "arguments": {
-                    "content": original,
-                    "schema": "TEST"
-                }
-            }
+            method="tools/call", params={"name": "octave.ingest", "arguments": {"content": original, "schema": "TEST"}}
         )
 
         from mcp.types import CallToolRequest as CallToolRequestType
+
         handler = server.request_handlers.get(CallToolRequestType)
         result = await handler(request)
 
@@ -343,7 +323,7 @@ STATUS -> active
 ===END==="""
 
         tokens, lex_repairs = tokenize(lenient)
-        doc = parse(tokens)
+        _doc = parse(tokens)  # Parse to ensure no errors
 
         # Repairs should be logged
         # Check if normalization repairs were logged
@@ -384,7 +364,7 @@ class TestErrorHandling:
 
         # Should raise error during tokenization
         with pytest.raises(Exception) as exc_info:
-            tokens = tokenize(invalid)
+            _tokens = tokenize(invalid)  # noqa: F841
 
         # Check for E005 error code
         assert "E005" in str(exc_info.value) or "tab" in str(exc_info.value).lower()
@@ -422,16 +402,11 @@ DATA::value
 
         request = CallToolRequest(
             method="tools/call",
-            params={
-                "name": "octave.ingest",
-                "arguments": {
-                    "content": invalid_content,
-                    "schema": "TEST"
-                }
-            }
+            params={"name": "octave.ingest", "arguments": {"content": invalid_content, "schema": "TEST"}},
         )
 
         from mcp.types import CallToolRequest as CallToolRequestType
+
         handler = server.request_handlers.get(CallToolRequestType)
 
         # Should return error, not crash
