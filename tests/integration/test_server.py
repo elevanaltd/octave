@@ -87,17 +87,11 @@ STATUS::active
 ===END==="""
 
         request = CallToolRequest(
-            method="tools/call",
-            params={
-                "name": "octave.ingest",
-                "arguments": {
-                    "content": content,
-                    "schema": "TEST"
-                }
-            }
+            method="tools/call", params={"name": "octave.ingest", "arguments": {"content": content, "schema": "TEST"}}
         )
 
         from mcp.types import CallToolRequest as CallToolRequestType
+
         handler = server.request_handlers.get(CallToolRequestType)
         assert handler is not None
 
@@ -121,17 +115,11 @@ STATUS::active
 
         request = CallToolRequest(
             method="tools/call",
-            params={
-                "name": "octave.eject",
-                "arguments": {
-                    "content": content,
-                    "schema": "TEST",
-                    "mode": "canonical"
-                }
-            }
+            params={"name": "octave.eject", "arguments": {"content": content, "schema": "TEST", "mode": "canonical"}},
         )
 
         from mcp.types import CallToolRequest as CallToolRequestType
+
         handler = server.request_handlers.get(CallToolRequestType)
 
         result = await handler(request)

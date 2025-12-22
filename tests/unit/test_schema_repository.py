@@ -26,7 +26,7 @@ class TestSchemaRepository:
     def test_repository_has_empty_schemas_dict(self, repository):
         """Repository has schemas dictionary."""
         # Repository should have internal schemas storage
-        assert hasattr(repository, '_schemas') or hasattr(repository, 'schemas')
+        assert hasattr(repository, "_schemas") or hasattr(repository, "schemas")
 
     def test_register_schema(self, repository):
         """Can register a custom schema."""
@@ -54,11 +54,7 @@ class TestSchemaRepository:
         from octave_mcp.core.schema import Schema
 
         # Create minimal schema
-        test_schema = Schema(
-            name="TEST",
-            version="1.0",
-            fields={}
-        )
+        test_schema = Schema(name="TEST", version="1.0", fields={})
 
         repository.register("TEST", test_schema)
 

@@ -44,7 +44,7 @@ class TestSchemaBuilder:
             "string",
             required=True,
             description="Projection mode",
-            enum=["canonical", "authoring", "executive", "developer"]
+            enum=["canonical", "authoring", "executive", "developer"],
         )
 
         result = schema.build()
@@ -73,6 +73,7 @@ class TestBaseTool:
 
         class IncompleteTool(BaseTool):
             """Tool missing required methods."""
+
             pass
 
         with pytest.raises(TypeError):

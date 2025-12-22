@@ -6,10 +6,10 @@ Tests validation profiles (protocol, hestai-agent, hestai-skill),
 YAML frontmatter handling, and repository scanning mode.
 """
 
-import unittest
-import tempfile
 import os
 import sys
+import tempfile
+import unittest
 from pathlib import Path
 
 # Add tools directory to path for imports
@@ -17,8 +17,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 # Import from octave-validator.py (hyphenated filename)
 import importlib.util
-spec = importlib.util.spec_from_file_location("octave_validator",
-    os.path.join(os.path.dirname(__file__), "octave-validator.py"))
+
+spec = importlib.util.spec_from_file_location(
+    "octave_validator", os.path.join(os.path.dirname(__file__), "octave-validator.py")
+)
 octave_validator = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(octave_validator)
 
@@ -199,14 +201,16 @@ class TestScanMode(unittest.TestCase):
 
         # Invalid file
         invalid_path = Path(self.temp_dir) / "invalid.oct.md"
-        invalid_path.write_text("""===INVALID===
+        invalid_path.write_text(
+            """===INVALID===
 
 META:
   TYPE::test
   VERSION::\"1.0\"
 
 KEY = value
-===END==""")
+===END=="""
+        )
 
         # Non-OCTAVE file (should be ignored)
         other_path = Path(self.temp_dir) / "readme.md"
@@ -215,6 +219,7 @@ KEY = value
     def tearDown(self):
         """Clean up temporary directory."""
         import shutil
+
         shutil.rmtree(self.temp_dir)
 
     def test_scan_directory_finds_octave_files(self):
@@ -289,8 +294,11 @@ class TestWarningVsErrorBehavior(unittest.TestCase):
 
     def test_warnings_only_document_is_valid(self):
         """Document with only warnings should be valid=True."""
-        doc = make_v4_doc("TEST", """KEY::value
-_old_unicode_→_operator""")
+        doc = make_v4_doc(
+            "TEST",
+            """KEY::value
+_old_unicode_→_operator""",
+        )
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertTrue(is_valid)  # Valid despite warnings
@@ -299,8 +307,11 @@ _old_unicode_→_operator""")
 
     def test_errors_make_document_invalid(self):
         """Document with errors should be valid=False."""
-        doc = make_v4_doc("TEST", """KEY::value
-	tabbed_line::bad""")
+        doc = make_v4_doc(
+            "TEST",
+            """KEY::value
+	tabbed_line::bad""",
+        )
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertFalse(is_valid)
@@ -335,10 +346,13 @@ class TestMultilineListContext(unittest.TestCase):
 
     def test_progression_in_multiline_list_is_valid(self):
         """Progression operator in multiline list should be valid."""
-        doc = make_v4_doc("TEST", """FLOW::[
+        doc = make_v4_doc(
+            "TEST",
+            """FLOW::[
   step1->step2,
   step3->step4
-]""")
+]""",
+        )
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         # Should be valid - progression is inside list structure
@@ -363,7 +377,7 @@ class TestBackwardCompatibility(unittest.TestCase):
 
     def test_validate_octave_file_function_unchanged(self):
         """File validation function should work as before."""
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.oct.md', delete=False) as f:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".oct.md", delete=False) as f:
             f.write(make_v4_doc("TEST", "KEY::value"))
             temp_path = f.name
 
@@ -384,9 +398,12 @@ class TestOCTAVEv5Features(unittest.TestCase):
 
     def test_constraint_chaining_inside_brackets_valid(self):
         """Constraint operator & chaining inside brackets should be valid."""
-        doc = make_v4_doc("TEST", """CONFIG::[
+        doc = make_v4_doc(
+            "TEST",
+            """CONFIG::[
   "value"&REQ&REGEX->§TARGET
-]""")
+]""",
+        )
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         self.assertTrue(is_valid, f"Expected & chaining inside brackets to be valid, got: {messages}")
@@ -417,8 +434,11 @@ class TestOCTAVEv5Features(unittest.TestCase):
 
     def test_empty_block_valid(self):
         """Empty block KEY: with no children should be valid."""
-        doc = make_v4_doc("TEST", """EMPTY:
-NEXT_KEY::value""")
+        doc = make_v4_doc(
+            "TEST",
+            """EMPTY:
+NEXT_KEY::value""",
+        )
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         # Should be valid - empty blocks allowed in v5.1.0
@@ -426,13 +446,16 @@ NEXT_KEY::value""")
 
     def test_block_inheritance_with_target(self):
         """Block inheritance BLOCK[->§TARGET]: with children should be valid."""
-        doc = make_v4_doc("TEST", """INHERITED[->§BASE]:
-  CHILD::value""")
+        doc = make_v4_doc(
+            "TEST",
+            """INHERITED[->§BASE]:
+  CHILD::value""",
+        )
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
         # Should be valid - block inheritance with target
         self.assertTrue(is_valid, f"Expected block inheritance to be valid, got: {messages}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

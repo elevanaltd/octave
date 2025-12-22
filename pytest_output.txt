@@ -7,4 +7,4 @@ configfile: pyproject.toml
 plugins: anyio-4.12.0, hypothesis-6.148.7, cov-7.0.0
 collecting ... collected 81 items
 
-tests/unit/test_builtin_schemas.py::TestBuiltinSchemas::test_loads_meta_schema 
+tests/unit/test_builtin_schemas.py::TestBuiltinSchemas::test_loads_meta_schema

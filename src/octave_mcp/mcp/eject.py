@@ -35,17 +35,11 @@ class EjectTool(BaseTool):
         schema = SchemaBuilder()
 
         schema.add_parameter(
-            "content",
-            "string",
-            required=False,
-            description="OCTAVE content to eject (null for template generation)"
+            "content", "string", required=False, description="OCTAVE content to eject (null for template generation)"
         )
 
         schema.add_parameter(
-            "schema",
-            "string",
-            required=True,
-            description="Schema name for validation or template generation"
+            "schema", "string", required=True, description="Schema name for validation or template generation"
         )
 
         schema.add_parameter(
@@ -53,15 +47,11 @@ class EjectTool(BaseTool):
             "string",
             required=False,
             description="Projection mode: canonical (full), authoring (lenient), executive (STATUS,RISKS,DECISIONS), developer (TESTS,CI,DEPS)",
-            enum=["canonical", "authoring", "executive", "developer"]
+            enum=["canonical", "authoring", "executive", "developer"],
         )
 
         schema.add_parameter(
-            "format",
-            "string",
-            required=False,
-            description="Output format",
-            enum=["octave", "json", "yaml", "markdown"]
+            "format", "string", required=False, description="Output format", enum=["octave", "json", "yaml", "markdown"]
         )
 
         return schema.build()
@@ -98,22 +88,14 @@ META:
 
 # Template generated for schema: {schema_name}
 ===END==="""
-            return {
-                "output": template,
-                "lossy": False,
-                "fields_omitted": []
-            }
+            return {"output": template, "lossy": False, "fields_omitted": []}
 
         # Parse content to AST
         try:
             doc = parse(content)
         except Exception as e:
             # If parsing fails, return error
-            return {
-                "output": f"# Parse error: {str(e)}\n{content}",
-                "lossy": False,
-                "fields_omitted": []
-            }
+            return {"output": f"# Parse error: {str(e)}\n{content}", "lossy": False, "fields_omitted": []}
 
         # Project to desired mode
         result = project(doc, mode=mode)
@@ -123,14 +105,6 @@ META:
         if output_format != "octave":
             # Return canonical OCTAVE with note
             output = f"# Format '{output_format}' not yet implemented - returning OCTAVE\n{result.output}"
-            return {
-                "output": output,
-                "lossy": result.lossy,
-                "fields_omitted": result.fields_omitted
-            }
+            return {"output": output, "lossy": result.lossy, "fields_omitted": result.fields_omitted}
 
-        return {
-            "output": result.output,
-            "lossy": result.lossy,
-            "fields_omitted": result.fields_omitted
-        }
+        return {"output": result.output, "lossy": result.lossy, "fields_omitted": result.fields_omitted}

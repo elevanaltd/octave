@@ -34,12 +34,12 @@ def create_server() -> Server:
             Tool(
                 name=ingest_tool.get_name(),
                 description=ingest_tool.get_description(),
-                inputSchema=ingest_tool.get_input_schema()
+                inputSchema=ingest_tool.get_input_schema(),
             ),
             Tool(
                 name=eject_tool.get_name(),
                 description=eject_tool.get_description(),
-                inputSchema=eject_tool.get_input_schema()
+                inputSchema=eject_tool.get_input_schema(),
             ),
         ]
 
@@ -69,12 +69,7 @@ def create_server() -> Server:
             raise ValueError(f"Unknown tool: {name}")
 
         # Return result as TextContent
-        return [
-            TextContent(
-                type="text",
-                text=json.dumps(result, indent=2)
-            )
-        ]
+        return [TextContent(type="text", text=json.dumps(result, indent=2))]
 
     return server
 
@@ -84,11 +79,7 @@ async def main():
     server = create_server()
 
     async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            server.create_initialization_options()
-        )
+        await server.run(read_stream, write_stream, server.create_initialization_options())
 
 
 def run():

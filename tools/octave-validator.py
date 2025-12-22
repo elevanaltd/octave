@@ -49,13 +49,13 @@ class OctaveValidator:
 
     def _strip_yaml_frontmatter(self, document: str) -> str:
         """Remove YAML frontmatter from document (for HestAI profiles)."""
-        lines = document.split('\n')
-        if lines and lines[0].strip() == '---':
+        lines = document.split("\n")
+        if lines and lines[0].strip() == "---":
             # Find closing ---
             for i in range(1, len(lines)):
-                if lines[i].strip() == '---':
+                if lines[i].strip() == "---":
                     # Return document without frontmatter
-                    return '\n'.join(lines[i+1:])
+                    return "\n".join(lines[i + 1 :])
         return document
 
     def _validate_json_octave(self, document: str) -> tuple[bool, list[str]]:
@@ -66,7 +66,9 @@ class OctaveValidator:
             self.errors.append(f"Invalid JSON format: {e}")
             return False, self.errors
 
-        self.warnings.append("JSON validation is a stub. For full validation, use a JSON Schema validator against json/JSON_SCHEMA.md.")
+        self.warnings.append(
+            "JSON validation is a stub. For full validation, use a JSON Schema validator against json/JSON_SCHEMA.md."
+        )
         return True, self.warnings
 
     def _validate_native_octave(self, document: str) -> tuple[bool, list[str]]:
@@ -103,17 +105,23 @@ class OctaveValidator:
                 continue
 
             # Track list context (opening/closing brackets)
-            list_depth += stripped_line.count('[') - stripped_line.count(']')
+            list_depth += stripped_line.count("[") - stripped_line.count("]")
             in_list = list_depth > 0
 
             # Check for incorrect assignment operators (skip marker lines)
-            if not stripped_line.startswith("===") and (" = " in scan_line or (": " in scan_line and "::" not in scan_line) or (" :" in scan_line and "::" not in scan_line)):
-                self.warnings.append(f"Line {line_num}: Non-canonical assignment style. Prefer 'KEY::VALUE' for assignments.")
+            if not stripped_line.startswith("===") and (
+                " = " in scan_line
+                or (": " in scan_line and "::" not in scan_line)
+                or (" :" in scan_line and "::" not in scan_line)
+            ):
+                self.warnings.append(
+                    f"Line {line_num}: Non-canonical assignment style. Prefer 'KEY::VALUE' for assignments."
+                )
 
             # Validate core operator usage (v5.1.0 guidance)
 
             # Check for progression operator -> (only allowed in lists)
-            if '->' in scan_line and not re.search(r'\[.*->.*\]', scan_line) and not in_list:
+            if "->" in scan_line and not re.search(r"\[.*->.*\]", scan_line) and not in_list:
                 msg = f"Line {line_num}: Progression operator '->' can only be used inside lists (e.g., [A->B->C])."
                 if self.profile in ["hestai-agent", "hestai-skill"]:
                     self.warnings.append(msg)
@@ -121,34 +129,40 @@ class OctaveValidator:
                     self.errors.append(msg)
 
             # Check for constraint operator & (only allowed inside brackets)
-            if '&' in scan_line and not in_list:
-                self.errors.append(f"Line {line_num}: Constraint operator '&' can only be used inside brackets (e.g., [\"value\"&REQ&REGEX->§TARGET]).")
+            if "&" in scan_line and not in_list:
+                self.errors.append(
+                    f"Line {line_num}: Constraint operator '&' can only be used inside brackets (e.g., [\"value\"&REQ&REGEX->§TARGET])."
+                )
 
             # Check for tension operator _VERSUS_ (cannot be chained)
-            if '_VERSUS_' in scan_line:
-                versus_count = scan_line.count('_VERSUS_')
+            if "_VERSUS_" in scan_line:
+                versus_count = scan_line.count("_VERSUS_")
                 if versus_count > 1:
                     self.errors.append(f"Line {line_num}: Tension operator '_VERSUS_' cannot be chained.")
 
             # Normalize/validate target selector: allow '#TARGET' form and canonical '§TARGET'
-            if '-> #'.lower() in scan_line.lower() or re.search(r'->\s*#', scan_line):
+            if "-> #".lower() in scan_line.lower() or re.search(r"->\s*#", scan_line):
                 # only warn; canonicalization occurs in ingest, validator just flags non-canonical
-                self.warnings.append(f"Line {line_num}: Use canonical target selector '→§TARGET' or '->§TARGET' (authoring may use '-> #TARGET').")
+                self.warnings.append(
+                    f"Line {line_num}: Use canonical target selector '→§TARGET' or '->§TARGET' (authoring may use '-> #TARGET')."
+                )
 
             # Check for incorrect indentation (must be multiple of 2)
-            indentation = len(line) - len(line.lstrip(' '))
+            indentation = len(line) - len(line.lstrip(" "))
             if indentation % 2 != 0:
                 self.warnings.append(f"Line {line_num}: Indentation is not a multiple of 2 spaces.")
 
             # Check for tabs
-            if '\t' in line:
+            if "\t" in line:
                 self.errors.append(f"Line {line_num}: Tab characters are not allowed. Use spaces for indentation.")
 
             # Basic key format validation (ignore :: inside quoted strings)
             if "::" in scan_line:
                 key = scan_line.split("::")[0]
-                if not re.match(r'^[A-Za-z_][A-Za-z0-9_]*$', key):
-                    self.warnings.append(f"Line {line_num}: Key '{key}' may not follow best practices (alphanumeric and underscores, starting with a letter or underscore).")
+                if not re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", key):
+                    self.warnings.append(
+                        f"Line {line_num}: Key '{key}' may not follow best practices (alphanumeric and underscores, starting with a letter or underscore)."
+                    )
 
         # HestAI-skill specific validation
         if self.profile == "hestai-skill":
@@ -166,7 +180,9 @@ class OctaveValidator:
             i += 1
 
         if i >= footer_index or lines[i].strip() != "META:":
-            self.errors.append("Missing META section. Expected META: immediately after optional preface comments/blank lines.")
+            self.errors.append(
+                "Missing META section. Expected META: immediately after optional preface comments/blank lines."
+            )
             return -1
 
         meta_line_index = i
@@ -206,10 +222,29 @@ class OctaveValidator:
 
         # Unknown fields policy (META-only initial enforcement)
         allowed_meta = {
-            "TYPE","VERSION","STATUS","DATE","NAME","PURPOSE","OCTAVE_VERSION",
-            "FIDELITY_TARGET","COMPRESSION_TARGET","PRINCIPLE","MOTTO","EVOLUTION",
-            "FORMULA","BREAKTHROUGH","CHANGES","OPERATORS","ASCII_ALIASES","COMPRESSION",
-            "PRINCIPLE","EVOLUTION","OBJECTIVE","AUTHOR","LICENSE","SCHEMA","ROLE"
+            "TYPE",
+            "VERSION",
+            "STATUS",
+            "DATE",
+            "NAME",
+            "PURPOSE",
+            "OCTAVE_VERSION",
+            "FIDELITY_TARGET",
+            "COMPRESSION_TARGET",
+            "PRINCIPLE",
+            "MOTTO",
+            "EVOLUTION",
+            "FORMULA",
+            "BREAKTHROUGH",
+            "CHANGES",
+            "OPERATORS",
+            "ASCII_ALIASES",
+            "COMPRESSION",
+            "OBJECTIVE",
+            "AUTHOR",
+            "LICENSE",
+            "SCHEMA",
+            "ROLE",
         }
         unknown_keys = [k for k in meta.keys() if k not in allowed_meta]
         if unknown_keys:
@@ -227,7 +262,7 @@ class OctaveValidator:
             self.warnings.append("HestAI-skill documents should include SECTION_ORDER for navigation.")
 
         # Check for @N section anchors
-        section_anchors = re.findall(r'@(\d+)::', document)
+        section_anchors = re.findall(r"@(\d+)::", document)
         if section_anchors and has_section_order:
             # Verify anchors are sequential
             anchor_nums = sorted([int(n) for n in section_anchors])
@@ -241,10 +276,16 @@ class OctaveValidator:
             return "✅ OCTAVE document appears to be valid."
         elif is_valid:
             warning_count = len(self.warnings)
-            return f"✅ OCTAVE document is valid but has {warning_count} suggestion{'s' if warning_count > 1 else ''}:\n" + "\n".join([f"  - {w}" for w in self.warnings])
+            return (
+                f"✅ OCTAVE document is valid but has {warning_count} suggestion{'s' if warning_count > 1 else ''}:\n"
+                + "\n".join([f"  - {w}" for w in self.warnings])
+            )
         else:
             error_count = len(self.errors)
-            return f"❌ OCTAVE document is invalid with {error_count} error{'s' if error_count > 1 else ''}:\n" + "\n".join([f"  - {e}" for e in self.errors])
+            return (
+                f"❌ OCTAVE document is invalid with {error_count} error{'s' if error_count > 1 else ''}:\n"
+                + "\n".join([f"  - {e}" for e in self.errors])
+            )
 
 
 def validate_octave_document(octave_text: str, version: str = "5.1.0", profile: str = "protocol") -> str:
@@ -253,16 +294,18 @@ def validate_octave_document(octave_text: str, version: str = "5.1.0", profile: 
     is_valid, messages = validator.validate_octave_document(octave_text)
     return validator.format_results(is_valid, messages)
 
+
 def validate_octave_file(file_path: str, version: str = "5.1.0", profile: str = "protocol") -> str:
     """Validates an OCTAVE document file."""
     try:
-        with open(file_path, encoding='utf-8') as f:
+        with open(file_path, encoding="utf-8") as f:
             octave_text = f.read()
         validator = OctaveValidator(version, profile)
         is_valid, messages = validator.validate_octave_document(octave_text)
         return validator.format_results(is_valid, messages)
     except Exception as e:
         return f"❌ File error (invalid): {str(e)}"
+
 
 def scan_directory(directory: str, profile: str = "protocol", version: str = "5.1.0") -> list[dict]:
     """Scan directory for *.oct.md files and validate each."""
@@ -272,22 +315,15 @@ def scan_directory(directory: str, profile: str = "protocol", version: str = "5.
     for file_path in oct_files:
         validator = OctaveValidator(version, profile)
         try:
-            with open(file_path, encoding='utf-8') as f:
+            with open(file_path, encoding="utf-8") as f:
                 content = f.read()
             is_valid, messages = validator.validate_octave_document(content)
-            results.append({
-                "file": str(file_path),
-                "valid": is_valid,
-                "messages": messages
-            })
+            results.append({"file": str(file_path), "valid": is_valid, "messages": messages})
         except Exception as e:
-            results.append({
-                "file": str(file_path),
-                "valid": False,
-                "messages": [f"Error reading file: {str(e)}"]
-            })
+            results.append({"file": str(file_path), "valid": False, "messages": [f"Error reading file: {str(e)}"]})
 
     return results
+
 
 def format_scan_results(results: list[dict]) -> str:
     """Format scan results into readable summary."""
@@ -317,14 +353,20 @@ def format_scan_results(results: list[dict]) -> str:
 
     return "\n".join(output)
 
+
 def main() -> None:
     """Command-line interface for OCTAVE validator."""
-    parser = argparse.ArgumentParser(description='Validate OCTAVE documents against the v5.1.0 specification.')
-    parser.add_argument('file', nargs='?', help='Path to OCTAVE document file (optional if using --path)')
-    parser.add_argument('--version', '-v', default='5.1.0', help='OCTAVE version to validate against (default: 5.1.0)')
-    parser.add_argument('--profile', '-p', choices=['protocol', 'hestai-agent', 'hestai-skill'],
-                        default='protocol', help='Validation profile (default: protocol)')
-    parser.add_argument('--path', '-d', help='Scan directory for *.oct.md files')
+    parser = argparse.ArgumentParser(description="Validate OCTAVE documents against the v5.1.0 specification.")
+    parser.add_argument("file", nargs="?", help="Path to OCTAVE document file (optional if using --path)")
+    parser.add_argument("--version", "-v", default="5.1.0", help="OCTAVE version to validate against (default: 5.1.0)")
+    parser.add_argument(
+        "--profile",
+        "-p",
+        choices=["protocol", "hestai-agent", "hestai-skill"],
+        default="protocol",
+        help="Validation profile (default: protocol)",
+    )
+    parser.add_argument("--path", "-d", help="Scan directory for *.oct.md files")
 
     args = parser.parse_args()
 

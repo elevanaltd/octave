@@ -35,17 +35,11 @@ class IngestTool(BaseTool):
         schema = SchemaBuilder()
 
         schema.add_parameter(
-            "content",
-            "string",
-            required=True,
-            description="OCTAVE content to ingest (lenient format accepted)"
+            "content", "string", required=True, description="OCTAVE content to ingest (lenient format accepted)"
         )
 
         schema.add_parameter(
-            "schema",
-            "string",
-            required=True,
-            description="Schema name for validation (e.g., 'META', 'SESSION_LOG')"
+            "schema", "string", required=True, description="Schema name for validation (e.g., 'META', 'SESSION_LOG')"
         )
 
         schema.add_parameter(
@@ -53,22 +47,14 @@ class IngestTool(BaseTool):
             "string",
             required=False,
             description="Compression tier for output",
-            enum=["LOSSLESS", "CONSERVATIVE", "AGGRESSIVE", "ULTRA"]
+            enum=["LOSSLESS", "CONSERVATIVE", "AGGRESSIVE", "ULTRA"],
         )
 
         schema.add_parameter(
-            "fix",
-            "boolean",
-            required=False,
-            description="Enable TIER_REPAIR fixes (enum casefold, type coercion)"
+            "fix", "boolean", required=False, description="Enable TIER_REPAIR fixes (enum casefold, type coercion)"
         )
 
-        schema.add_parameter(
-            "verbose",
-            "boolean",
-            required=False,
-            description="Show pipeline stages in output"
-        )
+        schema.add_parameter("verbose", "boolean", required=False, description="Show pipeline stages in output")
 
         return schema.build()
 
@@ -127,10 +113,7 @@ class IngestTool(BaseTool):
             doc = parse(content)  # Uses tokenize internally
         except Exception as e:
             # If parsing fails, return error in warnings
-            result["warnings"].append({
-                "code": "E001",
-                "message": f"Parse error: {str(e)}"
-            })
+            result["warnings"].append({"code": "E001", "message": f"Parse error: {str(e)}"})
             # Return minimal canonical form
             result["canonical"] = content
             if verbose:
@@ -154,14 +137,16 @@ class IngestTool(BaseTool):
         validation_errors = validator.validate(doc, strict=False)
 
         if validation_errors:
-            result["warnings"].extend([
-                {
-                    "code": err.code,
-                    "message": err.message,
-                    "field": err.field_path,
-                }
-                for err in validation_errors
-            ])
+            result["warnings"].extend(
+                [
+                    {
+                        "code": err.code,
+                        "message": err.message,
+                        "field": err.field_path,
+                    }
+                    for err in validation_errors
+                ]
+            )
 
         if verbose:
             stages["VALIDATE_COMPLETE"] = f"{len(validation_errors)} validation errors"
@@ -184,14 +169,16 @@ class IngestTool(BaseTool):
             validation_errors = validator.validate(doc, strict=False)
 
             if validation_errors:
-                result["warnings"].extend([
-                    {
-                        "code": err.code,
-                        "message": err.message,
-                        "field": err.field_path,
-                    }
-                    for err in validation_errors
-                ])
+                result["warnings"].extend(
+                    [
+                        {
+                            "code": err.code,
+                            "message": err.message,
+                            "field": err.field_path,
+                        }
+                        for err in validation_errors
+                    ]
+                )
 
             if verbose:
                 stages["VALIDATE_POST_REPAIR_COMPLETE"] = f"{len(validation_errors)} validation errors remain"

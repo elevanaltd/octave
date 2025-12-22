@@ -19,7 +19,8 @@ from octave_mcp.schemas.loader import load_builtin_schemas
 
 class TestLenientInputs:
     """Test vectors for lenient input acceptance."""
-# ... (lines 13-68 unchanged)
+
+    # ... (lines 13-68 unchanged)
     def test_ascii_vs_word_boundary_required(self):
         """vs requires word boundaries (rejects SpeedvsQuality)."""
         # This should NOT tokenize 'vs' in SpeedvsQuality
@@ -37,7 +38,8 @@ SpeedvsQuality::value
         except (ValueError, LexerError):
             # May error on invalid syntax
             assert True
-# ... (lines 81-201 unchanged)
+
+    # ... (lines 81-201 unchanged)
     def test_unique_enum_casefold_match(self):
         """Unique enum match via case-insensitive comparison."""
         # If schema has [ACTIVE, DRAFT] and input is "active"
@@ -54,7 +56,8 @@ STATUS::active
         # (if schema supports it)
         errors = validate(ast, schema=schemas.get("TEST"))
         assert isinstance(errors, list)
-# ... (lines 279-282)
+
+    # ... (lines 279-282)
     def test_target_not_auto_inferred(self):
         """Routing target not auto-inferred."""
         doc = """===TEST===
@@ -141,6 +144,8 @@ FIELD_C::value_c
         assert "FIELD_A" in canonical.output
         assert "FIELD_B" in canonical.output
         assert "FIELD_C" in canonical.output
+
+
 # ... (lines 359-382)
 class TestNFCNormalization:
     """Test vectors for Unicode NFC normalization."""

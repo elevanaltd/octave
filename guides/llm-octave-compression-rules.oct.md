@@ -13,7 +13,7 @@
   RAT::"Rationale"
   MECH::"Mechanism"
   METRIC::"Measurement"
-  
+
   // Field definitions for rule structures
   FIELD:GAIN::"Benefit or positive outcome in a tradeoff"
   FIELD:LOSS::"Sacrifice or negative outcome in a tradeoff"
@@ -52,7 +52,7 @@ SECTION_I:CAUSAL_PRESERVATION_RULES:
     EXAMPLE:
       BAD::[RANGED_ESTIMATES→CLARITY]
       GOOD::[RANGED_ESTIMATES→CLARITY][BECAUSE::"Shows impact range not fixed date"]
-      
+
   RULE:MECHANISM_ANCHOR:
     MANDATE::"Abstract patterns must include one MECH statement"
     FORMAT::PATTERN::"name"[MECH::"specific_how"]
@@ -76,7 +76,7 @@ SECTION_II:GROUNDING_RULES:
         WHEN::"Client delivers specs 3 days late"
         THEN::"Timeline auto-extends, premium invoice generated"
         IMPACT::"Project continues, client sees cost of delay"
-        
+
   RULE:CONCRETE_ANCHOR:
     MANDATE::"Every 3rd abstraction needs grounding example"
     FORMAT::ABSTRACT::pattern[EX::"real_instance"]
@@ -92,7 +92,7 @@ SECTION_III:EVIDENCE_PRESERVATION:
     EXAMPLE:
       METRIC:WORKFLOW_REDUCTION::200_workflows[6_weeks→2_hours]
       METRIC:LIQUIDPLANNER_COST::£28/user/month[Professional_tier]
-      
+
   RULE:PROOF_WEIGHT:
     MANDATE::"Tag evidence strength explicitly"
     LEVELS::"[PROVEN, TESTED, CLAIMED, THEORETICAL]"
@@ -108,7 +108,7 @@ SECTION_IV:NUANCE_CAPTURE:
     EXAMPLE:
       CHOICE:WORKFRONT[GAIN::Adobe_integration _VERSUS_ LOSS::Enterprise_cost]
       CHOICE:CUSTOM[GAIN::Perfect_fit _VERSUS_ LOSS::6_month_development]
-      
+
   RULE:HUMAN_FACTORS:
     MANDATE::"Adoption strategies must include PSYCHOLOGY"
     FORMAT::ADOPTION::method[PSYCHOLOGY::"human_insight"]
@@ -124,7 +124,7 @@ SECTION_V:TRANSFER_MECHANICS:
     FORMAT::INSIGHT::pattern[TRANSFER::"how_to_apply"]
     EXAMPLE:
       INSIGHT:FILM_CHAOS_MANAGEMENT[TRANSFER::"Create version branches like shooting schedules"]
-      
+
   RULE:ANALOGY_BRIDGE:
     MANDATE::"Metaphors need application bridge"
     FORMAT::PATTERN::metaphor[BRIDGE::"specific_application"]
@@ -143,7 +143,7 @@ SECTION_VI:OPERATIONAL_DETAIL:
         TOUCH:approval::"One-click in portal",
         TOUCH:delivery::"Download with changelog"
       ]
-      
+
   RULE:MECHANISM_CHAIN:
     MANDATE::"Complex processes show 3-step FLOW"
     FORMAT::PROCESS::name[FLOW::[step1→step2→step3]]
@@ -164,9 +164,9 @@ SECTION_VII:EVALUATION_SPECIFICATION:
     EXAMPLE:
       EVAL:chaos_handling:
         WEIGHT::HIGH
-        SCORE::9/10  
+        SCORE::9/10
         REASON::"Ranged estimates + dynamic scheduling"
-        
+
   RULE:SUCCESS_CRITERIA:
     MANDATE::"Each solution defines SUCCESS as"
     FORMAT::SUCCESS::[measurable_outcome]
@@ -181,7 +181,7 @@ SECTION_VIII:PHILOSOPHICAL_ANCHORING:
     FORMAT::PATTERN::name[ETHOS::"value_connection"]
     EXAMPLE:
       PATTERN:[CHAOS→FLEXIBILITY][ETHOS::"Our chaos-as-strength philosophy"]
-      
+
   RULE:META_PATTERN_DEFINITION:
     MANDATE::"First use of archetype includes MEANS"
     FORMAT::ARCHETYPE::name[MEANS::"operational_definition"]
@@ -194,11 +194,11 @@ SECTION_IX:COMPRESSION_META_RULES:
   RULE:COMPRESSION_RATIO_LIMIT:
     MANDATE::"No more than 10:1 compression for reasoning-heavy content"
     ROT::"If explaining WHY matters, keep more context"
-    
+
   RULE:EXAMPLE_DENSITY:
     MANDATE::"1 concrete example per 200 tokens of abstraction"
     ROT::"Grounds LLM reasoning in specifics"
-    
+
   RULE:PROGRESSIVE_REVELATION:
     MANDATE::"Most compressed view first, EXPAND sections for depth"
     FORMAT:
@@ -214,7 +214,7 @@ SECTION_X:VALIDATION_CHECKLIST:
 
   CHECKLIST:LLM_COMPREHENSION:
     □ RULE:BECAUSE_CHAIN::Every major pattern has BECAUSE clause
-    □ RULE:SCENARIO_MINIMUM::One SCENARIO per major section  
+    □ RULE:SCENARIO_MINIMUM::One SCENARIO per major section
     □ RULE:KEY_METRICS::Key metrics preserved with context
     □ RULE:TRADEOFF_EXPLICIT::Tradeoffs explicit (GAIN _VERSUS_ LOSS)
     □ RULE:HUMAN_FACTORS::Human factors included

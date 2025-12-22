@@ -8,12 +8,12 @@
   // Compression approaches
   OCTAVE::"Olympian Common Text And Vocabulary Engine - structured format"
   LLMLINGUA::"Microsoft's algorithmic prompt compression framework (2023-2024)"
-  
+
   // Key metrics
   COMP_RATIO::"compression_ratio"
   TOKEN_REDUCTION::"percentage of tokens removed"
   ZERO_SHOT::"works without fine-tuning"
-  
+
   // Evaluation dimensions
   CLARITY::"human_readability+structure"
   EFFICIENCY::"token_count+speed"
@@ -30,7 +30,7 @@ META:
 ---
 
 CORE_DIFFERENCES:
-  
+
   OCTAVE_APPROACH:
     METHOD::"Manual schema engineering"
     SYNTAX::["::" for assignment, "->" for progression, "+_VERSUS_" for relationships]
@@ -38,7 +38,7 @@ CORE_DIFFERENCES:
     WEAKNESS::EFFICIENCY[key_overhead_adds_tokens]
     USE_CASE::"Structured configs, knowledge representation"
     COMPRESSION::MANUAL[define_once_reference_many]
-    
+
   LLMLINGUA_APPROACH:
     METHOD::"Algorithmic token dropping via perplexity"
     COMPRESSION::AUTOMATIC[removes_95%_tokens]
@@ -53,31 +53,31 @@ CORE_DIFFERENCES:
 ---
 
 COMPRESSION_ANALYSIS:
-  
+
   TOKEN_EFFICIENCY:
     LLMLINGUA_METRICS:
       COMP_RATIO::20x[2000→100_tokens]
       PERFORMANCE_LOSS::"minimal or none"
       MECHANISM::"Drop articles, prepositions, truncate words"
-      
+
     OCTAVE_METRICS:
       COMP_RATIO::2-5x[depends_on_repetition]
       OVERHEAD::KEY_NAMES+SYNTAX_CHARS
       MECHANISM::"Structure eliminates explanatory text"
       LIMITATION::"port::8080 uses more chars than 'port 8080'"
-      
+
     VERDICT::LLMLINGUA[BECAUSE::"Aggressive automated removal vs manual structuring"]
 
   EXAMPLE_COMPARISON:
     SCENARIO::"Item purchase description"
-    
+
     NATURAL_LANGUAGE::"""
-    Sam bought a dozen boxes, each with 30 highlighter pens inside, 
+    Sam bought a dozen boxes, each with 30 highlighter pens inside,
     for $10 each box. He rearranged five of these boxes into packages of six
     """
-    
+
     LLMLINGUA_OUTPUT::"Sam bought dozen boxes each 30 highl pens $10. reanged 5 into 6-per"
-    
+
     OCTAVE_OUTPUT:
       PURCHASE:
         quantity::12
@@ -89,7 +89,7 @@ COMPRESSION_ANALYSIS:
         type::"repackage"
         boxes_used::5
         new_package_size::6
-        
+
     TOKEN_COUNT::[NATURAL:40, LLMLINGUA:14, OCTAVE:35]
 
 ---
@@ -106,7 +106,7 @@ CLARITY_STRUCTURE_ANALYSIS:
     HUMAN_READABILITY::EXCELLENT[labeled_unambiguous]
     LLM_PARSING::GOOD[IF_familiar_with_structured_formats]
     CHALLENGE::SYMBOLS[+_VERSUS_-> need_context]
-    
+
   LLMLINGUA_CLARITY:
     OUTPUT_STYLE::"Telegraph/shorthand"
     HUMAN_READABILITY::POOR[requires_reconstruction]
@@ -126,7 +126,7 @@ ZERO_SHOT_PERFORMANCE:
         "Incorrect indentation"
       ]
     IMPROVEMENT::"Add comment: // + means combined"
-    
+
   LLMLINGUA_ZERO_SHOT:
     PROVEN::TRUE[works_across_models]
     INTEGRATION::[LangChain, production_ready]
@@ -142,7 +142,7 @@ ADAPTABILITY_COMPARISON:
     TESTED_ON::[CoT, summarization, QA, code_gen]
     DYNAMIC::"Query-aware compression available"
     AUTOMATION::COMPLETE[feed_text→get_compressed]
-    
+
   OCTAVE_ADAPTABILITY:
     SCOPE::"Domain-specific schemas required"
     FLEXIBILITY::"High in theory, manual in practice"
@@ -158,18 +158,18 @@ IMPROVEMENT_RECOMMENDATIONS:
       IDEA::"Allow telegram-style values"
       EXAMPLE::description::"bought dozn boxes 30 highl pens"
       BENEFIT::"Combines structure with brevity"
-      
+
     AUTO_GENERATION:
       TOOL::"Octave-ifier using LLM"
       FUNCTION::"Convert natural text → OCTAVE schema"
-      
+
     SYMBOL_FAMILIARITY:
       REPLACE::[
         "->" WITH "->",
         "+" WITH "+",
         "_VERSUS_" WITH "vs"
       ]
-      
+
     ERROR_TOLERANCE:
       MODE::"Octave-lite"
       FEATURES::[
@@ -177,7 +177,7 @@ IMPROVEMENT_RECOMMENDATIONS:
         "Auto-fix invalid key names",
         "Parser self-healing"
       ]
-      
+
     PRIORITY_TAGGING:
       SYNTAX::"!!important_field"
       PURPOSE::"Guide LLM attention"
@@ -198,15 +198,15 @@ CONCLUSIONS:
   PHILOSOPHY_CONTRAST:
     OCTAVE::KNOWLEDGE_ENGINEERING[human_designs_structure]
     LLMLINGUA::MODEL_DRIVEN[AI_decides_importance]
-    
+
   STRENGTH_SUMMARY:
     OCTAVE::[consistency, clarity, deterministic_parsing, human_maintainable]
     LLMLINGUA::[brevity, generality, automation, proven_20x_compression]
-    
+
   WEAKNESS_SUMMARY:
     OCTAVE::[token_overhead, manual_effort, rigid_syntax, domain_specific]
     LLMLINGUA::[human_unfriendly, no_structure, requires_algorithm]
-    
+
   OPTIMAL_USAGE:
     PATTERN::[OCTAVE_structure+LLMLINGUA_compression]
     RATIONALE::"Structure where needed, compress where possible"

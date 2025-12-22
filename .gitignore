@@ -26,6 +26,7 @@ Thumbs.db
 .pytest_cache/
 .coverage
 htmlcov/
+.hypothesis/
 
 # Temporary
 *.tmp

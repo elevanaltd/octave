@@ -48,9 +48,7 @@ class TestEjectTool:
 
         mode_schema = schema["properties"]["mode"]
         assert "enum" in mode_schema
-        assert set(mode_schema["enum"]) == {
-            "canonical", "authoring", "executive", "developer"
-        }
+        assert set(mode_schema["enum"]) == {"canonical", "authoring", "executive", "developer"}
 
     def test_input_schema_has_format_enum(self, eject_tool):
         """Input schema defines format enumeration."""
@@ -58,9 +56,7 @@ class TestEjectTool:
 
         format_schema = schema["properties"]["format"]
         assert "enum" in format_schema
-        assert set(format_schema["enum"]) == {
-            "octave", "json", "yaml", "markdown"
-        }
+        assert set(format_schema["enum"]) == {"octave", "json", "yaml", "markdown"}
 
     @pytest.mark.asyncio
     async def test_eject_canonical_mode(self, eject_tool):
@@ -72,11 +68,7 @@ META:
 STATUS::active
 ===END==="""
 
-        result = await eject_tool.execute(
-            content=content,
-            schema="TEST",
-            mode="canonical"
-        )
+        result = await eject_tool.execute(content=content, schema="TEST", mode="canonical")
 
         assert result["output"] is not None
         assert result["lossy"] is False
@@ -93,11 +85,7 @@ META:
 STATUS::active
 ===END==="""
 
-        result = await eject_tool.execute(
-            content=content,
-            schema="TEST",
-            mode="authoring"
-        )
+        result = await eject_tool.execute(content=content, schema="TEST", mode="authoring")
 
         assert result["output"] is not None
         assert result["lossy"] is False
@@ -116,11 +104,7 @@ CI::green
 DEPS::[lib1, lib2]
 ===END==="""
 
-        result = await eject_tool.execute(
-            content=content,
-            schema="TEST",
-            mode="executive"
-        )
+        result = await eject_tool.execute(content=content, schema="TEST", mode="executive")
 
         assert result["lossy"] is True
         assert "TESTS" in result["fields_omitted"]
@@ -140,11 +124,7 @@ DECISIONS::[decision1]
 TESTS::passing
 ===END==="""
 
-        result = await eject_tool.execute(
-            content=content,
-            schema="TEST",
-            mode="developer"
-        )
+        result = await eject_tool.execute(content=content, schema="TEST", mode="developer")
 
         assert result["lossy"] is True
         # Developer mode omits executive summary fields
@@ -153,10 +133,7 @@ TESTS::passing
     @pytest.mark.asyncio
     async def test_eject_null_content_generates_template(self, eject_tool):
         """Eject with null content generates template for schema."""
-        result = await eject_tool.execute(
-            content=None,
-            schema="TEST"
-        )
+        result = await eject_tool.execute(content=None, schema="TEST")
 
         assert result["output"] is not None
         assert result["lossy"] is False
@@ -173,10 +150,7 @@ META:
 STATUS::active
 ===END==="""
 
-        result = await eject_tool.execute(
-            content=content,
-            schema="TEST"
-        )
+        result = await eject_tool.execute(content=content, schema="TEST")
 
         assert result["lossy"] is False
         assert result["fields_omitted"] == []
@@ -191,11 +165,7 @@ META:
 STATUS::active
 ===END==="""
 
-        result = await eject_tool.execute(
-            content=content,
-            schema="TEST",
-            format="octave"
-        )
+        result = await eject_tool.execute(content=content, schema="TEST", format="octave")
 
         assert result["output"] is not None
         # OCTAVE format uses envelopes

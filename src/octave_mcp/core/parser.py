@@ -202,13 +202,12 @@ class Parser:
             # E001: Check if there's a value on the same line as the block operator
             # This catches "KEY: value" which should be "KEY::value"
             next_token = self.current()
-            if (next_token.type == TokenType.IDENTIFIER and
-                next_token.line == block_token.line):
+            if next_token.type == TokenType.IDENTIFIER and next_token.line == block_token.line:
                 raise ParserError(
                     "Single colon assignment not allowed. Use KEY::value (double colon). "
                     "OCTAVE uses :: for assignment because : is the block operator. This prevents ambiguity.",
                     block_token,
-                    "E001"
+                    "E001",
                 )
 
             self.skip_whitespace()

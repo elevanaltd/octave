@@ -88,8 +88,8 @@ Literate and Behavior-Driven Specifications (e.g. Gherkin/Cucumber)
 
 What they solve: Another angle on executable specification is Behavior-Driven Development (BDD) tools like Cucumber, which use a semi-structured natural language format (Gherkin syntax: “Given… When… Then…”) to specify behavior examples. These scenarios read like plain English documentation of system behavior and are linked to code (“step definitions”) that execute the described actions. This isn’t a schema for data format, but it is a unified way to express an example and a validation in one. For instance, a Gherkin scenario might say:
 
-Given a user with ID "sess_123" exists  
-When the user requests their profile  
+Given a user with ID "sess_123" exists
+When the user requests their profile
 Then the response should include "status": "ACTIVE"
 
 This is both documentation (teaching a human what should happen) and a test (which will fail if the code doesn’t produce the expected output).

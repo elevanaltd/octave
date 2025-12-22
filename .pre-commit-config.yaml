@@ -2,6 +2,12 @@
 # Install: pip install pre-commit && pre-commit install
 
 repos:
+  - repo: https://github.com/psf/black
+    rev: 24.10.0
+    hooks:
+      - id: black
+        language_version: python3.12
+
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.4
     hooks:

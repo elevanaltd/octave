@@ -76,6 +76,6 @@ OCTAVE compression, when properly implemented, not only maintains instruction fi
 
 ---
 
-**Study Date**: January 2025  
-**Test Series**: C019, C020  
+**Study Date**: January 2025
+**Test Series**: C019, C020
 **Validation**: Triple-blind assessment with unanimous consensus

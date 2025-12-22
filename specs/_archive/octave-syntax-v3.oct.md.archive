@@ -55,14 +55,14 @@ DATA_TYPES:
     """
     EMPTY::"\"\"" // Must quote empty strings
     ESCAPES::["\\\"", "\\\\", "\\n", "\\r", "\\t", "\\uXXXX"]
-    
+
   NUMBER:
     VALID::[42, 3.14, -1e10, Infinity, NaN]
     QUOTE_REQUIRED::["0xFF", "0o755", "0b1010", "1_000"]
-    
+
   BOOLEAN::[true, false] // Lowercase only
   NULL::null // Lowercase only
-  
+
   OBJECT:
     INLINE::{{key:value, key2:value2}} // Single colon, no nesting
     STRUCTURED::KEY: // With indented content
@@ -74,11 +74,11 @@ OPERATORS:
   SYNTHESIS:
     USAGE::A+B // Binary only, no chaining
     PURPOSE::"Creates emergent whole from parts"
-    
+
   TENSION:
     USAGE::A _VERSUS_ B // Binary only, no chaining
     PURPOSE::"Creative opposition driving evolution"
-    
+
   PROGRESSION:
     USAGE::[A->B->C] // Lists only, can chain
     PURPOSE::"Sequential transformation path"
@@ -102,7 +102,7 @@ VALIDATION:
     "KEY::START->END",     // Progression outside list
     "Undefined term"       // Using undefined 0.DEF term
   ]
-  
+
   COLON_USAGE:
     DOUBLE::"KEY::VALUE assignment"
     SINGLE::"KEY: structure OR {{inline:object}}"
@@ -131,22 +131,22 @@ CONFIG:
     port::8080 // Decimal number
     alt_port::HEX_PORT
     features::[auth, cache, logs]
-    
+
   database:
     connection::"postgresql://localhost/mydb"
     pool::{{min:5, max:20, timeout:30}}
-    
+
   workflow::[CONNECT->VALIDATE->PROCESS->RESPOND]
   architecture::APOLLO+HERMES
   balance::PERFORMANCE _VERSUS_ CONSISTENCY
-  
+
   description::"""
   Multi-line description with \n escapes
   and preserved   spacing
   """
-  
+
   empty_placeholder:
-  
+
 ===END===
 
 ---

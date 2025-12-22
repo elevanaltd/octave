@@ -5,7 +5,7 @@ Ready-to-use templates for OCTAVE adoption.
 ## Files
 
 ### `system-prompt-octave.md`
-**Purpose**: System message for ChatGPT, Claude, or other LLMs  
+**Purpose**: System message for ChatGPT, Claude, or other LLMs
 **Usage**: Copy into system prompt field of your LLM interface
 
 Features:
@@ -15,7 +15,7 @@ Features:
 - "Answer only in OCTAVE v5.1.0, no prose" directive
 
 ### `annotation-tiering-rubric.oct.md`
-**Purpose**: Guide for applying OCTAVE annotations strategically  
+**Purpose**: Guide for applying OCTAVE annotations strategically
 **Usage**: Reference when annotating codebases with OCTAVE
 
 Tiers:

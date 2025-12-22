@@ -3,11 +3,11 @@
 META:
   TIME::2024-03-15T14:23:00Z
   SEVERITY::CRITICAL
-  
+
 STATUS::ICARIAN_TRAJECTORY
 
 DOMAINS:
-  APOLLO::DEGRADED       // Analytics & monitoring 
+  APOLLO::DEGRADED       // Analytics & monitoring
   HERMES::OVERWHELMED    // Communications & API
   POSEIDON::THRASHING    // Data storage
 

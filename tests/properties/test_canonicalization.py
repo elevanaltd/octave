@@ -20,24 +20,28 @@ from octave_mcp.core.parser import parse
 @st.composite
 def octave_document(draw):
     """Generate valid OCTAVE document."""
-    name = draw(st.text(
-        alphabet=st.characters(whitelist_categories=("Lu",), whitelist_characters="_", max_codepoint=127),
-        min_size=1,
-        max_size=20
-    ).filter(lambda x: x and x[0].isalpha() and x.isupper()))
+    name = draw(
+        st.text(
+            alphabet=st.characters(whitelist_categories=("Lu",), whitelist_characters="_", max_codepoint=127),
+            min_size=1,
+            max_size=20,
+        ).filter(lambda x: x and x[0].isalpha() and x.isupper())
+    )
 
-    fields = draw(st.lists(
-        st.tuples(
-            st.text(
-                alphabet=st.characters(whitelist_categories=("Lu",), whitelist_characters="_", max_codepoint=127),
-                min_size=1,
-                max_size=15
-            ).filter(lambda x: x and x[0].isupper()),
-            st.text(min_size=1, max_size=50)
-        ),
-        min_size=1,
-        max_size=10
-    ))
+    fields = draw(
+        st.lists(
+            st.tuples(
+                st.text(
+                    alphabet=st.characters(whitelist_categories=("Lu",), whitelist_characters="_", max_codepoint=127),
+                    min_size=1,
+                    max_size=15,
+                ).filter(lambda x: x and x[0].isupper()),
+                st.text(min_size=1, max_size=50),
+            ),
+            min_size=1,
+            max_size=10,
+        )
+    )
 
     doc = f"==={name}===\n"
     for key, value in fields:

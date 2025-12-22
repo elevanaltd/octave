@@ -9,14 +9,13 @@ Usage:
 Based on empirical research showing 10.2x accuracy improvement.
 """
 
-import re
 import sys
 from pathlib import Path
 
 # Key files to annotate with OCTAVE (adapt these patterns for your codebase)
 KEY_FILES = [
     "src/core/packager.ts",
-    "src/core/security/securityCheck.ts", 
+    "src/core/security/securityCheck.ts",
     "src/core/metrics/TokenCounter.ts",
     "src/core/file/fileProcess.ts",
     "src/cli/cliRun.ts",
@@ -24,7 +23,7 @@ KEY_FILES = [
     "src/core/git/gitRemoteHandle.ts",
     "src/config/configSchema.ts",
     "src/core/output/outputGenerate.ts",
-    "src/core/file/workers/fileProcessWorker.ts"
+    "src/core/file/workers/fileProcessWorker.ts",
 ]
 
 # OCTAVE annotations for each file
@@ -50,7 +49,6 @@ PERFORMANCE:
   OPTIMIZATION::PARALLEL_PROCESSING
   MEMORY::STREAM_BASED
 """,
-
     "src/core/security/securityCheck.ts": """
 ===SECURITY_MODULE===
 // Security validation for suspicious file detection
@@ -67,7 +65,6 @@ SECURITY:
   CONCURRENCY::WORKER_POOL[4]
   FALSE_POSITIVE_RATE::MINIMIZE
 """,
-
     "src/core/metrics/TokenCounter.ts": """
 ===TOKEN_COUNTER===
 // Performance-critical token counting implementation
@@ -84,7 +81,6 @@ ALGORITHM:
   FALLBACK::CHARACTER_ESTIMATE
   ERROR_HANDLING::GRACEFUL_DEGRADATION
 """,
-
     "src/core/file/fileProcess.ts": """
 ===FILE_PROCESSOR===
 // Complex file processing pipeline
@@ -101,7 +97,6 @@ PIPELINE:
   ERROR_RECOVERY::SKIP_FAILED
   SUPPORTED_TYPES::[TS, JS, PY, JAVA, CPP]
 """,
-
     "src/cli/cliRun.ts": """
 ===CLI_INTERFACE===
 // Command-line interface and user interaction
@@ -118,7 +113,6 @@ INTERFACE:
   VALIDATION::STRICT
   HELP::CONTEXTUAL
 """,
-
     "src/core/treeSitter/parseStrategies/TypeScriptParseStrategy.ts": """
 ===TS_PARSER_STRATEGY===
 // TypeScript-specific AST parsing implementation
@@ -134,7 +128,6 @@ PARSING:
   AST_TRAVERSAL::VISITOR_PATTERN
   COMMENT_TYPES::[LINE, BLOCK, JSDOC]
 """,
-
     "src/core/git/gitRemoteHandle.ts": """
 ===GIT_REMOTE_HANDLER===
 // Remote repository operations with security
@@ -150,7 +143,6 @@ SECURITY:
   PROTOCOLS::[HTTPS_ONLY]
   ARCHIVE_VALIDATION::CHECKSUM
 """,
-
     "src/config/configSchema.ts": """
 ===CONFIG_SCHEMA===
 // Configuration structure and validation
@@ -166,7 +158,6 @@ SCHEMA:
   INCLUDE::GLOB_PATTERNS
   SECURITY::ENABLE_CHECK
 """,
-
     "src/core/output/outputGenerate.ts": """
 ===OUTPUT_GENERATOR===
 // Multi-format output generation engine
@@ -182,7 +173,6 @@ GENERATION:
   STREAMING::LARGE_FILES
   FORMATTING::CONFIGURABLE
 """,
-
     "src/core/file/workers/fileProcessWorker.ts": """
 ===FILE_WORKER===
 // Worker thread for parallel file processing
@@ -197,58 +187,60 @@ WORKER:
   COMMUNICATION::MESSAGE_PASSING
   ERROR_BOUNDARY::ISOLATED
   TIMEOUT::CONFIGURABLE
-"""
+""",
 }
+
 
 def process_repomix_file(input_file, output_file):
     """Process Repomix output to add OCTAVE annotations."""
-    with open(input_file, 'r', encoding='utf-8') as f:
+    with open(input_file, encoding="utf-8") as f:
         content = f.read()
-    
+
     annotated_count = 0
-    
+
     # Process each key file
     for file_path in KEY_FILES:
         # Find the file section - note the closing >
         pattern = f'<file path="{file_path}">'
-        
+
         if pattern in content:
             # Find the position after the file path tag, including newline
             start_pos = content.find(pattern) + len(pattern)
             # Find the newline after the tag
-            newline_pos = content.find('\n', start_pos)
+            newline_pos = content.find("\n", start_pos)
             if newline_pos != -1:
                 # Insert OCTAVE annotation after the newline
-                octave_annotation = OCTAVE_ANNOTATIONS.get(file_path, '')
+                octave_annotation = OCTAVE_ANNOTATIONS.get(file_path, "")
                 if octave_annotation:
-                    content = content[:newline_pos+1] + octave_annotation + content[newline_pos+1:]
+                    content = content[: newline_pos + 1] + octave_annotation + content[newline_pos + 1 :]
                     annotated_count += 1
                     print(f"Annotated: {file_path}")
-    
+
     # Write output
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(content)
-    
+
     print(f"\nTotal files annotated: {annotated_count}")
     return annotated_count
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python octave_enhance_targeted.py input.xml output.xml")
         sys.exit(1)
-    
+
     input_file = Path(sys.argv[1])
     output_file = Path(sys.argv[2])
-    
+
     if not input_file.exists():
         print(f"Error: Input file {input_file} does not exist")
         sys.exit(1)
-    
+
     # Ensure output directory exists
     output_file.parent.mkdir(parents=True, exist_ok=True)
-    
+
     # Process the file
     count = process_repomix_file(input_file, output_file)
-    
+
     print(f"\nTargeted OCTAVE enhancement complete: {output_file}")
     print(f"Files annotated with OCTAVE: {count}/{len(KEY_FILES)}")

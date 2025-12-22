@@ -43,11 +43,7 @@ class TestIngestTool:
         tool = IngestTool()
 
         result = await tool.execute(
-            content="===TEST===\nKEY::value\n===END===",
-            schema="TEST",
-            tier="LOSSLESS",
-            fix=False,
-            verbose=False
+            content="===TEST===\nKEY::value\n===END===", schema="TEST", tier="LOSSLESS", fix=False, verbose=False
         )
 
         assert "canonical" in result
@@ -65,7 +61,7 @@ class TestIngestTool:
             schema="TEST",
             tier="LOSSLESS",
             fix=False,
-            verbose=False
+            verbose=False,
         )
 
         # Canonical output should have unicode operators
@@ -78,11 +74,7 @@ class TestIngestTool:
         tool = IngestTool()
 
         result = await tool.execute(
-            content="===TEST===\nKEY::value\n===END===",
-            schema="TEST",
-            tier="LOSSLESS",
-            fix=False,
-            verbose=True
+            content="===TEST===\nKEY::value\n===END===", schema="TEST", tier="LOSSLESS", fix=False, verbose=True
         )
 
         assert "stages" in result
@@ -101,11 +93,7 @@ class TestIngestTool:
 
         # Empty document
         result = await tool.execute(
-            content="===TEST===\n===END===",
-            schema="TEST",
-            tier="LOSSLESS",
-            fix=False,
-            verbose=False
+            content="===TEST===\n===END===", schema="TEST", tier="LOSSLESS", fix=False, verbose=False
         )
 
         # Should still return canonical form
@@ -124,7 +112,7 @@ class TestIngestTool:
             schema="TEST",
             tier="LOSSLESS",
             fix=True,
-            verbose=False
+            verbose=False,
         )
 
         assert "canonical" in result
@@ -143,7 +131,7 @@ class TestIngestTool:
             schema="TEST",
             tier="LOSSLESS",
             fix=False,
-            verbose=False
+            verbose=False,
         )
 
         # Should infer envelope
@@ -157,11 +145,7 @@ class TestIngestTool:
 
         for tier in ["LOSSLESS", "CONSERVATIVE", "AGGRESSIVE", "ULTRA"]:
             result = await tool.execute(
-                content="===TEST===\nKEY::value\n===END===",
-                schema="TEST",
-                tier=tier,
-                fix=False,
-                verbose=False
+                content="===TEST===\nKEY::value\n===END===", schema="TEST", tier=tier, fix=False, verbose=False
             )
 
             assert "canonical" in result
@@ -172,11 +156,7 @@ class TestIngestTool:
         tool = IngestTool()
 
         result = await tool.execute(
-            content="===TEST===\nKEY::value\n===END===",
-            schema="TEST",
-            tier="LOSSLESS",
-            fix=False,
-            verbose=False
+            content="===TEST===\nKEY::value\n===END===", schema="TEST", tier="LOSSLESS", fix=False, verbose=False
         )
 
         repairs = result["repairs"]

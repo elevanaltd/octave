@@ -48,7 +48,7 @@ def emit_value(value: Any) -> str:
         return "null"
     elif isinstance(value, bool):
         return "true" if value else "false"
-    elif isinstance(value, (int, float)):
+    elif isinstance(value, int | float):
         return str(value)
     elif isinstance(value, str):
         if needs_quotes(value):

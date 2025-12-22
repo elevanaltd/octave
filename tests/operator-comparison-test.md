@@ -8,7 +8,7 @@ Test which operator representations produce better LLM outputs for agent prompts
 ### Tension Operators
 ```
 TEST_T1: SPEED _VERSUS_ QUALITY
-TEST_T2: SPEED vs QUALITY  
+TEST_T2: SPEED vs QUALITY
 TEST_T3: SPEED ⚡ QUALITY
 TEST_T4: SPEED # QUALITY
 TEST_T5: SPEED × QUALITY
@@ -47,7 +47,7 @@ BALANCE::SPEED _VERSUS_ QUALITY
 # vs
 
 mcp zen chat --model o3-mini --prompt "
-COGNITION::LOGOS  
+COGNITION::LOGOS
 ROLE::ARCHITECT
 BALANCE::SPEED ⚡ QUALITY
 [rest of prompt]

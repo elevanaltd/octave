@@ -262,13 +262,15 @@ def tokenize(content: str) -> tuple[list[Token], list[Any]]:
                 tokens.append(token)
 
                 if normalized_from:
-                    repairs.append({
-                        "type": "normalization",
-                        "original": normalized_from,
-                        "normalized": value,
-                        "line": line,
-                        "column": column
-                    })
+                    repairs.append(
+                        {
+                            "type": "normalization",
+                            "original": normalized_from,
+                            "normalized": value,
+                            "line": line,
+                            "column": column,
+                        }
+                    )
 
                 # Update position
                 if token_type == TokenType.NEWLINE:
@@ -290,13 +292,9 @@ def tokenize(content: str) -> tuple[list[Token], list[Any]]:
                     pass
                 # Treat as synthesis operator
                 tokens.append(Token(TokenType.SYNTHESIS, "⊕", line, column, "+"))
-                repairs.append({
-                    "type": "normalization",
-                    "original": "+",
-                    "normalized": "⊕",
-                    "line": line,
-                    "column": column
-                })
+                repairs.append(
+                    {"type": "normalization", "original": "+", "normalized": "⊕", "line": line, "column": column}
+                )
                 column += 1
                 pos += 1
                 continue

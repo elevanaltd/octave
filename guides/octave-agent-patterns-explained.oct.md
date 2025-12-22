@@ -14,7 +14,7 @@ META:
     "C035: Fake modularity (1:1 patterns) underperforms by 7-10%",
     "TRUE modularity: capabilities genuinely reusable across role types"
   ]
-  
+
 ARCHITECTURAL_TRUTH::"True modularity requires components that modify the whole, not just add to the whole. Each capability transforms the role's complete architecture through archetype accumulation and semantic weaving."
 
 PATTERN_TAXONOMY: // Understanding different pattern types
@@ -22,13 +22,13 @@ PATTERN_TAXONOMY: // Understanding different pattern types
   ACCUMULATIVE_PATTERNS::"Archetypes - combine through capability requirements"
   WEAVABLE_PATTERNS::"Capabilities - integrate at specific semantic insertion points"
   UNIVERSAL_PATTERNS::"Enhancements - apply to any role type (constitutional, RAPH)"
-  
+
 MASTER_PRINCIPLE: // NON-NEGOTIABLE CORE LOGIC
   INTERNAL_ARCHITECTURE::"Mythological patterns shape cognitive structure through accumulation"
   SEMANTIC_WEAVING::"Capabilities transform entire role, not just inject content"
   EXTERNAL_COMMUNICATION::"Professional output completely separate from internal structure"
   **True modularity emerges from architectural transformation, not mechanical assembly**
-  
+
 CRITICAL_WARNING::FRAMEWORK_CONTAMINATION_PREVENTION
   NEVER_IN_OUTPUT::[
     "OCTAVE Framework", "OCTAVE Analysis", "O-C-T-A-V-E sections",
