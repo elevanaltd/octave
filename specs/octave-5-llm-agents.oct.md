@@ -14,6 +14,67 @@ META:
 // OCTAVE AGENTS: Cognitive architecture patterns for Claude Code agents and subagents
 // Evolved from OCTAVE v4 agent patterns with v5 syntax and empirical validation
 
+§0::OWNERSHIP_AND_BOUNDARIES
+
+OWNERSHIP_MODEL:
+  PURPOSE::clarify_ownership_not_semantics
+  PRINCIPLES::[
+    contract_vs_assembly_separation,
+    single_source_of_truth_per_layer,
+    tooling_must_not_drive_language_drift
+  ]
+
+LANES:
+  L1_OCTAVE_REPOSITORY::specification_layer
+    OWNS::[
+      language_contract[syntax,operators,types,envelope],
+      profile_contracts[agents,skills,schema,data,execution,rationale],
+      validation_boundaries[mechanical_only],
+      projection_definitions[modes,formats,loss_reporting]
+    ]
+    DOES_NOT_OWN::[
+      role_factories_or_weaving_logic,
+      prompt_assembly_pipelines,
+      session_orchestration_policies,
+      project_specific_role_content
+    ]
+
+  L2_ORCHESTRATION_LAYER::delivery_and_governance_tooling
+    EXAMPLES::[odyssean_anchor,role_factory,hestai_mcp][names_not_binding]
+    OWNS::[
+      agent_prompt_assembly[from_components],
+      context_injection[session_state,project_state,governance],
+      binding_ceremony[workflow,retry,fail_hard],
+      audit_trails_and_enforcement[gates,logs]
+    ]
+    CONSUMES::[
+      octave_language_and_profiles_as_contract,
+      octave_control_plane[ingest,eject,validate]
+    ]
+    MUST_NOT::[
+      modify_octave_specs_at_runtime,
+      require_language_or_profile_changes_to_fit_prompt_experiments
+    ]
+
+  L3_PROJECT_LAYER::product_and_policy
+    OWNS::[
+      role_definitions_and_content,
+      local_policies_and_quality_gates,
+      success_criteria_and_acceptance_tests,
+      project_context_artifacts
+    ]
+    CONSUMES::[
+      orchestration_layer_for_delivery,
+      octave_profiles_for_validation_and_projection
+    ]
+
+INTERFACE_CONTRACT:
+  STATIC_INPUTS::[agent_artifacts,profile_definitions,project_context]
+  RUNTIME_OUTPUTS::[binding_proofs,projected_views,audit_logs]
+  VALIDATION_POLICY:
+    ALLOWED::mechanical_validation[structure,required_fields,types,explicit_constraints]
+    FORBIDDEN::semantic_inference[missing_field_insertion,meaning_rewrites,goal_guessing]
+
 §1::AGENT_ENVELOPE
 
 AGENT_DOCUMENT:
