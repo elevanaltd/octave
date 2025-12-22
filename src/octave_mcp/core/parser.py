@@ -133,19 +133,10 @@ class Parser:
 
         # Parse META fields
         while True:
-            # Check if we're still in META block
-            if self.current().type == TokenType.NEWLINE:
-                self.advance()
-                # Check next line's indentation
-                if self.current().type == TokenType.INDENT:
-                    if self.current().value < indent_level:
-                        break  # End of META block
-                    self.advance()
-                elif self.current().type != TokenType.EOF:
-                    break  # No indentation, end of META
-                else:
-                    break
-            elif self.current().type == TokenType.EOF:
+            # End conditions
+            if self.current().type == TokenType.EOF:
+                break
+            if self.current().type == TokenType.ENVELOPE_END:
                 break
 
             # Parse META field (must be assignment)
@@ -160,8 +151,18 @@ class Parser:
                 else:
                     # Skip malformed field
                     continue
-
-            self.skip_whitespace()
+            elif self.current().type == TokenType.INDENT:
+                # Check indentation level
+                if self.current().value < indent_level:
+                    break  # Dedent, end of META block
+                # Same or deeper level - consume and continue
+                self.advance()
+            elif self.current().type == TokenType.NEWLINE:
+                # Just consume the newline and continue
+                self.advance()
+            else:
+                # Unknown token type, stop parsing META
+                break
 
         return meta
 
@@ -206,26 +207,30 @@ class Parser:
                 self.advance()
 
                 while True:
+                    # End conditions
+                    if self.current().type in (TokenType.EOF, TokenType.ENVELOPE_END):
+                        break
+
+                    # Check indentation
+                    if self.current().type == TokenType.INDENT:
+                        if self.current().value < child_indent:
+                            break  # Dedent, end of block
+                        # Same or deeper level - consume and continue to parse
+                        self.advance()
+                        continue
+
+                    # Skip newlines
+                    if self.current().type == TokenType.NEWLINE:
+                        self.advance()
+                        continue
+
                     # Parse child
                     child = self.parse_section(child_indent)
                     if child:
                         children.append(child)
-
-                    self.skip_whitespace()
-
-                    # Check if more children
-                    if self.current().type == TokenType.INDENT:
-                        if self.current().value < child_indent:
-                            break  # Dedent, end of block
-                        elif self.current().value == child_indent:
-                            self.advance()  # Same level, continue
-                        else:
-                            # Deeper indent handled by recursive call
-                            self.advance()
-                    elif self.current().type in (TokenType.EOF, TokenType.ENVELOPE_END):
-                        break
                     else:
-                        break  # No indentation, end of block
+                        # No valid child parsed, might be end of block
+                        break
 
             return Block(key=key, children=children, line=self.current().line, column=self.current().column)
 
