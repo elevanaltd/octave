@@ -100,14 +100,23 @@ NEVER::[
 
 §7::REFERENCE
 EXAMPLES::see_core.§7.DATA_PATTERN
-WORKING_EXAMPLES::[see_examples/post-octave-5-examples/]
-  LOSSLESS::survey-octave-5-lossless.oct.md[100%_fidelity_5600_tokens]
-  CONSERVATIVE::survey-octave-5-conservative.oct.md[85%_compression_4800_tokens|explanatory_depth_preserved]
-  AGGRESSIVE::survey-octave-5-compressed.oct.md[70%_compression_1800_tokens|analytical_truth_preserved]
-  ULTRA::survey-octave-5-ultra.oct.md[50%_compression_2800_tokens|facts_only]
-  ASSESSMENT_MARKDOWN::assessment-survey.md[human_readable_evaluation]
-  ASSESSMENT_OCTAVE::assessment-survey-llm.oct.md[LLM_optimized_70%_compressed]
-  COMPARISON::post-octave-5-examples/compression-comparison/README.oct.md[tier_selection_guide]
+
+WORKING_EXAMPLES::in_examples/post-octave-5-examples/
+  LOSSLESS::survey-octave-5-lossless.oct.md
+    FIDELITY::100%|TOKENS::5600|CONTENT::complete_original_research
+  CONSERVATIVE::survey-octave-5-conservative.oct.md
+    FIDELITY::85-90%|TOKENS::4800|CONTENT::explanatory_depth_preserved
+  AGGRESSIVE::survey-octave-5-compressed.oct.md
+    FIDELITY::70%|TOKENS::1800|CONTENT::analytical_truth_preserved
+  ULTRA::survey-octave-5-ultra.oct.md
+    FIDELITY::50%|TOKENS::2800|CONTENT::facts_and_structure_only
+
+ASSESSMENTS::in_examples/post-octave-5-examples/
+  MARKDOWN::assessment-survey.md[human_readable|publication_ready]
+  OCTAVE::assessment-survey-llm.oct.md[LLM_optimized|70%_compressed|self_referential]
+
+GUIDES::in_examples/post-octave-5-examples/compression-comparison/
+  COMPARISON::README.oct.md[tier_selection_matrix|use_case_guide]
 
 TIER_SELECTION::
   IF[one_off_document∨single_reader]→prose_better_than_LOSSLESS
