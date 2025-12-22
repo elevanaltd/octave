@@ -48,8 +48,8 @@ ULTRA::
   WHAT_PRESERVED::[facts,numbers,names,structure,core_assertions]
   WHAT_LOST::[almost_all_explanatory_content,reasoning,tradeoff_discussion,examples]
   METHOD::bare_assertions|minimal_lists|no_examples|no_prose
-  FILE::not_demonstrated_in_examples
-  OUTCOME::structure∧facts_only|poor_readability|not_for_human_consumption
+  FILE::survey-octave-5-ultra.oct.md
+  OUTCOME::structure∧facts_only|poor_readability|not_for_human_consumption|suitable_for_embeddings∧indexing
 
 SELECTION_MATRIX::
 
@@ -78,11 +78,11 @@ METADATA_REQUIREMENT::
   TRANSPARENCY::explicit_loss_profile_prevents_silent_degradation
 
 FILE_STRUCTURE::
-  survey-original-raw.oct.md::source_uncompressed
-  survey-octave-5-lossless.oct.md::LOSSLESS_tier_example[100%_fidelity]
-  survey-octave-5-conservative.oct.md::CONSERVATIVE_tier_example[85%_compression]
-  survey-octave-5-aggressive.oct.md::AGGRESSIVE_tier_example[70%_compression]
-  survey-octave-5-ultra.oct.md::ULTRA_tier_example[if_created]
+  survey-original-raw.oct.md::source_uncompressed[5600_tokens]
+  survey-octave-5-lossless.oct.md::LOSSLESS_tier_example[100%_fidelity|5600_tokens]
+  survey-octave-5-conservative.oct.md::CONSERVATIVE_tier_example[85%_compression|4800_tokens]
+  survey-octave-5-aggressive.oct.md::AGGRESSIVE_tier_example[70%_compression|1800_tokens]
+  survey-octave-5-ultra.oct.md::ULTRA_tier_example[50%_compression|2800_tokens]
 
 HOW_TO_COMPARE::
   STEP_1::read_survey-original-raw.oct.md[understand_full_narrative]
