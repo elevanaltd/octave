@@ -1,4 +1,4 @@
-"""Tests for octave.ingest MCP tool (P2.2).
+"""Tests for octave_ingest MCP tool (P2.2).
 
 Tests the ingest tool pipeline: PREPARSE→PARSE→NORMALIZE→VALIDATE→REPAIR→VALIDATE
 """

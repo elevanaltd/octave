@@ -1,4 +1,4 @@
-"""Test cases for octave.eject MCP tool (P2.3).
+"""Test cases for octave_eject MCP tool (P2.3).
 
 Tests projection modes:
 - canonical: Full document, lossy=false

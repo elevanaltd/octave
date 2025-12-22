@@ -408,7 +408,7 @@ DATA::value
 
         request = CallToolRequest(
             method="tools/call",
-            params={"name": "octave.ingest", "arguments": {"content": invalid_content, "schema": "TEST"}},
+            params={"name": "octave_ingest", "arguments": {"content": invalid_content, "schema": "TEST"}},
         )
 
         from mcp.types import CallToolRequest as CallToolRequestType

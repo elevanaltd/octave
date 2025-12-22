@@ -1,6 +1,6 @@
 """MCP tool for OCTAVE ingest (P2.2).
 
-Implements octave.ingest tool with pipeline:
+Implements octave_ingest tool with pipeline:
 PREPARSE→PARSE→NORMALIZE→VALIDATE→REPAIR(if fix)→VALIDATE
 """
 
@@ -15,7 +15,7 @@ from octave_mcp.mcp.base_tool import BaseTool, SchemaBuilder
 
 
 class IngestTool(BaseTool):
-    """MCP tool for octave.ingest - lenient to canonical pipeline."""
+    """MCP tool for octave_ingest - lenient to canonical pipeline."""
 
     def get_name(self) -> str:
         """Get tool name."""

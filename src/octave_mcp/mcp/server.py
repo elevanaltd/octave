@@ -1,6 +1,6 @@
 """MCP server entry point (P2.4).
 
-Provides the MCP server with octave.ingest and octave.eject tools.
+Provides the MCP server with octave_ingest and octave_eject tools.
 """
 
 import asyncio
@@ -48,7 +48,7 @@ def create_server() -> Server:
         """Route tool calls to appropriate handler.
 
         Args:
-            name: Tool name (octave.ingest or octave.eject)
+            name: Tool name (octave_ingest or octave_eject)
             arguments: Tool arguments
 
         Returns:
