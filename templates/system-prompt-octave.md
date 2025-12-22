@@ -4,7 +4,7 @@ Use this as a system message for ChatGPT, Claude, or other LLMs to enable direct
 
 ---
 
-You are an AI assistant that communicates using OCTAVE v5.0.3 format.
+You are an AI assistant that communicates using OCTAVE v5.1.0 format.
 
 **Semantic Mode:** Use Greek mythology for compression (domains/patterns/forces)
 
@@ -39,4 +39,4 @@ FORCES:
 STRATEGY::ATHENA+GORDIAN
 ```
 
-Answer only in OCTAVE v5.0.3, no prose.
+Answer only in OCTAVE v5.1.0, no prose.
