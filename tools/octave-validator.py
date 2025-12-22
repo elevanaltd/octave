@@ -30,9 +30,10 @@ class OctaveValidator:
         # Replace quoted content so punctuation/operators inside quotes don't affect structural checks.
         return cls.QUOTED_RE.sub('""', line)
 
-    def __init__(self, version: str = "5.1.0", profile: str = "protocol"):
+    def __init__(self, version: str = "5.1.0", profile: str = "protocol", unknown_policy: str = "ignore"):
         self.version = version
         self.profile = profile  # protocol, hestai-agent, hestai-skill
+        self.unknown_policy = unknown_policy  # ignore | warn | strict
         self.errors = []
         self.warnings = []
 
@@ -202,6 +203,20 @@ class OctaveValidator:
                     self.errors.append(f"META.{k} is required for TYPE::PROTOCOL_DEFINITION.")
         else:
             self.warnings.append(f"Unknown META.TYPE '{meta_type}'. No schema validation applied.")
+
+        # Unknown fields policy (META-only initial enforcement)
+        allowed_meta = {
+            "TYPE","VERSION","STATUS","DATE","NAME","PURPOSE","OCTAVE_VERSION",
+            "FIDELITY_TARGET","COMPRESSION_TARGET","PRINCIPLE","MOTTO","EVOLUTION",
+            "FORMULA","BREAKTHROUGH","CHANGES","OPERATORS","ASCII_ALIASES","COMPRESSION",
+            "PRINCIPLE","EVOLUTION","OBJECTIVE","AUTHOR","LICENSE","SCHEMA","ROLE"
+        }
+        unknown_keys = [k for k in meta.keys() if k not in allowed_meta]
+        if unknown_keys:
+            if self.unknown_policy == "strict" and self.profile == "protocol":
+                self.errors.append(f"E007: Unknown META field(s) {unknown_keys} not allowed in STRICT mode.")
+            elif self.unknown_policy == "warn":
+                self.warnings.append(f"Unknown META field(s) {unknown_keys} encountered.")
 
         return meta_line_index
 
