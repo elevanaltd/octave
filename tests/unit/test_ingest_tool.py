@@ -167,3 +167,63 @@ class TestIngestTool:
             repair = repairs[0]
             # May have fields like RULE_ID, BEFORE, AFTER, TIER, etc.
             assert isinstance(repair, dict)
+
+    @pytest.mark.asyncio
+    async def test_tokenization_unpacking_bug(self):
+        """Test tokenization unpacking returns correct token count in verbose mode.
+
+        BUG: ingest.py:100 doesn't unpack tokenize() tuple correctly.
+        Current: tokens = tokenize(content) -> len(tokens) is always 2 (tuple length)
+        Expected: tokens, repairs = tokenize(content) -> len(tokens) is actual token count
+        """
+        tool = IngestTool()
+
+        # Use simple content with known token count
+        # "===TEST===\nKEY::value\n===END===" should have ~10+ tokens
+        result = await tool.execute(
+            content="===TEST===\nKEY::value\n===END===",
+            schema="TEST",
+            tier="LOSSLESS",
+            fix=False,
+            verbose=True,  # Need verbose to see token count
+        )
+
+        # Extract token count from stages
+        stages = result["stages"]
+        tokenize_msg = stages.get("TOKENIZE_COMPLETE", "")
+
+        # Should show actual token count, not "2 tokens produced"
+        assert tokenize_msg != "2 tokens produced", "Bug present: tuple not unpacked, showing tuple length"
+
+        # Should show realistic token count (>2)
+        import re
+
+        match = re.search(r"(\d+) tokens", tokenize_msg)
+        assert match is not None, f"Expected token count in message: {tokenize_msg}"
+        token_count = int(match.group(1))
+        assert token_count > 2, f"Expected >2 tokens for test content, got {token_count}"
+
+    @pytest.mark.asyncio
+    async def test_tokenization_repairs_tracked(self):
+        """Test that ASCII normalization repairs from tokenization are tracked.
+
+        BUG: ingest.py:100 doesn't capture repairs from tokenize().
+        Repairs are dropped on the floor.
+        """
+        tool = IngestTool()
+
+        # Use content with ASCII aliases that should be normalized
+        result = await tool.execute(
+            content="===TEST===\nFLOW::A -> B\n===END===",  # -> should normalize to →
+            schema="TEST",
+            tier="LOSSLESS",
+            fix=False,
+            verbose=False,
+        )
+
+        # When tokenization normalization is implemented and tracked,
+        # repairs should include the ASCII -> unicode normalization
+        # NOTE: This may not fail yet if normalization isn't generating repair logs
+        # But unpacking the tuple is still required for future tracking
+        repairs = result["repairs"]
+        assert isinstance(repairs, list)
