@@ -39,11 +39,11 @@ EXECUTION::add_for[error_formats,retry_protocol,validation_flow]
 RATIONALE::add_for[design_philosophy,token_economics,training_context]
 
 §4::VERSION_HISTORY
-5.1.0::DRAFT[current]
+5.1.0::CURRENT
   changes::[unicode_operators,precedence_rules,lexer_specification,tension_operator]
   operators::[→,⊕,⧺,⇌,∨,∧,§]
   ascii_aliases::[->|+|~|vs|||&|§]
-5.0.3::superseded
+5.0.3::LEGACY[supported_for_backward_compat]
   fixes::[empty_blocks,inline_map_nesting,broadcast_failure_semantics]
 5.0.2::superseded
   fixes::[chaining_allowed,empty_lists,inline_maps,assembly_rule,error_ordering]

@@ -1,5 +1,5 @@
 ===OCTAVE_LITERACY_PATTERNS===
-// The constitutional, universal OCTAVE v5.0.3 literacy package.
+// The constitutional, universal OCTAVE v5.1.0 literacy package.
 // Provides baseline knowledge for all roles.
 // Combines core rules with two gold-standard examples.
 

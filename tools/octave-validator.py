@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-OCTAVE Validator - v5.0.3 Implementation
+OCTAVE Validator - v5.1.0 Implementation
 
-This validator checks OCTAVE v5.0.3 formatted documents for envelope (markers + META) and formatting compliance.
+This validator checks OCTAVE v5.1.0 formatted documents for envelope (markers + META) and formatting compliance.
 
 Usage:
     python octave_validator.py <file_path>
@@ -18,7 +18,7 @@ from pathlib import Path
 
 
 class OctaveValidator:
-    """Validator for OCTAVE v5.0.3 structured documents."""
+    """Validator for OCTAVE v5.1.0 structured documents."""
 
     HEADER_RE = re.compile(r"^===([A-Z0-9_]+)===$")
     FOOTER_RE = re.compile(r"^===END===$")
@@ -30,7 +30,7 @@ class OctaveValidator:
         # Replace quoted content so punctuation/operators inside quotes don't affect structural checks.
         return cls.QUOTED_RE.sub('""', line)
 
-    def __init__(self, version: str = "5.0.3", profile: str = "protocol"):
+    def __init__(self, version: str = "5.1.0", profile: str = "protocol"):
         self.version = version
         self.profile = profile  # protocol, hestai-agent, hestai-skill
         self.errors = []
@@ -109,7 +109,7 @@ class OctaveValidator:
             if not stripped_line.startswith("===") and (" = " in scan_line or (": " in scan_line and "::" not in scan_line) or (" :" in scan_line and "::" not in scan_line)):
                 self.warnings.append(f"Line {line_num}: Non-canonical assignment style. Prefer 'KEY::VALUE' for assignments.")
 
-            # Validate core operator usage (v5.0.3 guidance)
+            # Validate core operator usage (v5.1.0 guidance)
 
             # Check for progression operator -> (only allowed in lists)
             if '->' in scan_line and not re.search(r'\[.*->.*\]', scan_line) and not in_list:
@@ -129,13 +129,10 @@ class OctaveValidator:
                 if versus_count > 1:
                     self.errors.append(f"Line {line_num}: Tension operator '_VERSUS_' cannot be chained.")
 
-            # Warn about old operators
-            if '→' in scan_line:
-                self.warnings.append(f"Line {line_num}: Found Unicode operator '→'. Prefer '->' for maximum toolchain compatibility.")
-            if '⊕' in scan_line:
-                self.warnings.append(f"Line {line_num}: Found Unicode operator '⊕'. Prefer '+' for maximum toolchain compatibility.")
-            if '⚡' in scan_line:
-                self.warnings.append(f"Line {line_num}: Found Unicode operator '⚡'. Prefer '_VERSUS_' for maximum toolchain compatibility.")
+            # Normalize/validate target selector: allow '#TARGET' form and canonical '§TARGET'
+            if '-> #'.lower() in scan_line.lower() or re.search(r'->\s*#', scan_line):
+                # only warn; canonicalization occurs in ingest, validator just flags non-canonical
+                self.warnings.append(f"Line {line_num}: Use canonical target selector '→§TARGET' or '->§TARGET' (authoring may use '-> #TARGET').")
 
             # Check for incorrect indentation (must be multiple of 2)
             indentation = len(line) - len(line.lstrip(' '))
@@ -235,13 +232,13 @@ class OctaveValidator:
             return f"❌ OCTAVE document is invalid with {error_count} error{'s' if error_count > 1 else ''}:\n" + "\n".join([f"  - {e}" for e in self.errors])
 
 
-def validate_octave_document(octave_text: str, version: str = "5.0.3", profile: str = "protocol") -> str:
+def validate_octave_document(octave_text: str, version: str = "5.1.0", profile: str = "protocol") -> str:
     """Validates an OCTAVE document for structure and format."""
     validator = OctaveValidator(version, profile)
     is_valid, messages = validator.validate_octave_document(octave_text)
     return validator.format_results(is_valid, messages)
 
-def validate_octave_file(file_path: str, version: str = "5.0.3", profile: str = "protocol") -> str:
+def validate_octave_file(file_path: str, version: str = "5.1.0", profile: str = "protocol") -> str:
     """Validates an OCTAVE document file."""
     try:
         with open(file_path, encoding='utf-8') as f:
@@ -252,7 +249,7 @@ def validate_octave_file(file_path: str, version: str = "5.0.3", profile: str = 
     except Exception as e:
         return f"❌ File error (invalid): {str(e)}"
 
-def scan_directory(directory: str, profile: str = "protocol", version: str = "5.0.3") -> list[dict]:
+def scan_directory(directory: str, profile: str = "protocol", version: str = "5.1.0") -> list[dict]:
     """Scan directory for *.oct.md files and validate each."""
     results = []
     oct_files = list(Path(directory).rglob("*.oct.md"))
@@ -307,9 +304,9 @@ def format_scan_results(results: list[dict]) -> str:
 
 def main() -> None:
     """Command-line interface for OCTAVE validator."""
-    parser = argparse.ArgumentParser(description='Validate OCTAVE documents against the v5.0.3 specification.')
+    parser = argparse.ArgumentParser(description='Validate OCTAVE documents against the v5.1.0 specification.')
     parser.add_argument('file', nargs='?', help='Path to OCTAVE document file (optional if using --path)')
-    parser.add_argument('--version', '-v', default='5.0.3', help='OCTAVE version to validate against (default: 5.0.3)')
+    parser.add_argument('--version', '-v', default='5.1.0', help='OCTAVE version to validate against (default: 5.1.0)')
     parser.add_argument('--profile', '-p', choices=['protocol', 'hestai-agent', 'hestai-skill'],
                         default='protocol', help='Validation profile (default: protocol)')
     parser.add_argument('--path', '-d', help='Scan directory for *.oct.md files')
