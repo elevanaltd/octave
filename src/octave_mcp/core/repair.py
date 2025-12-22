@@ -7,7 +7,7 @@ Implements schema-driven repair with NORMALIZATION/REPAIR/FORBIDDEN tiers:
 """
 
 from octave_mcp.core.ast_nodes import Document
-from octave_mcp.core.repair_log import RepairLog, RepairTier
+from octave_mcp.core.repair_log import RepairLog
 from octave_mcp.core.validator import ValidationError
 
 

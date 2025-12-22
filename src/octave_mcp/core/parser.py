@@ -11,7 +11,7 @@ Parses lexer tokens into AST with:
 
 from typing import Any
 
-from octave_mcp.core.ast_nodes import Assignment, Block, Comment, Document, InlineMap, ListValue
+from octave_mcp.core.ast_nodes import Assignment, Block, Document, InlineMap, ListValue
 from octave_mcp.core.lexer import Token, TokenType, tokenize
 
 

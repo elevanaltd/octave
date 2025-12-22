@@ -4,11 +4,8 @@ Tests lenient parsing with envelope completion, whitespace normalization,
 and nested block structure.
 """
 
-import pytest
-
-from octave_mcp.core.ast_nodes import Assignment, Block, Document, ListValue
-from octave_mcp.core.lexer import tokenize
-from octave_mcp.core.parser import parse, ParserError
+from octave_mcp.core.ast_nodes import Assignment, Block, ListValue
+from octave_mcp.core.parser import parse
 
 
 class TestEnvelopeInference:
@@ -202,7 +199,7 @@ KEY: value
         # Single colon with value on same line is ambiguous
         # Should be treated as block with error or parse as block
         # Based on spec, single colon is block operator
-        doc = parse(content)
+        _ = parse(content)
         # This should parse as a block, not assignment
         # If it has a value on same line, it's malformed
         # For now, we'll be lenient and treat it as block

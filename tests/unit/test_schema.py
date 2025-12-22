@@ -1,9 +1,7 @@
 """Tests for schema validation (P1.5)."""
 
-import pytest
-
 from octave_mcp.core.parser import parse
-from octave_mcp.core.validator import validate, ValidationError
+from octave_mcp.core.validator import validate
 
 
 class TestRequiredFields:

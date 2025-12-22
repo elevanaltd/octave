@@ -1,10 +1,7 @@
 """Tests for repair engine (P1.6)."""
 
-import pytest
-
 from octave_mcp.core.parser import parse
 from octave_mcp.core.repair import repair
-from octave_mcp.core.repair_log import RepairTier
 from octave_mcp.core.validator import validate
 
 

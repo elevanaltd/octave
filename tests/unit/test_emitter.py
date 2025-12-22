@@ -8,8 +8,6 @@ Tests AST → canonical OCTAVE string emission with:
 - Idempotence
 """
 
-import pytest
-
 from octave_mcp.core.ast_nodes import Assignment, Block, Document, ListValue
 from octave_mcp.core.emitter import emit
 from octave_mcp.core.parser import parse
@@ -64,7 +62,7 @@ class TestCanonicalEmission:
         result = emit(doc)
         lines = result.split("\n")
         # Find CHILD line
-        child_line = [l for l in lines if "CHILD" in l][0]
+        child_line = [line for line in lines if "CHILD" in line][0]
         assert child_line.startswith("  ")  # 2 spaces
         assert not child_line.startswith("    ")  # Not 4 spaces
 
