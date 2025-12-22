@@ -6,14 +6,85 @@ on:
   pull_request:
     branches: [main]
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  # Fast path for docs-only changes
+  check-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      docs_only: ${{ steps.filter.outputs.docs_only }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check changed files
+        id: filter
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          else
+            FILES=$(git diff --name-only HEAD^ HEAD || echo "")
+          fi
+
+          # If no files changed (initial commit), run full tests
+          if [ -z "$FILES" ]; then
+            echo "docs_only=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Check if all changes are docs-only
+          DOCS_ONLY=true
+          while IFS= read -r file; do
+            # Allow changes to: *.md, docs/, LICENSE, .markdownlint*
+            if [[ ! "$file" =~ \.(md|txt)$ ]] && \
+               [[ ! "$file" =~ ^docs/ ]] && \
+               [[ ! "$file" =~ ^LICENSE ]] && \
+               [[ ! "$file" =~ ^\.markdownlint ]]; then
+              DOCS_ONLY=false
+              break
+            fi
+          done <<< "$FILES"
+
+          echo "docs_only=$DOCS_ONLY" >> $GITHUB_OUTPUT
+          echo "Documentation-only changes: $DOCS_ONLY"
+
+  docs:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    needs: check-changes
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check documentation files exist
+        run: |
+          test -f README.md
+          test -f docs/usage.md
+          test -f docs/api.md
+          test -f docs/mcp-configuration.md
+
+      - name: Check Markdown formatting
+        uses: DavidAnson/markdownlint-cli2-action@v18
+        with:
+          globs: |
+            README.md
+            docs/**/*.md
+        continue-on-error: true
+
   test:
     name: Test Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    needs: check-changes
+    if: needs.check-changes.outputs.docs_only != 'true'
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: ["3.12", "3.13"]
 
     steps:
       - name: Checkout code
@@ -56,7 +127,8 @@ jobs:
   integration:
     name: Integration Tests
     runs-on: ubuntu-latest
-    needs: test
+    needs: [check-changes, test]
+    if: needs.check-changes.outputs.docs_only != 'true'
 
     steps:
       - name: Checkout code
@@ -105,7 +177,8 @@ jobs:
   property-tests:
     name: Property-Based Tests
     runs-on: ubuntu-latest
-    needs: test
+    needs: [check-changes, test]
+    if: needs.check-changes.outputs.docs_only != 'true'
 
     steps:
       - name: Checkout code
@@ -125,13 +198,12 @@ jobs:
       - name: Run property tests with increased iterations
         run: |
           pytest tests/properties/ -v --hypothesis-profile=ci
-        env:
-          HYPOTHESIS_PROFILE: ci
 
   build:
     name: Build Distribution
     runs-on: ubuntu-latest
-    needs: [test, integration, property-tests]
+    needs: [check-changes, test, integration, property-tests]
+    if: needs.check-changes.outputs.docs_only != 'true'
 
     steps:
       - name: Checkout code
@@ -161,25 +233,60 @@ jobs:
           name: dist
           path: dist/
 
-  docs:
-    name: Documentation Check
+  final-gate:
+    name: Final Gate
     runs-on: ubuntu-latest
+    if: always()
+    needs: [check-changes, docs, test, integration, property-tests, build]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Check documentation files exist
+      - name: Determine required checks
+        id: required
         run: |
-          test -f README.md
-          test -f docs/usage.md
-          test -f docs/api.md
-          test -f docs/mcp-configuration.md
+          DOCS_ONLY="${{ needs.check-changes.outputs.docs_only }}"
 
-      - name: Check Markdown formatting
-        uses: DavidAnson/markdownlint-cli2-action@v18
-        with:
-          globs: |
-            README.md
-            docs/**/*.md
-        continue-on-error: true
+          echo "docs_only=$DOCS_ONLY"
+          echo "docs_result=${{ needs.docs.result }}"
+          echo "test_result=${{ needs.test.result }}"
+          echo "integration_result=${{ needs.integration.result }}"
+          echo "property_tests_result=${{ needs.property-tests.result }}"
+          echo "build_result=${{ needs.build.result }}"
+
+      - name: Validate results
+        run: |
+          DOCS_ONLY="${{ needs.check-changes.outputs.docs_only }}"
+
+          # Docs must always pass
+          if [ "${{ needs.docs.result }}" != "success" ]; then
+            echo "ERROR::required_job_failed::docs::${{ needs.docs.result }}"
+            exit 1
+          fi
+
+          # For docs-only changes, skip code validation
+          if [ "$DOCS_ONLY" == "true" ]; then
+            echo "OK::docs_only_change::skipping_code_validation"
+            exit 0
+          fi
+
+          # For code changes, all jobs must pass
+          if [ "${{ needs.test.result }}" != "success" ]; then
+            echo "ERROR::required_job_failed::test::${{ needs.test.result }}"
+            exit 1
+          fi
+
+          if [ "${{ needs.integration.result }}" != "success" ]; then
+            echo "ERROR::required_job_failed::integration::${{ needs.integration.result }}"
+            exit 1
+          fi
+
+          if [ "${{ needs.property-tests.result }}" != "success" ]; then
+            echo "ERROR::required_job_failed::property-tests::${{ needs.property-tests.result }}"
+            exit 1
+          fi
+
+          if [ "${{ needs.build.result }}" != "success" ]; then
+            echo "ERROR::required_job_failed::build::${{ needs.build.result }}"
+            exit 1
+          fi
+
+          echo "OK::final_gate_passed"

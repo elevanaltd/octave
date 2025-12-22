@@ -139,6 +139,14 @@ addopts = [
     "--cov-report=term-missing",
 ]
 
+[tool.hypothesis]
+max_examples = 100
+derandomize = true
+
+[tool.hypothesis.profiles.ci]
+max_examples = 500
+deadline = 1000
+
 [build-system]
 requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
