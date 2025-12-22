@@ -13,12 +13,14 @@ META:
 
 §1::ENVELOPE
 START::===NAME===[first_line,exact_match]
-END::===END===[last_line,exact_match,mandatory]
 META::required[TYPE,VERSION][immediately_after_start]
+SEPARATOR::---[optional_for_discovery,signals_metadata_boundary]
+END::===END===[last_line,exact_match,mandatory]
 DUPLICATES::keys_must_be_unique_per_block
 COMMENTS:://[line_start_or_after_value]
 
 ASSEMBLY::when_profiles_concatenated[core+schema+data]→only_final_===END===_terminates
+ASSEMBLY_RULE::omit_separator_in_assembled_profiles[only_standalone_documents]
 
 §2::OPERATORS
 
