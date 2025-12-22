@@ -7,6 +7,8 @@ META:
   REQUIRES::octave-5-llm-core
   PURPOSE::validation_and_error_handling
 
+---
+
 // OCTAVE EXECUTION: Understanding validation feedback. Inject when debugging/iterating.
 
 §1::VALIDATION_FLOW

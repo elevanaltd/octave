@@ -7,6 +7,8 @@ META:
   REQUIRES::octave-5-llm-core
   PURPOSE::architectural_decision_record
 
+---
+
 // OCTAVE RATIONALE: The "Why" behind the syntax. Inject for training or advanced reasoning.
 
 §1::DESIGN_PHILOSOPHY

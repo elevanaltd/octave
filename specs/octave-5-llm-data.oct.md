@@ -7,6 +7,8 @@ META:
   REQUIRES::octave-5-llm-core
   PURPOSE::compression_and_instances
 
+---
+
 // OCTAVE DATA: Rules for compressing prose and writing instances. Inject WITH core.
 
 §1::DATA_MODE

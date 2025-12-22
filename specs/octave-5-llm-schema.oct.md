@@ -7,6 +7,8 @@ META:
   REQUIRES::octave-5-llm-core
   PURPOSE::L4_holographic_definitions
 
+---
+
 // OCTAVE SCHEMA: Rules for defining document types. Inject WITH core.
 
 §1::HOLOGRAPHIC_PATTERN
