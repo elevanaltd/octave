@@ -100,5 +100,20 @@ NEVER::[
 
 §7::REFERENCE
 EXAMPLES::see_core.§7.DATA_PATTERN
+WORKING_EXAMPLES::[see_examples/post-octave-5-examples/]
+  LOSSLESS::survey-octave-5-lossless.oct.md[100%_fidelity_5600_tokens]
+  CONSERVATIVE::survey-octave-5-conservative.oct.md[85%_compression_4800_tokens|explanatory_depth_preserved]
+  AGGRESSIVE::survey-octave-5-compressed.oct.md[70%_compression_1800_tokens|analytical_truth_preserved]
+  ULTRA::survey-octave-5-ultra.oct.md[50%_compression_2800_tokens|facts_only]
+  ASSESSMENT_MARKDOWN::assessment-survey.md[human_readable_evaluation]
+  ASSESSMENT_OCTAVE::assessment-survey-llm.oct.md[LLM_optimized_70%_compressed]
+  COMPARISON::post-octave-5-examples/compression-comparison/README.oct.md[tier_selection_guide]
+
+TIER_SELECTION::
+  IF[one_off_document∨single_reader]→prose_better_than_LOSSLESS
+  IF[critical_decision∨legal∨safety]→LOSSLESS_required
+  IF[research_artifact∨audience_needs_reasoning]→CONSERVATIVE_recommended
+  IF[prompt_injection∨context_window_tight]→AGGRESSIVE_standard
+  IF[embedding∨indexing∨lookup]→ULTRA_appropriate
 
 ===END===
