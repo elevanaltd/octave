@@ -188,9 +188,9 @@ Most MCP clients (like Claude Desktop) start the server automatically based on c
 
 ### Available MCP Tools
 
-The server exposes two tools: `octave.ingest` and `octave.eject`.
+The server exposes two tools: `octave_ingest` and `octave_eject`.
 
-#### `octave.ingest` Tool
+#### `octave_ingest` Tool
 
 **Purpose:** Accept lenient OCTAVE and produce canonical output with validation.
 
@@ -229,7 +229,7 @@ async def main():
     await client.connect("octave-mcp-server")
 
     result = await client.call_tool(
-        "octave.ingest",
+        "octave_ingest",
         {
             "content": 'DECISION:\n  ID::"DEC-001"\n  STATUS::"approved"',
             "schema": "DECISION_LOG",
@@ -243,7 +243,7 @@ async def main():
 asyncio.run(main())
 ```
 
-#### `octave.eject` Tool
+#### `octave_eject` Tool
 
 **Purpose:** Generate tailored views from canonical OCTAVE.
 
@@ -266,7 +266,7 @@ asyncio.run(main())
 
 ```python
 result = await client.call_tool(
-    "octave.eject",
+    "octave_eject",
     {
         "content": canonical_octave,
         "schema": "DECISION_LOG",
@@ -473,7 +473,7 @@ pip install octave-mcp
 pip install -e .
 ```
 
-### Issue: "Unknown tool: octave.ingest"
+### Issue: "Unknown tool: octave_ingest"
 
 **Cause:** MCP server not properly configured in client.
 

@@ -5,8 +5,8 @@ Complete API reference for the OCTAVE MCP server, including MCP tools, Python mo
 ## Table of Contents
 
 - [MCP Tools](#mcp-tools)
-  - [octave.ingest](#octaveingest)
-  - [octave.eject](#octaveeject)
+  - [octave_ingest](#octave_ingest)
+  - [octave_eject](#octave_eject)
 - [Python API](#python-api)
   - [Parser Module](#parser-module)
   - [Emitter Module](#emitter-module)
@@ -24,7 +24,7 @@ Complete API reference for the OCTAVE MCP server, including MCP tools, Python mo
 
 The OCTAVE MCP server exposes two tools for integration with MCP clients.
 
-### octave.ingest
+### octave_ingest
 
 Accept lenient OCTAVE input and produce canonical, validated output.
 
@@ -82,7 +82,7 @@ async def ingest_example():
     await client.connect("octave-mcp-server")
 
     result = await client.call_tool(
-        "octave.ingest",
+        "octave_ingest",
         {
             "content": 'DECISION:\n  ID::"DEC-001"\n  STATUS::"approved"',
             "schema": "DECISION_LOG",
@@ -103,7 +103,7 @@ asyncio.run(ingest_example())
 The tool returns errors in the `validation_errors` array rather than throwing exceptions. Always check this array:
 
 ```python
-result = await client.call_tool("octave.ingest", {...})
+result = await client.call_tool("octave_ingest", {...})
 if result["validation_errors"]:
     for error in result["validation_errors"]:
         print(f"{error['severity']}: {error['message']} at {error['path']}")
@@ -111,7 +111,7 @@ if result["validation_errors"]:
 
 ---
 
-### octave.eject
+### octave_eject
 
 Generate tailored views from canonical OCTAVE for different stakeholders.
 
@@ -153,7 +153,7 @@ async def eject_example():
 
     # Executive summary in Markdown
     result = await client.call_tool(
-        "octave.eject",
+        "octave_eject",
         {
             "content": canonical_octave,
             "schema": "PROJECT_STATUS",
@@ -175,7 +175,7 @@ Pass `null` for `content` to generate a blank template:
 
 ```python
 result = await client.call_tool(
-    "octave.eject",
+    "octave_eject",
     {
         "content": None,
         "schema": "DECISION_LOG",

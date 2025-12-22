@@ -19,7 +19,7 @@ class IngestTool(BaseTool):
 
     def get_name(self) -> str:
         """Get tool name."""
-        return "octave.ingest"
+        return "octave_ingest"
 
     def get_description(self) -> str:
         """Get tool description."""

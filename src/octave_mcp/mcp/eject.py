@@ -19,7 +19,7 @@ class EjectTool(BaseTool):
 
     def get_name(self) -> str:
         """Get tool name."""
-        return "octave.eject"
+        return "octave_eject"
 
     def get_description(self) -> str:
         """Get tool description."""

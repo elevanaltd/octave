@@ -39,8 +39,8 @@ class TestMCPServer:
         tools = result.root.tools
         tool_names = [tool.name for tool in tools]
 
-        assert "octave.ingest" in tool_names
-        assert "octave.eject" in tool_names
+        assert "octave_ingest" in tool_names
+        assert "octave_eject" in tool_names
         assert len(tool_names) == 2
 
     @pytest.mark.asyncio
@@ -53,7 +53,7 @@ class TestMCPServer:
         result = await handler(request)
 
         tools = result.root.tools
-        ingest = next(t for t in tools if t.name == "octave.ingest")
+        ingest = next(t for t in tools if t.name == "octave_ingest")
 
         assert "content" in ingest.inputSchema["required"]
         assert "schema" in ingest.inputSchema["required"]
@@ -68,7 +68,7 @@ class TestMCPServer:
         result = await handler(request)
 
         tools = result.root.tools
-        eject = next(t for t in tools if t.name == "octave.eject")
+        eject = next(t for t in tools if t.name == "octave_eject")
 
         assert "schema" in eject.inputSchema["required"]
         assert "mode" in eject.inputSchema["properties"]
@@ -87,7 +87,7 @@ STATUS::active
 ===END==="""
 
         request = CallToolRequest(
-            method="tools/call", params={"name": "octave.ingest", "arguments": {"content": content, "schema": "TEST"}}
+            method="tools/call", params={"name": "octave_ingest", "arguments": {"content": content, "schema": "TEST"}}
         )
 
         from mcp.types import CallToolRequest as CallToolRequestType
@@ -115,7 +115,7 @@ STATUS::active
 
         request = CallToolRequest(
             method="tools/call",
-            params={"name": "octave.eject", "arguments": {"content": content, "schema": "TEST", "mode": "canonical"}},
+            params={"name": "octave_eject", "arguments": {"content": content, "schema": "TEST", "mode": "canonical"}},
         )
 
         from mcp.types import CallToolRequest as CallToolRequestType

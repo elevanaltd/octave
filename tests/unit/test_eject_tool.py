@@ -22,7 +22,7 @@ class TestEjectTool:
 
     def test_tool_name(self, eject_tool):
         """Eject tool returns correct name."""
-        assert eject_tool.get_name() == "octave.eject"
+        assert eject_tool.get_name() == "octave_eject"
 
     def test_tool_description(self, eject_tool):
         """Eject tool has non-empty description."""

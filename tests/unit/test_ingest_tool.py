@@ -15,7 +15,7 @@ class TestIngestTool:
         """Test tool has correct metadata."""
         tool = IngestTool()
 
-        assert tool.get_name() == "octave.ingest"
+        assert tool.get_name() == "octave_ingest"
         assert "lenient" in tool.get_description().lower()
         assert "canonical" in tool.get_description().lower()
 

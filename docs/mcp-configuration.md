@@ -19,8 +19,8 @@ Complete guide for configuring the OCTAVE MCP server with various MCP clients.
 The OCTAVE MCP server implements the [Model Context Protocol (MCP)](https://modelcontextprotocol.io/), enabling integration with any MCP-compatible client.
 
 The server exposes two tools:
-- **octave.ingest** - Normalize lenient OCTAVE to canonical format
-- **octave.eject** - Generate projected views for different stakeholders
+- **octave_ingest** - Normalize lenient OCTAVE to canonical format
+- **octave_eject** - Generate projected views for different stakeholders
 
 ---
 
@@ -124,7 +124,7 @@ Claude Desktop is a desktop application that supports MCP servers.
 5. **Verify the server is loaded:**
 
    In Claude Desktop, check that the OCTAVE tools are available:
-   - Look for "octave.ingest" and "octave.eject" in the tools menu
+   - Look for "octave_ingest" and "octave_eject" in the tools menu
    - Or ask Claude: "What MCP tools are available?"
 
 ### Windows Configuration
@@ -213,9 +213,9 @@ async def main():
             tools = await client.list_tools()
             print("Available tools:", [t.name for t in tools.tools])
 
-            # Call octave.ingest
+            # Call octave_ingest
             result = await client.call_tool(
-                "octave.ingest",
+                "octave_ingest",
                 arguments={
                     "content": 'DECISION:\n  ID::"DEC-001"\n  STATUS::"approved"',
                     "schema": "DECISION_LOG",
@@ -253,9 +253,9 @@ async function main() {
   const tools = await client.listTools();
   console.log('Available tools:', tools.tools.map(t => t.name));
 
-  // Call octave.ingest
+  // Call octave_ingest
   const result = await client.callTool({
-    name: 'octave.ingest',
+    name: 'octave_ingest',
     arguments: {
       content: 'DECISION:\n  ID::"DEC-001"\n  STATUS::"approved"',
       schema: 'DECISION_LOG',
@@ -370,7 +370,7 @@ octave-mcp-server
 
 **Symptoms:**
 - Server starts but tools don't appear in Claude Desktop
-- Client can't find `octave.ingest` or `octave.eject`
+- Client can't find `octave_ingest` or `octave_eject`
 
 **Diagnosis:**
 

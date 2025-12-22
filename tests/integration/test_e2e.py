@@ -215,7 +215,7 @@ STATUS :: active
 
         ingest_request = CallToolRequest(
             method="tools/call",
-            params={"name": "octave.ingest", "arguments": {"content": lenient_content, "schema": "TEST"}},
+            params={"name": "octave_ingest", "arguments": {"content": lenient_content, "schema": "TEST"}},
         )
 
         from mcp.types import CallToolRequest as CallToolRequestType
@@ -240,7 +240,7 @@ STATUS :: active
         eject_request = CallToolRequest(
             method="tools/call",
             params={
-                "name": "octave.eject",
+                "name": "octave_eject",
                 "arguments": {"content": canonical_content, "schema": "TEST", "mode": "authoring"},
             },
         )
@@ -271,7 +271,7 @@ FIELD_B::value_b
 
         # Ingest
         request = CallToolRequest(
-            method="tools/call", params={"name": "octave.ingest", "arguments": {"content": original, "schema": "TEST"}}
+            method="tools/call", params={"name": "octave_ingest", "arguments": {"content": original, "schema": "TEST"}}
         )
 
         from mcp.types import CallToolRequest as CallToolRequestType

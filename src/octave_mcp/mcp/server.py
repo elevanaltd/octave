@@ -61,9 +61,9 @@ def create_server() -> Server:
             arguments = {}
 
         # Route to appropriate tool
-        if name == "octave.ingest":
+        if name == "octave_ingest":
             result = await ingest_tool.execute(**arguments)
-        elif name == "octave.eject":
+        elif name == "octave_eject":
             result = await eject_tool.execute(**arguments)
         else:
             raise ValueError(f"Unknown tool: {name}")
