@@ -2,7 +2,7 @@
 
 ## B0: Workspace Setup Complete ✅
 
-This workspace has been prepared for OCTAVE MCP Server development following the BUILD-PLAN at `/Volumes/OCTAVE/octave/worktrees/octave-build/docs/workflow/build-plan.oct.md`.
+This workspace has been prepared for OCTAVE MCP Server development following the BUILD-PLAN at `docs/workflow/build-plan.oct.md`.
 
 ## Quick Start
 
@@ -38,7 +38,7 @@ pytest
 ## Project Structure
 
 ```
-/Volumes/OCTAVE/octave/worktrees/octave-build/
+.
 ├── pyproject.toml              # Package configuration
 ├── src/octave_mcp/
 │   ├── core/                   # Core parsing/validation (P1.2-P1.6)
@@ -106,8 +106,7 @@ Follow conventional commits:
 
 ## Reference Architecture
 
-PAL MCP Server patterns: `/Volumes/HestAI-Tools/pal-mcp-server/`
-OCTAVE Specifications: `/Volumes/OCTAVE/octave/worktrees/octave-build/specs/`
+OCTAVE Specifications: `specs/`
 
 ## Dependencies
 

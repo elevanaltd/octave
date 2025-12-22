@@ -47,7 +47,7 @@ pip install octave-mcp
 
 ```bash
 git clone https://github.com/elevanaltd/octave.git
-cd octave/worktrees/octave-build
+cd octave
 pip install -e .
 ```
 
@@ -155,7 +155,7 @@ Every transformation is classified and logged:
 ```bash
 # Clone and setup
 git clone https://github.com/elevanaltd/octave.git
-cd octave/worktrees/octave-build
+cd octave
 python -m venv .venv
 source .venv/bin/activate  # or `.venv\Scripts\activate` on Windows
 pip install -e ".[dev]"

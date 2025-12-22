@@ -2,7 +2,6 @@
 
 **Date**: 2025-12-22
 **Author**: Technical Architect
-**Working Directory**: `/Volumes/OCTAVE/octave/worktrees/octave-build`
 
 ## Executive Summary
 
@@ -620,4 +619,4 @@ Projection modes also need enhancement to be schema-driven rather than hardcoded
 
 This approach maintains the architectural integrity of "one language, disciplined tolerance" while enabling the extensibility needed for real-world applications.
 
-See [ADR-001](/Volumes/OCTAVE/octave/worktrees/octave-build/docs/adr/001-configurability-and-modularity-architecture.md) for detailed architectural decision record.
+See `docs/adr/001-configurability-and-modularity-architecture.md` for detailed architectural decision record.
