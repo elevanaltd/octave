@@ -5,6 +5,7 @@
 META:
   NAME::"OCTAVE Expert Compressor"
   VERSION::"5.1.0"
+  TYPE::GUIDE
   PURPOSE::"Maximum compression with minimum comprehension loss"
   FIDELITY_TARGET::">85%"
   COMPRESSION_TARGET::"10-20x"
