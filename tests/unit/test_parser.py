@@ -4,8 +4,10 @@ Tests lenient parsing with envelope completion, whitespace normalization,
 and nested block structure.
 """
 
+import pytest
+
 from octave_mcp.core.ast_nodes import Assignment, Block, ListValue
-from octave_mcp.core.parser import parse
+from octave_mcp.core.parser import parse, ParserError
 
 
 class TestEnvelopeInference:
@@ -196,13 +198,23 @@ class TestErrorHandling:
 KEY: value
 ===END===
 """
-        # Single colon with value on same line is ambiguous
-        # Should be treated as block with error or parse as block
-        # Based on spec, single colon is block operator
-        _ = parse(content)
-        # This should parse as a block, not assignment
-        # If it has a value on same line, it's malformed
-        # For now, we'll be lenient and treat it as block
+        # E001: Single colon with value on same line is ambiguous and forbidden
+        with pytest.raises(ParserError) as exc_info:
+            parse(content)
+        assert exc_info.value.error_code == "E001"
+        assert "double colon" in exc_info.value.message.lower()
+
+    def test_allows_single_colon_for_blocks(self):
+        """Should allow KEY: with children (proper block syntax)."""
+        content = """===TEST===
+CONFIG:
+  NESTED::value
+===END===
+"""
+        # This is valid - single colon is the block operator
+        doc = parse(content)
+        assert len(doc.sections) > 0
+        assert isinstance(doc.sections[0], Block)
 
     def test_handles_missing_end_envelope(self):
         """Should handle missing ===END===."""
@@ -211,4 +223,42 @@ KEY::value
 """
         # Should still parse, maybe with warning
         doc = parse(content)
+        assert doc.name == "TEST"
+
+
+class TestSchemaSelection:
+    """Test schema selection errors (E002)."""
+
+    @pytest.mark.skip(reason="E002: Schema selector validation not implemented yet (P1.5)")
+    def test_errors_when_no_schema_selector_without_envelope(self):
+        """Should error when document has no envelope and no schema selector (E002)."""
+        # Currently we infer ===INFERRED=== envelope, but in strict mode
+        # we should require explicit schema selection via @SCHEMA or ===ENVELOPE===
+        content = """KEY::value
+ANOTHER::field
+"""
+        # In future: should raise E002 in strict mode
+        # For now: this would parse with INFERRED envelope
+        doc = parse(content)
+        # When E002 is implemented, this should error in strict validation mode
+        assert doc.name == "INFERRED"
+
+
+class TestRoutingTargets:
+    """Test routing target inference errors (E004)."""
+
+    @pytest.mark.skip(reason="E004: Routing target validation not implemented yet (P2.x)")
+    def test_errors_when_cannot_infer_routing_target(self):
+        """Should error when routing target cannot be inferred (E004)."""
+        # E004 relates to the →§TARGET operator and MCP routing
+        # This is part of P2.x MCP tool implementation
+        content = """===TEST===
+META:
+  TYPE::COMMAND
+  TARGET::§UNKNOWN
+===END===
+"""
+        doc = parse(content)
+        # When E004 is implemented, validator should check if §UNKNOWN can be resolved
+        # For now, just parse successfully
         assert doc.name == "TEST"
