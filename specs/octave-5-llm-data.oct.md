@@ -3,9 +3,13 @@ META:
   TYPE::LLM_PROFILE
   VERSION::"5.1.0"
   STATUS::APPROVED
+  IMPLEMENTATION::PLANNED
   TOKENS::"~75"
   REQUIRES::octave-5-llm-core
   PURPOSE::compression_and_instances
+  IMPLEMENTATION_NOTES::"Compression tiers (LOSSLESS/CONSERVATIVE/AGGRESSIVE/ULTRA) defined in mcp/ingest.py but logic not implemented. Tier parameter accepted but ignored."
+  IMPLEMENTATION_REF::[src/octave_mcp/mcp/ingest.py::tier_param]
+  CRITICAL_GAPS::[compression_rules_enforcement,tier_specific_logic,loss_profile_tracking]
 
 ---
 

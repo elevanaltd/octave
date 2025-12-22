@@ -3,9 +3,13 @@ META:
   TYPE::SPECIFICATION
   VERSION::"1.0.0"
   STATUS::APPROVED
+  IMPLEMENTATION::PARTIAL
   DATE::"2025-12-22"
   OCTAVE_VERSION::"5.1.0"
   PURPOSE::MCP_server_architecture_for_OCTAVE_productization
+  IMPLEMENTATION_NOTES::"MCP tools (octave_ingest 200 LOC, octave_eject 110 LOC), canonicalization rules, and projection modes IMPLEMENTED. Constraint validation, repair logic (fix=true), target routing, and schema policy PLANNED."
+  IMPLEMENTATION_REF::[src/octave_mcp/mcp/ingest.py,src/octave_mcp/mcp/eject.py,src/octave_mcp/core/lexer.py,src/octave_mcp/core/projector.py]
+  CRITICAL_GAPS::[constraint_validation,target_routing,repair_logic,builtin_schema_loading,error_message_formatting]
 
 ---
 
