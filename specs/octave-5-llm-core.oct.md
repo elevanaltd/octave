@@ -1,0 +1,150 @@
+===OCTAVE_CORE===
+META:
+  TYPE::LLM_PROFILE
+  VERSION::"5.1.0"
+  STATUS::DRAFT
+  TOKENS::"~250"
+  REQUIRES::nothing
+  ENABLES::[schema,data]
+
+// OCTAVE CORE: The spine. Always inject this.
+
+§1::ENVELOPE
+START::===NAME===[first_line,exact_match]
+END::===END===[last_line,exact_match,mandatory]
+META::required[TYPE,VERSION][immediately_after_start]
+DUPLICATES::keys_must_be_unique_per_block
+COMMENTS:://[line_start_or_after_value]
+
+ASSEMBLY::when_profiles_concatenated[core+schema+data]→only_final_===END===_terminates
+
+§2::OPERATORS
+
+// LAYER 1: STRUCTURAL (statement/field level, not expressions)
+STRUCTURAL:
+  ::    assign      KEY::value[binding]
+  :     block       KEY:[newline_then_indent]
+
+// LAYER 2: EXPRESSION (inside values, precedence applies)
+// Lower number = binds tighter
+EXPRESSION:
+  PREC::UNICODE::ASCII::SEMANTIC::USAGE::ASSOC
+  1    []       []     container   [a,b,c]                   n/a
+  2    ⧺        ~      concat      A⧺B[mechanical_join]      left
+  3    ⊕        +      synthesis   A⊕B[emergent_whole]       left
+  4    ⇌        vs     tension     A⇌B[binary_opposition]    none[binary_only]
+  5    ∧        &      constraint  [A∧B∧C]                   left
+  6    ∨        |      alternative A∨B                       left
+  7    →        ->     flow        A→B→C                     right
+
+// LAYER 3: PREFIX/SPECIAL
+PREFIX:
+  §     target      §INDEXER∨§./path
+  //    comment     //text[to_end_of_line]
+
+§2b::LEXER_RULES
+LONGEST_MATCH::`::`_recognized_before_`:`
+UNICODE_NORMALIZATION::NFC[canonical_composition]
+ASCII_ALIASES::accepted_normalized_to_unicode
+
+// ASCII alias boundary rules
+vs::requires_word_boundaries[whitespace∨bracket∨paren∨start∨end]
+VALID::"A vs B"∨"[Speed vs Quality]"
+INVALID::"SpeedvsQuality"[no_boundaries]
+RECOMMENDATION::prefer_canonical_unicode_in_emission
+
+§2c::BRACKET_FORMS
+CONTAINER::[a,b,c][bare_brackets_are_lists]
+CONSTRUCTOR::NAME[args][e.g._REGEX[pattern]_ENUM[a,b]]
+HOLOGRAPHIC::["value"∧CONSTRAINT→§TARGET][schema_mode]
+RULE::NAME[...]_is_constructor|bare_[...]_is_container
+
+§3::TYPES
+STRING::bare_word|"quoted"[when:spaces,special,reserved]
+NUMBER::42|3.14|-1e10[no_quotes]
+BOOLEAN::true|false[lowercase_only]
+NULL::null[lowercase_only]
+LIST::[a,b,c]|[][empty_allowed]
+ESCAPES::[\",\\,\n,\t][inside_quotes_only]
+
+§4::STRUCTURE
+INDENT::2_spaces_per_level[no_tabs_ever]
+KEYS::[A-Z,a-z,0-9,_][start_with_letter_or_underscore]
+NESTING::indent_creates_child_relationship
+BLANK_LINES::allowed_for_readability
+EMPTY_BLOCK::KEY:[valid_with_no_children]
+
+§5::MODES
+DATA:
+  PATTERN::KEY::value
+  LEVELS::L1∨L2
+  BRACKETS::lists[a,b,c]∨inline_maps[k::v,k2::v2]
+  INLINE_MAP_NESTING::forbidden[values_must_be_atoms]
+  USE::instances[sessions,configs,runtime_state]
+
+SCHEMA:
+  PATTERN::KEY::["example"∧CONSTRAINT→§TARGET]
+  LEVELS::L3∨L4
+  BRACKETS::holographic_container[value∧constraints→target]
+  USE::definitions[types,validation_rules,extraction_routing]
+
+§6::NEVER
+ERRORS::[
+  tabs,
+  any_whitespace_around_::,
+  newline_in_quoted_string,
+  bare_flow[KEY→value],
+  wrong_case[True,False,NULL],
+  missing_final_===END===,
+  ∧_outside_brackets,
+  chained_tension[A⇌B⇌C],
+  vs_without_boundaries[SpeedvsQuality]
+]
+
+§7::CANONICAL_EXAMPLES
+// Reference patterns only. Not standalone documents.
+
+DATA_PATTERN:
+  ID::sess_abc123
+  STATUS::ACTIVE
+  PHASE::B2
+  TAGS::[api,auth]
+  EMPTY_LIST::[]
+  FLOW::[INIT→BUILD→TEST]
+  BLOCKERS::issue_1∨issue_2
+  QUALITY::[tests::5/5,lint::ok,coverage::87%]
+  PATH::src⧺components⧺auth
+
+// TENSION PATTERN (binary only, followed by resolution)
+OPERATIONAL_TENSION::Speed⇌Quality→Balanced_Delivery
+TRADE_OFF::[Latency⇌Accuracy,Cost⇌Quality]
+
+// SYNTHESIS PATTERN (emergent combination)
+APPROACH::Architecture⊕Implementation⊕Testing
+
+// INLINE_MAP_NESTING (Forbidden pattern)
+BAD::[config::[nested::value]]
+GOOD:
+  CONFIG:
+    NESTED::value
+
+SCHEMA_PATTERN:
+  ID::["user_123"∧REQ∧REGEX[^user_\w+$]→§INDEXER]
+  STATUS::["ACTIVE"∧REQ∧ENUM[ACTIVE,SUSPENDED]→§META]
+  EMAIL::["user@example.com"∧REQ∧TYPE(STRING)→§INDEXER]
+  ROLES::[["admin","viewer"]∧OPT∧TYPE(LIST)→§INDEXER]
+  NOTES::["Optional context"∧OPT→§SELF]
+
+BLOCK_INHERITANCE_PATTERN:
+  RISKS[→§RISK_LOG]:
+    CRITICAL::["auth_bypass"∧REQ]
+    WARNING::["rate_limit"∧OPT→§SELF]
+
+// PRECEDENCE EXAMPLES
+PARSE_AS:
+  A⊕B→C        means (A⊕B)→C         // synthesis binds tighter
+  A⇌B→C        means (A⇌B)→C         // tension binds tighter
+  A→B→C        means A→(B→C)         // flow is right-associative
+  [A∧B∧C]      means [(A∧B)∧C]       // constraints chain left
+
+===END===

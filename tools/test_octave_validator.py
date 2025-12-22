@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test suite for OCTAVE Validator v3.0 - Profiles and HestAI support
+Test suite for OCTAVE Validator v5.0.3 - Profiles and HestAI support
 
 Tests validation profiles (protocol, hestai-agent, hestai-skill),
 YAML frontmatter handling, and repository scanning mode.
@@ -377,6 +377,61 @@ class TestBackwardCompatibility(unittest.TestCase):
         """CLI without flags should validate single file strictly."""
         # This will be tested via integration test
         pass
+
+
+class TestOCTAVEv5Features(unittest.TestCase):
+    """Test OCTAVE v5.0.3 specific features."""
+
+    def test_constraint_chaining_inside_brackets_valid(self):
+        """Constraint operator & chaining inside brackets should be valid."""
+        doc = make_v4_doc("TEST", """CONFIG::[
+  "value"&REQ&REGEX->§TARGET
+]""")
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        self.assertTrue(is_valid, f"Expected & chaining inside brackets to be valid, got: {messages}")
+
+    def test_constraint_outside_brackets_invalid(self):
+        """Constraint operator & outside brackets should be invalid."""
+        doc = make_v4_doc("TEST", """VALUE::"test"&REQ&REGEX""")
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        self.assertFalse(is_valid)
+        self.assertTrue(any("Constraint operator" in msg for msg in messages))
+
+    def test_plus_chaining_now_allowed(self):
+        """Plus operator + chaining should be allowed in v5.0.3."""
+        doc = make_v4_doc("TEST", """COMBO::A+B+C""")
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        # v5.0.3 allows chaining, so no error expected
+        self.assertTrue(is_valid, f"Expected A+B+C to be valid in v5.0.3, got: {messages}")
+
+    def test_inline_maps_valid(self):
+        """Inline maps [k::v,k2::v2] should be valid."""
+        doc = make_v4_doc("TEST", """CONFIG::[name::"test",version::"1.0"]""")
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        # Should be valid - inline map syntax
+        self.assertTrue(is_valid, f"Expected inline map to be valid, got: {messages}")
+
+    def test_empty_block_valid(self):
+        """Empty block KEY: with no children should be valid."""
+        doc = make_v4_doc("TEST", """EMPTY:
+NEXT_KEY::value""")
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        # Should be valid - empty blocks allowed in v5.0.3
+        self.assertTrue(is_valid, f"Expected empty block to be valid, got: {messages}")
+
+    def test_block_inheritance_with_target(self):
+        """Block inheritance BLOCK[->§TARGET]: with children should be valid."""
+        doc = make_v4_doc("TEST", """INHERITED[->§BASE]:
+  CHILD::value""")
+        validator = OctaveValidator(profile="protocol")
+        is_valid, messages = validator.validate_octave_document(doc)
+        # Should be valid - block inheritance with target
+        self.assertTrue(is_valid, f"Expected block inheritance to be valid, got: {messages}")
 
 
 if __name__ == '__main__':

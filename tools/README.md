@@ -37,8 +37,15 @@ Features:
 - Preserves document structure
 
 ### `octave-validator.py`
-**Purpose**: Comprehensive OCTAVE v4 validator  
-**Note**: More complex validation with operator checks and v1.0 deprecation warnings
+**Purpose**: Comprehensive OCTAVE v5.0.3 validator
+**Note**: More complex validation with operator checks and v5.0.3 feature support
+
+**v5.0.3 Features Supported**:
+- Constraint chaining with `&` operator inside brackets: `["val"&REQ&REGEX->§TARGET]`
+- Plus operator `+` chaining now allowed: `A+B+C`
+- Inline maps: `[k::v,k2::v2]`
+- Empty blocks: `KEY:` with no children
+- Block inheritance: `BLOCK[->§TARGET]:` with children
 
 ## Round-Trip Example
 
