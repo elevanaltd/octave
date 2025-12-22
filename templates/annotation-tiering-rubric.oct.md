@@ -10,7 +10,7 @@ META:
 
 TIERS:
   HOTSPOT::"Full OCTAVE annotation"
-  IMPORTANT::"Moderate OCTAVE annotation"  
+  IMPORTANT::"Moderate OCTAVE annotation"
   PERIPHERAL::"Minimal or no OCTAVE"
 
 HOTSPOT_CRITERIA:
@@ -19,7 +19,7 @@ HOTSPOT_CRITERIA:
   BUSINESS_LOGIC::"Core domain rules and calculations"
   SIDE_EFFECTS::"External API calls, database mutations"
   COMPLEX_FLOWS::"Multi-step state machines"
-  
+
   ANNOTATION_DEPTH:
     PATTERNS::REQUIRED
     FORCES::REQUIRED
@@ -32,7 +32,7 @@ IMPORTANT_CRITERIA:
   ERROR_HANDLING::"Recovery strategies, fallbacks"
   CONFIGURATION::"System behavior controls"
   SHARED_UTILITIES::"Cross-domain helpers"
-  
+
   ANNOTATION_DEPTH:
     PATTERNS::OPTIONAL
     FORCES::OPTIONAL
@@ -45,7 +45,7 @@ PERIPHERAL_CRITERIA:
   DATA_STRUCTURES::"Simple DTOs, value objects"
   GENERATED_CODE::"Auto-created by tools"
   OBVIOUS_HELPERS::"toString, simple getters"
-  
+
   ANNOTATION_DEPTH:
     HEADLINE_ONLY::"Single line purpose if any"
     NO_PATTERNS::true
@@ -57,13 +57,13 @@ DECISION_FLOW:
   STEP_3::"Does it encode business rules?"
   STEP_4::"Does it cause side effects?"
   STEP_5::"Is the flow multi-step?"
-  
+
   IF_ANY_YES::TIER::HOTSPOT
   ELSE_CHECK:
-    INTEGRATION::"Service boundary?" 
+    INTEGRATION::"Service boundary?"
     ERROR_HANDLING::"Complex recovery?"
     CONFIGURATION::"Behavior control?"
-    
+
   IF_ANY_YES::TIER::IMPORTANT
   ELSE::TIER::PERIPHERAL
 
@@ -76,7 +76,7 @@ EXAMPLES:
     FORCES::[SECURITY, PERFORMANCE]
     TENSION::THOROUGH_VALIDATION _VERSUS_ LATENCY
     """
-    
+
   IMPORTANT:
     FILE::"services/user_adapter.py"
     REASON::"Integration point"
@@ -84,7 +84,7 @@ EXAMPLES:
     PURPOSE::Transform external user data
     TENSION::FLEXIBILITY _VERSUS_ TYPE_SAFETY
     """
-    
+
   PERIPHERAL:
     FILE::"models/user_dto.py"
     REASON::"Simple data structure"
@@ -95,7 +95,7 @@ MEASUREMENT:
     HOTSPOT::"100% annotated"
     IMPORTANT::"60-80% annotated"
     PERIPHERAL::"0-20% annotated"
-    
+
   COMPREHENSION_TEST::"Can new developer understand purpose and risks?"
   TOKEN_EFFICIENCY::"Annotation tokens / code tokens < 0.3"
 

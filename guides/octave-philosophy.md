@@ -73,4 +73,3 @@ Ask yourself these questions as you write.
 - If I delete all the metaphors and philosophical comments, does the document still work? (It should.)
 - Could another person (or an LLM) draw a diagram of my system just by reading the OCTAVE?
 - Is every single term in `0.DEF` referenced elsewhere in the document?
-

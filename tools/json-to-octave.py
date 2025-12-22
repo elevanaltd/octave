@@ -7,54 +7,57 @@ Enables round-trip conversion for integration needs
 import json
 import sys
 
+
 def json_to_octave(data, indent=0):
     """Convert JSON to OCTAVE format"""
     lines = []
     spacing = "  " * indent
-    
+
     # Handle the body of the octave document
-    if indent == 0 and 'octave' in data and 'body' in data['octave']:
-        body = data['octave']['body']
+    if indent == 0 and "octave" in data and "body" in data["octave"]:
+        body = data["octave"]["body"]
     else:
         body = data
 
-    for i, (key, value) in enumerate(body.items()):
+    for key, value in body.items():
         # Skip metadata keys
         if key.endswith("_blank_after"):
             continue
-            
-        if isinstance(value, dict) and not any(op in value for op in ['progression', 'tension', 'synthesis']):
+
+        if isinstance(value, dict) and not any(op in value for op in ["progression", "tension", "synthesis"]):
             lines.append(f"{spacing}{key}:")
             lines.append(json_to_octave(value, indent + 1))
         else:
             value_str = format_value(value)
             lines.append(f"{spacing}{key}::{value_str}")
-        
+
         # Only add blank line if it existed in original
         if f"{key}_blank_after" in body and body[f"{key}_blank_after"]:
             lines.append("")
-                
-    return '\n'.join(lines)
+
+    return "\n".join(lines)
+
 
 def format_value(value):
     """Format individual values"""
     if isinstance(value, str):
         return value
     elif isinstance(value, bool):
-        return 'true' if value else 'false'
+        return "true" if value else "false"
     elif value is None:
-        return 'null'
+        return "null"
     elif isinstance(value, list):
-        return '[' + ', '.join(str(v) for v in value) + ']'
+        return "[" + ", ".join(str(v) for v in value) + "]"
     elif isinstance(value, dict):
-        if 'progression' in value:
-            return '[' + '->'.join(str(v) for v in value['progression']) + ']'
-        if 'tension' in value:
+        if "progression" in value:
+            return "[" + "->".join(str(v) for v in value["progression"]) + "]"
+        if "tension" in value:
             return f"{value['tension'][0]} _VERSUS_ {value['tension'][1]}"
-        if 'synthesis' in value:
-            return '+'.join(str(v) for v in value['synthesis'])
-    
+        if "synthesis" in value:
+            return "+".join(str(v) for v in value["synthesis"])
+
     return str(value)
+
 
 if __name__ == "__main__":
     try:
@@ -63,10 +66,10 @@ if __name__ == "__main__":
                 data = json.load(f)
         else:
             data = json.load(sys.stdin)
-        
-        title = data.get('octave', {}).get('title', 'OCTAVE_DOCUMENT')
-        
-        print(f'==={title}===')
+
+        title = data.get("octave", {}).get("title", "OCTAVE_DOCUMENT")
+
+        print(f"==={title}===")
         print(json_to_octave(data))
         print("===END===")
 

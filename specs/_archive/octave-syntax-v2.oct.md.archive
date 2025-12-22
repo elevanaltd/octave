@@ -39,7 +39,7 @@ CORE:
     OPERATOR::ASSIGN
     FORMAT::"KEY::VALUE"
     EXAMPLE::STATUS::ACTIVE
-    
+
   HIERARCHY:
     INDENT::"  "  // Exactly 2 spaces per level
     CONSISTENT::true
@@ -48,7 +48,7 @@ CORE:
         CHILD::value
         ANOTHER:
           DEEP::nested_value
-          
+
   LISTS:
     FORMAT::"[item, item, item]"
     NO_TRAILING_COMMA::true
@@ -58,7 +58,7 @@ CORE:
       SIMPLE::[a, b, c]
       WITH_PROGRESSION::[INIT->BUILD->DEPLOY]
       NESTED::[[inner], [another, [deep]]]
-      
+
   COMMENTS:
     OPERATOR::COMMENT
     SCOPE::"To end of line"
@@ -69,7 +69,7 @@ CORE:
     ]
     FORBIDDEN_LOCATIONS::[
       "Inside [] list delimiters",
-      "Inside {{}} inline object delimiters", 
+      "Inside {{}} inline object delimiters",
       "Between KEY:: and VALUE"
     ]
     EXAMPLES:
@@ -93,12 +93,12 @@ DATA_TYPES:
     ESCAPE_SEQUENCES::[
       "\\\" → quotation mark",
       "\\\\ → backslash",
-      "\\n → newline", 
+      "\\n → newline",
       "\\r → carriage return",
       "\\t → tab",
       "\\uXXXX → unicode character"
     ]
-    
+
   NUMBER:
     SUPPORTED::[42, 3.14, -1e10, Infinity, NaN]
     UNSUPPORTED:
@@ -106,22 +106,22 @@ DATA_TYPES:
       RULE::"Must quote as strings"
       EXAMPLES::[
         "\"0xFF\"",    // Hex
-        "\"0o755\"",   // Octal  
+        "\"0o755\"",   // Octal
         "\"0b1010\"",  // Binary
         "\"1_000\""    // Underscore
       ]
     NEVER_QUOTE::"Supported number formats"
-    
+
   BOOLEAN:
     VALUES::[true, false]  // Lowercase only
     NEVER_QUOTE::true
     INVALID::[True, TRUE, "true"]
-    
+
   NULL:
     VALUE::null  // Lowercase only
     NEVER_QUOTE::true
     INVALID::[Null, NULL, "null"]
-    
+
   OBJECT:
     INLINE:
       FORMAT::{{key:value, key2:value2}}
@@ -150,21 +150,21 @@ STRUCTURE:
     EXAMPLES:
       VALID::[userName, user_name, _private, KEY2]
       INVALID::["user:name", "my-key", "123start"]
-      
+
   VALUES:
     WHITESPACE_PRESERVED::true
     EMPTY_STRING_REQUIRES_QUOTES::true
     TYPE_DISAMBIGUATION:
       STRING_42::"\"42\""      // String
       NUMBER_42::42            // Number
-      STRING_TRUE::"\"true\""  // String  
+      STRING_TRUE::"\"true\""  // String
       BOOLEAN_TRUE::true       // Boolean
-      
+
   DOCUMENT_VS_DATA:
     HEADERS::"# lines organize content but aren't OCTAVE data"
     DATA::"Only KEY: and KEY:: patterns create data structure"
     COMMENTS::"// lines provide context but aren't data"
-    
+
   SPECIAL_SECTIONS:
     META::"Document metadata (usually first)"
     0.DEF::"Define terms before use"
@@ -178,21 +178,21 @@ OPERATOR_RULES:
 
   // For the full list of validated patterns, see the guides
   GUIDE_REFERENCE::"../guides/llm-octave-quick-reference.oct.md"
-  
+
   SYNTHESIS:
     SYMBOL::SYNTHESIS  // +
     USAGE::"Between exactly two elements"
     BINARY_ONLY::true  // No chaining allowed
     EXAMPLE::APOLLO+HERMES
     INVALID::"A+B+C"  // Cannot chain
-    
+
   TENSION:
     SYMBOL::TENSION  // _VERSUS_
     USAGE::"Between exactly two elements"
     BINARY_ONLY::true  // No chaining allowed
     EXAMPLE::SPEED _VERSUS_ RELIABILITY
     INVALID::"A _VERSUS_ B _VERSUS_ C"  // Cannot chain
-    
+
   PROGRESSION:
     SYMBOL::PROGRESSION  // ->
     USAGE::"Inside lists ONLY"
@@ -209,7 +209,7 @@ SINGLE_VS_DOUBLE_COLON:
   STRUCTURE::"KEY: starts nested block"
   IN_OBJECTS::"{{key:value}} uses single colon"
   IN_DEFINITIONS::"CATEGORY:TERM in 0.DEF only"
-  
+
 EMPTY_SECTIONS:
   SYNTACTIC_BEHAVIOR::"KEY: with no content = empty object"
   VALID::true
@@ -217,7 +217,7 @@ EMPTY_SECTIONS:
     PLACEHOLDER:
     NEXT::value
   SEMANTIC_REFERENCE::"/config/_system/octave-semantics.oct.md#EMPTY_SECTIONS"
-    
+
 MULTILINE_STRINGS:
   INDENTATION::"Preserved relative to opening \"\"\""
   CLOSING::"\"\"\" on its own line"
@@ -229,11 +229,11 @@ MULTILINE_STRINGS:
 
 ERROR_MODEL:
   PURPOSE::"Define validity for consistent validation"
-  
+
   ERROR_CATEGORIES:
     CRITICAL::"Document is INVALID - cannot be processed"
     WARNING::"Document is VALID but has style issues"
-    
+
   CRITICAL_ERRORS:
     SYNTAX_VIOLATIONS::[
       "Colon in key name",
@@ -246,15 +246,15 @@ ERROR_MODEL:
       "VALUE::A+B+C",     // Chained synthesis
       "{{nested:{{bad}}}}",  // Nested inline objects
     ]
-    
+
   VALIDATION_BEHAVIOR:
     ON_CRITICAL::"Stop processing, mark document INVALID"
     ON_WARNING::"Continue processing, note issues"
-    
+
   ERROR_REPORTING:
     REQUIRED_INFO::[
       "line: <number>",
-      "column: <position>", 
+      "column: <position>",
       "error_type: <category>",
       "found: <actual>",
       "expected: <valid_form>"
@@ -284,7 +284,7 @@ META:
 0.DEF:
   ENV:PROD::"Production environment"
   HEX_PORT::"\"0x1F90\""  // Hex as quoted string
-  
+
 ### System Configuration
 CONFIG:
   environment::ENV:PROD
@@ -293,16 +293,16 @@ CONFIG:
     port::8080  // Decimal number
     alt_port::HEX_PORT  // Using defined hex string
     features::[auth, cache, logs]
-    
+
   database:
     // Comment inside structured object
     connection::"postgresql://localhost/mydb"
     pool::{{min:5, max:20, timeout:30}}
-    
+
   workflow::[CONNECT->VALIDATE->PROCESS->RESPOND]
   architecture::APOLLO+HERMES  // Syntactic example only
   balance::PERFORMANCE _VERSUS_ CONSISTENCY
-  
+
   description::"""
   Multi-line with \n escapes
   and preserved   spacing

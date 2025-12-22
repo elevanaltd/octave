@@ -39,7 +39,7 @@ OUTPUT_CALIBRATION::{DEPTH::THOROUGH, STYLE::PRECISE}
 # C++/Rust namespace operator
 TEST_A1: COGNITION::LOGOS           # namespace/module membership
 
-# Python/Ruby assignment  
+# Python/Ruby assignment
 TEST_A2: COGNITION = LOGOS           # simple assignment
 
 # JavaScript arrow function
@@ -113,14 +113,14 @@ TEST_C6: ROLE: SECURITY_ARCHITECT ∪ CODE_SAGE
 TEST_C7: ROLE: SECURITY_ARCHITECT+CODE_SAGE
 ```
 
-#### Category D: Flow Control Patterns  
+#### Category D: Flow Control Patterns
 ```python
 # Test different flow representations
 
 # Unix pipe
 TEST_D1: PROCESS: ANALYZE | SYNTHESIZE | RECOMMEND
 
-# Method chaining  
+# Method chaining
 TEST_D2: PROCESS: ANALYZE.SYNTHESIZE.RECOMMEND
 
 # Arrow flow (proven)
@@ -144,7 +144,7 @@ TEST_D6: PROCESS: ANALYZE >>> SYNTHESIZE >>> RECOMMEND
 TEST_E1: BALANCE: SPEED _VERSUS_ QUALITY
 
 # VS abbreviation
-TEST_E2: BALANCE: SPEED VS QUALITY  
+TEST_E2: BALANCE: SPEED VS QUALITY
 
 # Logical XOR
 TEST_E3: BALANCE: SPEED ⊻ QUALITY
@@ -188,14 +188,14 @@ def read_file(filename):
 
 def measure_llm_activation(test_name, syntax_pattern, scenario_name):
     """Measure how different syntax patterns activate LLM capabilities"""
-    
+
     # Build full prompt with syntax variation
     agent_def = build_agent_with_syntax(syntax_pattern)
     prompt = f"{agent_def}\n\n{TEST_SCENARIOS[scenario_name]}"
-    
+
     # Call LLM
     response = call_zen_chat(prompt, model="o3-mini")
-    
+
     # Measure activation quality
     return {
         "test_name": test_name,
@@ -206,12 +206,12 @@ def measure_llm_activation(test_name, syntax_pattern, scenario_name):
             "reasoning_depth": measure_reasoning_chains(response),
             "systematic_thinking": count_structured_sections(response),
             "cross_domain_insights": detect_multi_dimensional_analysis(response),
-            
-            # Quality metrics  
+
+            # Quality metrics
             "vulnerability_detection": check_vulnerability_found(response, scenario_name),
             "false_positive_rate": check_false_positives(response),
             "solution_completeness": measure_fix_quality(response),
-            
+
             # Cognitive metrics
             "archetypal_activation": check_mythological_thinking(response),
             "synthesis_quality": measure_integration_level(response),
@@ -241,13 +241,13 @@ def detect_multi_dimensional_analysis(response):
 # Generate heatmap of syntax effectiveness
 def generate_activation_heatmap(results):
     """
-    Create visual heatmap showing which syntax patterns 
+    Create visual heatmap showing which syntax patterns
     activate which cognitive capabilities
     """
-    
+
     # Matrix: Syntax patterns vs Cognitive capabilities
     # Darker = stronger activation
-    
+
     heatmap = {
         "COGNITION::LOGOS": {"depth": 0.95, "synthesis": 0.98, "accuracy": 0.92},
         "COGNITION=LOGOS": {"depth": 0.78, "synthesis": 0.75, "accuracy": 0.89},
@@ -262,7 +262,7 @@ def generate_activation_heatmap(results):
 - Test: `ROLE::SECURITY_ARCHITECT::SENIOR` vs `ROLE=SECURITY_ARCHITECT_SENIOR`
 - Measure: Depth of architectural insights
 
-#### Hypothesis 2: Mathematical operators activate systematic reasoning  
+#### Hypothesis 2: Mathematical operators activate systematic reasoning
 - Test: `ROLE: Σ(ARCHITECT, ANALYST)` vs `ROLE: ARCHITECT+ANALYST`
 - Measure: Completeness of analysis
 
@@ -286,10 +286,10 @@ COGNITION::LOGOS
 ROLE::SECURITY_ARCHITECT
 Review: function query(id) { return db.exec('SELECT * WHERE id='+id) }"
 
-# Test 2: Arrow function (JavaScript pattern)  
+# Test 2: Arrow function (JavaScript pattern)
 mcp zen chat --model o3-mini "
 COGNITION=>LOGOS
-ROLE=>SECURITY_ARCHITECT  
+ROLE=>SECURITY_ARCHITECT
 Review: function query(id) { return db.exec('SELECT * WHERE id='+id) }"
 
 # Test 3: Type annotation (TypeScript pattern)
@@ -306,11 +306,11 @@ Review: function query(id) { return db.exec('SELECT * WHERE id='+id) }"
 ```python
 def analyze_results(test_results):
     """Determine which syntax differences are statistically significant"""
-    
+
     # Need at least 30 runs per variant for significance
     # Use t-test for continuous metrics (depth scores)
     # Use chi-square for binary metrics (found vulnerability y/n)
-    
+
     significant_patterns = []
     for pattern in syntax_patterns:
         if p_value < 0.05 and effect_size > 0.1:
@@ -319,7 +319,7 @@ def analyze_results(test_results):
                 "effect": effect_size,
                 "confidence": 1 - p_value
             })
-    
+
     return significant_patterns
 ```
 

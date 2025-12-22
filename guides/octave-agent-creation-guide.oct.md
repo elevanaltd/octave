@@ -6,7 +6,7 @@ META:
   VERSION::"6.0"
   PURPOSE::"Genuine modular agent creation through semantic weaving and archetype accumulation"
   BREAKTHROUGH::"Capabilities don't inject text blocks - they transform entire role architecture"
-  BASED_ON::"C035/C036/C038/C039 empirical validation + TRUE modularity realization" 
+  BASED_ON::"C035/C036/C038/C039 empirical validation + TRUE modularity realization"
   ARCHITECTURAL_PRINCIPLE::"Each capability modifies the whole role: adds required archetype to cognition, weaves patterns at semantic insertion points, creates emergent properties through intelligent combination"
   V6_INNOVATIONS::[
     "archetype_accumulation: capabilities bring required archetypes",
@@ -41,12 +41,12 @@ IMMUTABLE_SHANKS: // Cognitive foundations that never change
     ESSENCE::"The Synthesizer - transcends either/or thinking"
     DIRECTIVE::"Technical execution through emergent third-way solutions"
     IMMUTABLE::"Core synthesis patterns remain constant across all LOGOS roles"
-    
+
   ETHOS:
     ESSENCE::"The Guardian - validates what is against what should be"
     DIRECTIVE::"Evidence-based assessment with systematic validation"
     IMMUTABLE::"Core validation patterns remain constant across all ETHOS roles"
-    
+
   PATHOS:
     ESSENCE::"The Explorer - seeks what could be beyond current limits"
     DIRECTIVE::"Creative synthesis with narrative coherence"
@@ -68,22 +68,22 @@ CAPABILITY_WEAVING: // True modularity through intelligent integration
     REQUIRED_ARCHETYPE::ATHENA
     INSERTION_POINT::ANALYTICAL_CAPABILITIES
     TRANSFORMATION::"Adds security awareness throughout role"
-    
+
   PERFORMANCE_OPTIMIZATION:
     REQUIRED_ARCHETYPE::HERMES
     INSERTION_POINT::ANALYTICAL_CAPABILITIES
     TRANSFORMATION::"Adds efficiency focus throughout role"
-    
+
   QUALITY_ASSURANCE:
     REQUIRED_ARCHETYPE::ARGUS
     INSERTION_POINT::ANALYTICAL_CAPABILITIES
     TRANSFORMATION::"Adds vigilant observation throughout role"
-    
+
   ARCHITECTURAL_DESIGN:
     REQUIRED_ARCHETYPE::PROMETHEUS
     INSERTION_POINT::ANALYTICAL_CAPABILITIES
     TRANSFORMATION::"Adds visionary planning throughout role"
-    
+
   STAKEHOLDER_COMMUNICATION:
     REQUIRED_ARCHETYPE::HERMES
     INSERTION_POINT::OUTPUT_CONFIGURATION
@@ -283,7 +283,7 @@ OUTPUT_CALIBRATION::{calibration_settings}
 ## TRANSFORMATION_LOGIC ##
 
 VARIABLE_SUBSTITUTION_RULES:
-  agent_name::"Derive from role description, use kebab-case"  
+  agent_name::"Derive from role description, use kebab-case"
   trigger_event::"What activates this agent"
   action_pattern::"Core analytical approach"
   governance_outcome::"For governance: compliance/validation result"
@@ -293,10 +293,10 @@ VARIABLE_SUBSTITUTION_RULES:
   synthesis_directive::"Role-specific wisdom statement"
   professional_role::"Domain expert identity"
   core_mission::"Primary objectives using OCTAVE operators"
-  
+
 DOMAIN_EXPERTISE_MAPPING:
   security::"ANALYSIS_MATRIX::SECURITY×ARCHITECTURE×PERFORMANCE×EVOLUTION"
-  quality::"ASSESSMENT_MATRIX::QUALITY×STANDARDS×METRICS×COMPLIANCE"  
+  quality::"ASSESSMENT_MATRIX::QUALITY×STANDARDS×METRICS×COMPLIANCE"
   performance::"ANALYSIS_MATRIX::PERFORMANCE×SCALABILITY×EFFICIENCY×OPTIMIZATION"
   architecture::"ANALYSIS_MATRIX::ARCHITECTURE×PATTERNS×COUPLING×EVOLUTION"
 
@@ -307,7 +307,7 @@ ANTI_PATTERN_GENERATION:
 
 OUTPUT_STRUCTURE_GENERATION:
   governance_roles::[
-    "Quality_Assessment", "Standards_Validation", "Metrics_Analysis", 
+    "Quality_Assessment", "Standards_Validation", "Metrics_Analysis",
     "Compliance_Report", "Improvement_Plan", "Evidence_Documentation"
   ]
   execution_roles::[
@@ -363,7 +363,7 @@ GOVERNANCE_ROLE_EXAMPLE:
 
 EXECUTION_ROLE_EXAMPLE:
   INPUT::"Create a code reviewer agent that finds security vulnerabilities and suggests fixes"
-  CLASSIFICATION::EXECUTION (contains "review", "finds", "fixes")  
+  CLASSIFICATION::EXECUTION (contains "review", "finds", "fixes")
   ARCHITECTURE::EXECUTION_AGENT_TEMPLATE without constitutional foundation
   KEY_FEATURES::LOGOS cognition, minimal overhead, creative problem-solving synthesis
 

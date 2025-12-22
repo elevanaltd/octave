@@ -5,7 +5,7 @@ Minimal utilities for OCTAVE validation and integration.
 ## Files
 
 ### `lint-octave.py`
-**Purpose**: Fast syntax validation for OCTAVE documents  
+**Purpose**: Fast syntax validation for OCTAVE documents
 **Usage**: `python3 lint-octave.py < document.oct.md`
 **Returns**: `OCTAVE_VALID` or `OCTAVE_INVALID: <reason>`
 
@@ -18,7 +18,7 @@ Checks:
 - No trailing commas in lists
 
 ### `octave-to-json.py`
-**Purpose**: Convert OCTAVE to JSON for system integration  
+**Purpose**: Convert OCTAVE to JSON for system integration
 **Usage**: `python3 octave-to-json.py document.oct.md > output.json`
 
 Features:
@@ -28,7 +28,7 @@ Features:
 - Handles nested structures
 
 ### `json-to-octave.py`
-**Purpose**: Convert JSON back to OCTAVE format  
+**Purpose**: Convert JSON back to OCTAVE format
 **Usage**: `python3 json-to-octave.py input.json > document.oct.md`
 
 Features:

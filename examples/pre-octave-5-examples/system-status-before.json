@@ -11,7 +11,7 @@
         "queue_depth": 8500
       },
       "database_cluster": {
-        "status": "overloaded", 
+        "status": "overloaded",
         "connections": 950,
         "max_connections": 1000,
         "replication_lag_seconds": 45

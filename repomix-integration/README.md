@@ -55,7 +55,7 @@ python octave_enhance_comprehensive.py input.xml output.xml
 
 Based on testing with the Repomix repository (100 TypeScript files, 9,000 lines):
 
-| Metric | Raw Repomix | Targeted OCTAVE | Comprehensive OCTAVE | 
+| Metric | Raw Repomix | Targeted OCTAVE | Comprehensive OCTAVE |
 |--------|-------------|-----------------|---------------------|
 | **Accuracy** | 5.0% | ~50% | 51.2% |
 | **Token Overhead** | Baseline | +1.0% | +11.4% |
@@ -71,7 +71,7 @@ Based on testing with the Repomix repository (100 TypeScript files, 9,000 lines)
 - Enhanced: Identified `TokenCounter.ts` as `PERFORMANCE_SENSITIVE::true` (60% accuracy)
 
 **Security Vulnerabilities**:
-- Raw: "External repository handling needs review" (0% accuracy)  
+- Raw: "External repository handling needs review" (0% accuracy)
 - Enhanced: Identified `gitRemoteHandle.ts` HIGH_RISK archive extraction (60% accuracy)
 
 ## Integration Examples
@@ -92,7 +92,7 @@ python octave_enhance_targeted.py context.xml enhanced.xml
 repomix --include "docs/requirements/**,README.md" --output step1.xml
 python octave_enhance_targeted.py step1.xml enhanced-step1.xml
 
-# BUILD Phase - implementation focus  
+# BUILD Phase - implementation focus
 repomix --include "src/**,tests/**" --output step6.xml
 python octave_enhance_targeted.py step6.xml enhanced-step6.xml
 ```
@@ -130,7 +130,7 @@ PIPELINE:
 These annotations enable AI tools to:
 - Understand architectural patterns immediately
 - Identify performance-critical components
-- Recognize security-sensitive areas  
+- Recognize security-sensitive areas
 - Map dependencies and data flows
 
 ## File Selection Strategy
@@ -158,7 +158,7 @@ The `octave_enhance_comprehensive.py` script:
 ```python
 KEY_FILES = [
     "src/main/orchestrator.java",
-    "src/security/auth.java", 
+    "src/security/auth.java",
     "src/api/controller.java",
     # ... your key files
 ]
@@ -204,7 +204,7 @@ elif "api" in file_path:
 
 The empirical results are based on blind testing across multiple AI models:
 - **gemini-2.5-pro**: 74→92 accuracy (24% improvement)
-- **o3**: 81→91 accuracy (12% improvement)  
+- **o3**: 81→91 accuracy (12% improvement)
 - **sonnet-4**: 82→92 accuracy (12% improvement)
 
 Results consistently show significant accuracy improvements with minimal token overhead.
