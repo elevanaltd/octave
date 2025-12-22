@@ -47,7 +47,7 @@ pip install octave-mcp
 
 ```bash
 git clone https://github.com/elevanaltd/octave.git
-cd octave/worktrees/octave-build
+cd octave
 pip install -e .
 ```
 
@@ -73,19 +73,30 @@ octave eject document.oct.md --mode executive --format markdown
 octave validate document.oct.md --schema DECISION_LOG --strict
 ```
 
-### 2. MCP Server for Claude Desktop
+### 2. MCP Server Setup
 
-Configure the MCP server in your Claude Desktop settings:
+Use the setup script to automatically configure the MCP server for your AI clients:
 
-```json
-{
-  "mcpServers": {
-    "octave": {
-      "command": "octave-mcp-server"
-    }
-  }
-}
+```bash
+# Interactive setup
+./setup-mcp.sh
+
+# Or configure specific clients
+./setup-mcp.sh --claude-desktop   # Claude Desktop
+./setup-mcp.sh --claude-code      # Claude Code CLI
+./setup-mcp.sh --codex            # OpenAI Codex CLI
+./setup-mcp.sh --gemini           # Google Gemini CLI
+./setup-mcp.sh --all              # All clients
+
+# Show copy/paste configuration for manual setup
+./setup-mcp.sh --show-config
 ```
+
+**Supported clients:**
+- Claude Desktop (macOS, Linux, Windows/WSL)
+- Claude Code CLI
+- OpenAI Codex CLI
+- Google Gemini CLI
 
 See [MCP Configuration Guide](docs/mcp-configuration.md) for detailed setup.
 
@@ -155,7 +166,7 @@ Every transformation is classified and logged:
 ```bash
 # Clone and setup
 git clone https://github.com/elevanaltd/octave.git
-cd octave/worktrees/octave-build
+cd octave
 python -m venv .venv
 source .venv/bin/activate  # or `.venv\Scripts\activate` on Windows
 pip install -e ".[dev]"
