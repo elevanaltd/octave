@@ -177,7 +177,7 @@ REQUIREMENTS::[
 // Two primitives. Pipeline exposed via verbose option.
 
 TOOL_INGEST:
-  NAME::octave.ingest
+  NAME::octave_ingest
   PURPOSE::bring_information_into_system_safely
 
   PARAMETERS:
@@ -196,7 +196,7 @@ TOOL_INGEST:
   PIPELINE::[PREPARSE→PARSE→NORMALIZE→VALIDATE→REPAIR(if_fix)→VALIDATE]
 
 TOOL_EJECT:
-  NAME::octave.eject
+  NAME::octave_eject
   PURPOSE::present_information_out_of_system_appropriately
 
   PARAMETERS:
@@ -297,8 +297,8 @@ PHASE_1[core_library]:
 PHASE_2[mcp_server]:
   COMPONENTS::[
     wrap_library_as_MCP_tools,
-    octave.ingest_tool,
-    octave.eject_tool,
+    octave_ingest_tool,
+    octave_eject_tool,
     schema_repository[builtin+custom]
   ]
   DELIVERABLE::MCP_server_package
@@ -397,7 +397,7 @@ ALIGNMENT::[
 ]
 
 MAPPING::[
-  OCTAVE_MCP::octave.ingest|octave.eject,
+  OCTAVE_MCP::octave_ingest|octave_eject,
   HESTAI_MCP::document_submit|context_update
 ]
 

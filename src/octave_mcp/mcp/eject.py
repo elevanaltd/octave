@@ -1,6 +1,6 @@
 """MCP tool for OCTAVE eject (P2.3).
 
-Implements octave.eject tool with projection modes:
+Implements octave_eject tool with projection modes:
 - canonical: Full document, lossy=false
 - authoring: Lenient format, lossy=false
 - executive: STATUS,RISKS,DECISIONS only, lossy=true
@@ -15,7 +15,7 @@ from octave_mcp.mcp.base_tool import BaseTool, SchemaBuilder
 
 
 class EjectTool(BaseTool):
-    """MCP tool for octave.eject - projection and formatting."""
+    """MCP tool for octave_eject - projection and formatting."""
 
     def get_name(self) -> str:
         """Get tool name."""

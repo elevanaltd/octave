@@ -76,7 +76,7 @@ class TestMCPServer:
 
     @pytest.mark.asyncio
     async def test_call_ingest_tool_succeeds(self, server):
-        """Can call octave.ingest tool."""
+        """Can call octave_ingest tool."""
         from mcp.types import CallToolRequest
 
         content = """===TEST===
@@ -103,7 +103,7 @@ STATUS::active
 
     @pytest.mark.asyncio
     async def test_call_eject_tool_succeeds(self, server):
-        """Can call octave.eject tool."""
+        """Can call octave_eject tool."""
         from mcp.types import CallToolRequest
 
         content = """===TEST===
