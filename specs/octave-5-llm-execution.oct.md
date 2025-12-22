@@ -1,8 +1,8 @@
 ===OCTAVE_EXECUTION===
 META:
   TYPE::LLM_PROFILE
-  VERSION::"5.0.3"
-  STATUS::APPROVED
+  VERSION::"5.1.0"
+  STATUS::DRAFT
   TOKENS::"~100"
   REQUIRES::octave-5-llm-core
   PURPOSE::validation_and_error_handling

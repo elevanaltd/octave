@@ -91,27 +91,38 @@ We need to refactor the reporting module. The business team has told us that dat
 REFACTOR_REQUEST:
   TARGET::"Reporting Module"
   REASON::"Performance issues"
-  CORE_TENSION::"Data Accuracy (Business)" _VERSUS_ "Speed (CEO)"
+  CORE_TENSION::Accuracy⇌Speed→Balanced_Solution
+  STAKEHOLDERS::[Business,CEO]
   STRATEGY::ATHENA // Find a wise solution balancing the conflict
 ```
 **Why This Is a Better Prompt:**
-*   **Un-inferable Context:** The core business tension (`Accuracy _VERSUS_ Speed`) and its stakeholders (`Business` vs. `CEO`) are **not in the code**. OCTAVE makes this crucial context explicit.
+*   **Un-inferable Context:** The core business tension (`Accuracy⇌Speed`) and its stakeholders are **not in the code**. OCTAVE makes this crucial context explicit.
 *   **Actionable Strategy:** An `ATHENA`-style agent receiving this knows its job is not just to make the code fast, but to find a clever solution that respects the accuracy constraint.
 
-## The Core Syntax
+## The Core Syntax (v5.1.0)
 
-Three operators chosen for universal compatibility:
-*   **Synthesis:** `+` (combines elements)
-*   **Tension:** `_VERSUS_` (represents trade-offs)
-*   **Progression:** `→` (shows sequence/flow)
+**Structural operators** (always parsed):
+*   `::` — Assignment (KEY::value)
+*   `:` — Block header (KEY: with indented children)
+
+**Expression operators** (Unicode canonical, ASCII alias):
+*   `→` / `->` — Flow/sequence
+*   `⊕` / `+` — Synthesis (emergent combination)
+*   `⧺` / `~` — Concatenation (mechanical join)
+*   `⇌` / `vs` — Tension (binary opposition)
+*   `∨` / `|` — Alternative (choice)
+*   `∧` / `&` — Constraint (all required)
+*   `§` — Target reference
 
 Basic structure:
 ```octave
-KEY::VALUE                    // Assignments
-NESTED:                       // Hierarchies (2-space indent)
+KEY::VALUE                         // Assignment
+NESTED:                            // Block with children
   CHILD::VALUE
-LIST::[A, B, C]              // Collections
-FLOW::[START→PROCESS→END]     // Sequences
+LIST::[A, B, C]                    // Collection
+FLOW::[START→BUILD→DEPLOY]         // Sequence
+TENSION::Speed⇌Quality→Balance     // Trade-off with resolution
+PATH::src⧺components⧺auth          // Mechanical concatenation
 ```
 The LLM Mythology Paradox
 LLMs can exhibit paradigm blindness about their own mythological comprehension. When evaluating the approach theoretically, they may cite concerns about cultural knowledge barriers. However, when encountering mythological patterns practically, they often demonstrate perfect zero-shot understanding. This disconnect can reveal how LLMs may underestimate the depth of cultural knowledge embedded in their training data.
@@ -131,7 +142,8 @@ As a living, community-driven project, it's designed to be both used and challen
 
 Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You are free to share and adapt this work, but you must give appropriate credit.
 
-*   **[OCTAVE v5.0.3 Specification](./specs/octave-5-holographic.oct.md)** - Canonical v5.0.3 protocol with holographic patterns.
-*   **[Legacy Versions (Archived)](./specs/_archive/README.md)** - Deprecated v3 and v4 specs retained for reference.
+*   **[OCTAVE v5.1.0 Specification](./specs/README.oct.md)** - Canonical v5.1.0 modular LLM profiles.
+*   **[Core Profile](./specs/octave-5-llm-core.oct.md)** - Base syntax and operators (~250 tokens).
+*   **[Legacy Versions (Archived)](./specs/_archive/README.md)** - Deprecated v3, v4, and v5.0.x specs retained for reference.
 *   **[Evidence & Evolution](./evidence)** - Data on compression, case studies, and design decisions.
 *   **[Quick Reference](./guides/llm-octave-quick-reference.oct.md)** - A one-page guide for daily use.

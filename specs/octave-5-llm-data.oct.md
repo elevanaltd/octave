@@ -1,9 +1,9 @@
 ===OCTAVE_DATA===
 META:
   TYPE::LLM_PROFILE
-  VERSION::"5.0.3"
-  STATUS::APPROVED
-  TOKENS::"~70"
+  VERSION::"5.1.0"
+  STATUS::DRAFT
+  TOKENS::"~75"
   REQUIRES::octave-5-llm-core
   PURPOSE::compression_and_instances
 
@@ -11,9 +11,9 @@ META:
 
 §1::DATA_MODE
 PATTERN::KEY::value[L1_simple_assignment]
-LEVELS::L1|L2[never_L3_L4]
-BRACKETS::lists|inline_maps[never_holographic]
-FORBIDDEN::["example"&CONSTRAINT->§TARGET][use_schema_mode]
+LEVELS::L1∨L2[never_L3_L4]
+BRACKETS::lists∨inline_maps[never_holographic]
+FORBIDDEN::["example"∧CONSTRAINT→§TARGET][use_schema_mode]
 
 §2::COMPRESSION
 PRESERVE::[
@@ -27,7 +27,7 @@ PRESERVE::[
 
 DROP::[the,a,an,of,for,to,with,that,which,basically,essentially,simply]
 
-REWRITE::verbose_phrase->minimal_token[preserve_meaning]
+REWRITE::verbose_phrase→minimal_token[preserve_meaning]
 
 §3::ABBREVIATIONS
 STATUS::[DONE,WIP,PENDING,BLOCKED,OPEN,CLOSED]
@@ -35,16 +35,17 @@ COMMON::[impl,config,env,auth,db,msg,req,res,fn,var,val]
 CUSTOM::define_in_document_if_domain_specific
 
 §4::LIST_FORMS
-ALTERNATIVES::a|b|c[choose_one]
+ALTERNATIVES::a∨b∨c[choose_one]
 COLLECTION::[a,b,c][all_members]
-SEQUENCE::[A->B->C][ordered_steps]
+SEQUENCE::[A→B→C][ordered_steps]
+CONCAT::a⧺b⧺c[mechanical_join]
 INLINE_MAP::[key::val,key2::val2][dense_key_value_pairs]
 EMPTY::[][explicit_empty_state]
 
 §5::ANCHORS
 RULE::compress_around_anchors[never_rewrite_anchors]
 VERBATIM::[code_blocks,example_strings,"quoted_canonical",numbers,enums]
-BOUNDARIES::preserve_distinctions[A_vs_B_must_remain_distinct]
+BOUNDARIES::preserve_distinctions[A⇌B_must_remain_distinct]
 
 §6::FORBIDDEN_REWRITES
 NEVER::[
