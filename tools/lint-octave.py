@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Minimal OCTAVE v5.0.3 validator - essential checks
+Minimal OCTAVE v5.1.0 validator - essential checks
 Returns "OCTAVE_INVALID: <reason>" or "OCTAVE_VALID"
 Handles .oct.md, .octave, and .oct files
 """

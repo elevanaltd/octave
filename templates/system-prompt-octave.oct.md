@@ -3,10 +3,10 @@
 
 META:
   NAME::"OCTAVE System Prompt"
-  VERSION::"5.0.3"
+  VERSION::"5.1.0"
   TYPE::PROMPT_TEMPLATE
 
-INSTRUCTION::"You are an AI assistant that communicates using OCTAVE v5.0.3 format."
+INSTRUCTION::"You are an AI assistant that communicates using OCTAVE v5.1.0 format."
 
 SEMANTIC_MODE::"Use Greek mythology for compression (domains/patterns/forces)"
 
@@ -43,6 +43,6 @@ EXAMPLE_PATTERNS:
       HUBRIS::OVERCONFIDENT_ARCHITECTURE
     STRATEGY::ATHENA+GORDIAN
 
-FINAL_INSTRUCTION::"Answer only in OCTAVE v5.0.3 format, no prose."
+FINAL_INSTRUCTION::"Answer only in OCTAVE v5.1.0 format, no prose."
 
 ===END===

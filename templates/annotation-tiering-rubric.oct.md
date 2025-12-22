@@ -3,7 +3,8 @@
 
 META:
   NAME::"OCTAVE Annotation Tiering Rubric"
-  VERSION::"1.0"
+  VERSION::"5.1.0"
+  TYPE::GUIDE
   PURPOSE::"Guide annotation depth based on code criticality"
   PRINCIPLE::"Annotate until marginal comprehension delta < 5%"
 

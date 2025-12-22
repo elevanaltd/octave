@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test suite for OCTAVE Validator v5.0.3 - Profiles and HestAI support
+Test suite for OCTAVE Validator v5.1.0 - Profiles and HestAI support
 
 Tests validation profiles (protocol, hestai-agent, hestai-skill),
 YAML frontmatter handling, and repository scanning mode.
@@ -380,7 +380,7 @@ class TestBackwardCompatibility(unittest.TestCase):
 
 
 class TestOCTAVEv5Features(unittest.TestCase):
-    """Test OCTAVE v5.0.3 specific features."""
+    """Test OCTAVE v5.1.0 specific features."""
 
     def test_constraint_chaining_inside_brackets_valid(self):
         """Constraint operator & chaining inside brackets should be valid."""
@@ -404,8 +404,8 @@ class TestOCTAVEv5Features(unittest.TestCase):
         doc = make_v4_doc("TEST", """COMBO::A+B+C""")
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
-        # v5.0.3 allows chaining, so no error expected
-        self.assertTrue(is_valid, f"Expected A+B+C to be valid in v5.0.3, got: {messages}")
+        # v5.1.0 allows chaining, so no error expected
+        self.assertTrue(is_valid, f"Expected A+B+C to be valid in v5.1.0, got: {messages}")
 
     def test_inline_maps_valid(self):
         """Inline maps [k::v,k2::v2] should be valid."""
@@ -421,7 +421,7 @@ class TestOCTAVEv5Features(unittest.TestCase):
 NEXT_KEY::value""")
         validator = OctaveValidator(profile="protocol")
         is_valid, messages = validator.validate_octave_document(doc)
-        # Should be valid - empty blocks allowed in v5.0.3
+        # Should be valid - empty blocks allowed in v5.1.0
         self.assertTrue(is_valid, f"Expected empty block to be valid, got: {messages}")
 
     def test_block_inheritance_with_target(self):

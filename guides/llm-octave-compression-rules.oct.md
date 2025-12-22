@@ -37,7 +37,7 @@
   FIELD:REASON::"Justification for evaluation score"
 
 META:
-  VERSION::"5.0.3"
+  VERSION::"5.1.0"
   TYPE::GUIDE
   PURPOSE::"Preserve LLM reasoning capability during aggressive compression"
   PRINCIPLE::"Maximum compression with minimum comprehension loss"

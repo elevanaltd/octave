@@ -1,9 +1,9 @@
 ===OCTAVE_MICRO_PRIMER===
-// Essential OCTAVE v5.0.3 in 6 rules (110-140 tokens)
+// Essential OCTAVE v5.1.0 in 6 rules (110-140 tokens)
 
 META:
   NAME::"OCTAVE Micro Primer"
-  VERSION::"5.0.3"
+  VERSION::"5.1.0"
   PURPOSE::"Minimal viable OCTAVE for direct model emission"
 
 SEMANTIC_MODE::"Use Greek mythology for compression (domains/patterns/forces)"
