@@ -32,7 +32,7 @@ def ingest(file: str, schema: str | None, fix: bool, verbose: bool):
         click.echo(canonical)
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
-        raise click.Abort()
+        raise click.Abort() from e
 
 
 @cli.command()
@@ -53,7 +53,7 @@ def eject(file: str, schema: str | None, mode: str):
         click.echo(output)
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
-        raise click.Abort()
+        raise click.Abort() from e
 
 
 @cli.command()
@@ -80,7 +80,7 @@ def validate(file: str, schema: str | None, strict: bool):
             click.echo("Valid")
     except Exception as e:
         click.echo(f"Error: {e}", err=True)
-        raise click.Abort()
+        raise click.Abort() from e
 
 
 if __name__ == "__main__":

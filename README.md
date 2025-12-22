@@ -1,44 +1,114 @@
-# OCTAVE: From Semantic Discovery to Engineering Protocol
-OCTAVE (Olympian Common Text And Vocabulary Engine)
-**A protocol born from curiosity, refined by reality, proven in production.**
+# OCTAVE MCP Server
 
----
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Tests](https://img.shields.io/badge/tests-178%20passing-brightgreen.svg)]()
+[![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen.svg)]()
 
-## The Origin Story
+Production-ready MCP (Model Context Protocol) server implementing the **OCTAVE protocol** - a lenient-to-canonical pipeline for structured AI communication with schema validation.
 
-OCTAVE began as an experiment: could models talk to each other more efficiently using structured symbols? The answer was yes—dramatically so.
+## What is OCTAVE?
 
-It started with an observation: when asked to pick names, LLMs often gravitated toward Greek mythology, with which their training data is saturated. While LLMs are polyglots, focusing on Greek mythology provided a universally understood, high-density vocabulary with zero ambiguity.
+OCTAVE (Olympian Common Text And Vocabulary Engine) is a protocol for AI communication that achieves 3-20x token reduction while maintaining clarity through:
 
-This led to a key insight: what if this deep well of shared knowledge could be used for compression? Instead of writing "this will be a long, difficult journey with many unforeseen obstacles," one could write `JOURNEY::ODYSSEAN`. Models understood instantly.
+- **Structured syntax** using mythological vocabulary and precise operators
+- **Lenient input** with deterministic normalization (ASCII aliases, flexible whitespace)
+- **Schema validation** ensuring documents meet requirements
+- **Projection modes** for different stakeholders (executive, developer, authoring, canonical)
 
-The initial discovery was a "semantic zip file" that made complex ideas concise. But as real systems were built with it, something even more valuable emerged.
+See the [main OCTAVE repository](https://github.com/elevanaltd/octave) for full specification and philosophy.
 
-## The Evolution: From Compression to Protocol
+## Features
 
-What began as a compression technique revealed itself to be something more profound: a way to make AI behavior **deterministic and auditable**.
+This MCP server provides two core tools:
 
-Through extensive testing and production use, it was discovered that the structured format didn't just save tokens—it created a reliable contract between human intent and AI execution. The mythological vocabulary wasn't just clever compression—it was a controlled semantic layer that made complex system patterns unambiguous.
+### `octave.ingest` - Bring information in safely
+- Accepts lenient OCTAVE syntax (ASCII aliases like `->` for `→`)
+- Normalizes to canonical Unicode format
+- Validates against schema requirements
+- Optional schema-driven repairs for common errors
+- Returns canonical OCTAVE + detailed repair log
 
-OCTAVE evolved from a "neat trick" into a complete protocol for building reliable AI systems.
+### `octave.eject` - Present information appropriately
+- Generates tailored views from canonical OCTAVE
+- Multiple projection modes (canonical, authoring, executive, developer)
+- Multiple output formats (octave, json, yaml, markdown)
+- Tracks lossy transformations for transparency
 
----
+## Installation
 
-## OCTAVE MCP Architecture (v1.0.0)
+### From PyPI (recommended)
 
-OCTAVE is productized as an **MCP (Model Context Protocol) server**, enabling integration with LLM systems as deterministic, auditable tools rather than open-ended assistants.
+```bash
+pip install octave-mcp
+```
 
-### The Core Philosophy: One Language, Disciplined Tolerance
+### From source
 
-The architecture implements a single principle: **one language with deterministic, syntactic-only tolerance**. This means:
+```bash
+git clone https://github.com/elevanaltd/octave.git
+cd octave/worktrees/octave-build
+pip install -e .
+```
 
-*   **One Language:** OCTAVE has a single canonical form (strict mode) used for storage and execution
-*   **Disciplined Tolerance:** Input accepts lenient syntax (ASCII aliases, flexible whitespace) which normalizes deterministically—no semantic inference, no guessing
-*   **Non-Reasoning Control Plane:** The system validates and normalizes without LLM reasoning—it's a finite rewrite system, not an inference engine
+## Quick Start
 
-### Control Plane Architecture
+### 1. Command-Line Interface
 
-The MCP server implements this control plane:
+#### Ingest lenient OCTAVE to canonical
+
+```bash
+octave ingest document.oct.md --schema DECISION_LOG
+```
+
+#### Eject to different formats
+
+```bash
+octave eject document.oct.md --mode executive --format markdown
+```
+
+#### Validate against schema
+
+```bash
+octave validate document.oct.md --schema DECISION_LOG --strict
+```
+
+### 2. MCP Server for Claude Desktop
+
+Configure the MCP server in your Claude Desktop settings:
+
+```json
+{
+  "mcpServers": {
+    "octave": {
+      "command": "octave-mcp-server"
+    }
+  }
+}
+```
+
+See [MCP Configuration Guide](docs/mcp-configuration.md) for detailed setup.
+
+### 3. Python API
+
+```python
+from octave_mcp.core.parser import parse
+from octave_mcp.core.emitter import emit
+from octave_mcp.core.validator import validate
+
+# Parse lenient OCTAVE
+doc = parse(content)
+
+# Validate against schema
+errors = validate(doc, strict=True)
+
+# Emit canonical OCTAVE
+canonical = emit(doc)
+```
+
+## Architecture
+
+The OCTAVE MCP server implements a **non-reasoning control plane** that separates mechanical syntax operations from semantic decisions:
 
 ```
 REASONING MACHINE (LLM / human)
@@ -52,187 +122,215 @@ OCTAVE CONTROL PLANE (non-reasoning)
 CANONICAL ARTIFACTS + VIEWS
 ```
 
-The reasoning machine provides intent and meaning. The control plane handles the mechanical work: syntax normalization, validation against schemas, transformation logging, and loss tracking.
-
-### Two MCP Tools
-
-The OCTAVE MCP server exposes two primitives:
-
-#### octave.ingest()
-Brings information into the system safely.
-
-*   **Purpose:** Accept lenient input (raw text or loose OCTAVE syntax) and produce canonical, validated OCTAVE
-*   **Parameters:**
-    - `content` (required): Raw text or lenient OCTAVE
-    - `schema` (required): Document type (e.g., `DECISION_LOG`) for validation
-    - `tier` (optional): Compression level (`LOSSLESS`, `CONSERVATIVE`, `AGGRESSIVE`, `ULTRA`)
-    - `fix` (optional): Enable schema-driven repairs (`true`/`false`)
-    - `verbose` (optional): Expose pipeline stages for debugging
-*   **Returns:** Canonical OCTAVE + repair log (always present, never silent)
-
-#### octave.eject()
-Presents information out of the system appropriately for different stakeholders.
-
-*   **Purpose:** Generate tailored views from canonical OCTAVE
-*   **Parameters:**
-    - `content` (optional): Canonical OCTAVE (null for template generation)
-    - `schema` (required): Document type for validation
-    - `mode` (optional): Output format (`canonical`, `authoring`, `executive`, `developer`)
-    - `format` (optional): Serialization (`octave`, `json`, `yaml`, `markdown`)
-*   **Returns:** Formatted output + lossy flag + list of omitted fields if applicable
-
 ### Three-Tier Repair Classification
 
-Every transformation is classified and logged. This prevents silent drift and makes system behavior auditable:
+Every transformation is classified and logged:
 
 #### TIER: NORMALIZATION (always-on)
-*   **Scope:** Syntactic and lexical only
-*   **Examples:** ASCII → Unicode (`->` → `→`), whitespace normalization, quote insertion, envelope completion
-*   **Guarantee:** Semantics preserved
+- Syntactic and lexical only
+- Examples: ASCII → Unicode (`->` → `→`), whitespace normalization
+- Guarantee: Semantics preserved
 
 #### TIER: REPAIR (opt-in via `fix=true`)
-*   **Scope:** Schema-bounded value transforms only
-*   **Examples:** Enum casefold (`"active"` → `ACTIVE` if unique), type coercion (`"42"` → `42`)
-*   **Guarantee:** May change value, but not structure or meaning
+- Schema-bounded value transforms only
+- Examples: Enum casefold, type coercion
+- Guarantee: May change value, but not structure or meaning
 
 #### TIER: FORBIDDEN (never automatic)
-*   **Scope:** Semantic intent and structure—never touched
-*   **Examples:** Target inference, missing field insertion, structure reparenting, semantic rewriting, schema inference, routing guessing
-*   **Rationale:** Schema constraints cannot tell you what the author intended; autocorrect is safe for syntax, dangerous for meaning
+- Semantic intent and structure—never touched
+- Examples: Target inference, missing field insertion, semantic rewriting
+- Rationale: Schema constraints cannot tell you what the author intended
 
-### Projection Modes
+## Documentation
 
-The `eject()` tool provides different views for different stakeholders, enabling single-source-of-truth with role-appropriate disclosure:
+- **[Usage Guide](docs/usage.md)** - Detailed usage examples and workflows
+- **[API Reference](docs/api.md)** - Complete API documentation
+- **[MCP Configuration](docs/mcp-configuration.md)** - Setup guide for MCP clients
+- **[OCTAVE Specification](https://github.com/elevanaltd/octave/tree/main/specs)** - Full protocol specification
 
-*   **canonical:** Full document in strict OCTAVE (lossless, for storage and diffing)
-*   **authoring:** Lenient format for human/LLM editing (structure preserved, lossless)
-*   **executive:** High-level summary (status, risks, decisions only; omits tests, CI, technical detail)
-*   **developer:** Implementation focus (tests, CI, dependencies; omits executive summaries)
+## Development
 
----
+### Setup development environment
 
-## When to Use OCTAVE (And When a Simple Prompt is Better)
-
-OCTAVE is a specialized tool. It is not always the best choice for every LLM interaction. Understanding the difference is key.
-
-#### Use a Simple Prompt for Interactive Tasks
-When you are working directly with an LLM as a "co-pilot" and can provide the full context (like a code file), a short, direct prompt is almost always better. The code provides the context, and extra verbosity is noise.
-
-*   **You say:** `"This code is too complex. Refactor it using the Strategy pattern."`
-*   **Why it works:** The context is in the code, not the prompt.
-
-#### Use OCTAVE for Systemic Processes
-When you are building automated, auditable, or multi-agent systems, OCTAVE provides a necessary layer of structure and intent. It shines when the instruction itself must *be* the context.
-
-*   **Your system needs:** An unambiguous, machine-parsable instruction that can be logged, audited, and understood weeks later without the original files.
-*   **Why it works:** OCTAVE acts as a formal "API for intent," ensuring that commands are not just executed, but recorded with their strategic "why."
-
----
-
-## Use Case 1: The Knowledge Artifact (Semantic Compression at Scale)
-
-This is where OCTAVE transcends simple prompt-shortening and becomes a protocol for encoding knowledge. It excels at compressing large, complex documents into structured, queryable artifacts without losing critical nuance.
-
-**The Challenge: A 7,671-token technical analysis.**
-Imagine a detailed research document, like a comparison of OCTAVE and LLMLingua. A simple prose summary would lose the essential details, and the full text is too large to use efficiently in an LLM context.
-
-**The OCTAVE Solution: A 2,056-token structured representation.**
-Instead of a summary, the document is transformed into a machine-readable OCTAVE artifact. This achieves a **3.7x compression** while preserving the core logic, data, and semantic depth.
-
-Here's a direct comparison of a paragraph from the original study and its OCTAVE equivalent:
-
-**Original Prose (~155 tokens):**
-> "One of the starkest differences is in how each approach deals with prompt length and redundancy. LLMLingua explicitly targets token compression. According to the LLMLingua project, their method can achieve up to a 20× reduction in prompt length with minimal performance loss... The compression works by removing filler words, articles, some prepositions, and even shortening phrases, effectively leveraging the redundancy inherent in natural language."
-
-**OCTAVE Representation (~62 tokens):**
-```octave
-TOKEN_EFFICIENCY:
-  LLMLINGUA_METRICS:
-    COMP_RATIO::20x[2000→100_tokens]
-    PERFORMANCE_LOSS::"minimal or none"
-    MECHANISM::"Drop articles, prepositions, truncate words"
-  OCTAVE_METRICS:
-    COMP_RATIO::2-5x[depends_on_repetition]
-    OVERHEAD::KEY_NAMES+SYNTAX_CHARS
-    MECHANISM::"Structure eliminates explanatory text"
-  VERDICT::LLMLINGUA[BECAUSE::"Aggressive automated removal vs manual structuring"]
+```bash
+# Clone and setup
+git clone https://github.com/elevanaltd/octave.git
+cd octave/worktrees/octave-build
+python -m venv .venv
+source .venv/bin/activate  # or `.venv\Scripts\activate` on Windows
+pip install -e ".[dev]"
 ```
 
-**Why This Is a Powerful Use Case:**
-*   **It Preserves Argument Structure:** The OCTAVE artifact retains the logical hierarchy of the original—the head-to-head comparison and the final verdict—which a prose summary would flatten.
-*   **It's Machine-Queryable:** This is the killer feature. An AI agent can be tasked to `"Query the artifact for the COMP_RATIO of LLMLINGUA"` and get a precise, structured answer (`20x[2000→100_tokens]`).
-*   **It's an Auditable Record:** The `VERDICT` key and its `BECAUSE` clause provide a clear, auditable conclusion based on the preceding data, capturing the *reasoning* behind the finding.
+### Run tests
 
----
+```bash
+# Run full test suite (178 tests)
+pytest
 
-## Use Case 2: The High-Density Prompt (For Daily Use)
+# Run with coverage report
+pytest --cov=octave_mcp --cov-report=html
 
-For everyday prompt engineering, OCTAVE provides a way to pack more meaning into fewer tokens, especially for conveying complex strategic or narrative context that isn't present in the code.
-
-**Traditional Prose (42 LLM Tokens):**
-```text
-We need to refactor the reporting module. The business team has told us that data accuracy is more important than speed, but the CEO is complaining about the dashboard load times.
+# Run specific test categories
+pytest tests/unit/
+pytest tests/integration/
+pytest tests/properties/  # Property-based tests with Hypothesis
 ```
-*A simple prompt like "Refactor the slow reporting module" would lose the entire business conflict.*
 
-**OCTAVE Approach (26 LLM Tokens):**
-```octave
-REFACTOR_REQUEST:
-  TARGET::"Reporting Module"
-  REASON::"Performance issues"
-  CORE_TENSION::Accuracy⇌Speed→Balanced_Solution
-  STAKEHOLDERS::[Business,CEO]
-  STRATEGY::ATHENA // Find a wise solution balancing the conflict
+### Quality gates
+
+```bash
+# Type checking
+mypy src
+
+# Linting
+ruff check src tests
+
+# Code formatting
+black --check src tests
 ```
-**Why This Is a Better Prompt:**
-*   **Un-inferable Context:** The core business tension (`Accuracy⇌Speed`) and its stakeholders are **not in the code**. OCTAVE makes this crucial context explicit.
-*   **Actionable Strategy:** An `ATHENA`-style agent receiving this knows its job is not just to make the code fast, but to find a clever solution that respects the accuracy constraint.
 
-## The Core Syntax (v5.1.0)
+### CI/CD
 
-**Structural operators** (always parsed):
-*   `::` — Assignment (KEY::value)
-*   `:` — Block header (KEY: with indented children)
+The project uses GitHub Actions for continuous integration:
+- Python 3.11, 3.12, 3.13 matrix testing
+- Full test suite with coverage reporting
+- Type checking with mypy
+- Linting with ruff
+- Automated PyPI publishing on release tags
 
-**Expression operators** (Unicode canonical, ASCII alias):
-*   `→` / `->` — Flow/sequence
-*   `⊕` / `+` — Synthesis (emergent combination)
-*   `⧺` / `~` — Concatenation (mechanical join)
-*   `⇌` / `vs` — Tension (binary opposition)
-*   `∨` / `|` — Alternative (choice)
-*   `∧` / `&` — Constraint (all required)
-*   `§` — Target reference
+See [`.github/workflows/ci.yml`](.github/workflows/ci.yml) for details.
 
-Basic structure:
+## Examples
+
+### Example 1: Decision Log
+
+**Input (lenient OCTAVE):**
 ```octave
-KEY::VALUE                         // Assignment
-NESTED:                            // Block with children
+DECISION:
+  ID::"DEC-001"
+  STATUS::"approved"
+  RATIONALE::"Performance improvement needed"
+  ALTERNATIVES::[caching, optimization, horizontal scaling]
+  CHOICE::"horizontal scaling"
+```
+
+**Output (canonical OCTAVE):**
+```octave
+DECISION:
+  ID::"DEC-001"
+  STATUS::APPROVED
+  RATIONALE::"Performance improvement needed"
+  ALTERNATIVES::[caching, optimization, horizontal_scaling]
+  CHOICE::horizontal_scaling
+```
+
+### Example 2: MCP Tool Usage
+
+```python
+# Via MCP server (async)
+result = await ingest_tool.execute(
+    content=lenient_octave,
+    schema="DECISION_LOG",
+    fix=True,
+    verbose=True
+)
+
+# Result includes:
+# - canonical: Normalized OCTAVE
+# - repair_log: List of all transformations
+# - validation_errors: Any schema violations
+```
+
+### Example 3: Projection Modes
+
+```python
+# Executive view (high-level summary)
+executive = await eject_tool.execute(
+    content=canonical,
+    schema="PROJECT_STATUS",
+    mode="executive",
+    format="markdown"
+)
+# Result: Status, risks, decisions only
+
+# Developer view (implementation focus)
+developer = await eject_tool.execute(
+    content=canonical,
+    schema="PROJECT_STATUS",
+    mode="developer",
+    format="octave"
+)
+# Result: Tests, CI, dependencies, technical detail
+```
+
+## Use Cases
+
+### When to Use OCTAVE
+
+- **Multi-agent systems** requiring deterministic, auditable communication
+- **Knowledge artifacts** needing structured, queryable representations
+- **High-density prompts** where context isn't in the code
+- **Documentation** that must be both human-readable and machine-parsable
+
+### When a Simple Prompt is Better
+
+- **Interactive tasks** with full context in code
+- **One-off requests** without audit requirements
+- **Prototyping** where structure overhead isn't justified
+
+See the [main README](https://github.com/elevanaltd/octave#readme) for detailed use case analysis.
+
+## Core Syntax (v5.1.0)
+
+**Structural operators:**
+- `::` — Assignment (KEY::value)
+- `:` — Block header (KEY: with indented children)
+
+**Expression operators (Unicode canonical, ASCII alias):**
+- `→` / `->` — Flow/sequence
+- `⊕` / `+` — Synthesis (emergent combination)
+- `⧺` / `~` — Concatenation (mechanical join)
+- `⇌` / `vs` — Tension (binary opposition)
+- `∨` / `|` — Alternative (choice)
+- `∧` / `&` — Constraint (all required)
+- `§` — Target reference
+
+**Basic structure:**
+```octave
+KEY::VALUE                         # Assignment
+NESTED:                            # Block with children
   CHILD::VALUE
-LIST::[A, B, C]                    // Collection
-FLOW::[START→BUILD→DEPLOY]         // Sequence
-TENSION::Speed⇌Quality→Balance     // Trade-off with resolution
-PATH::src⧺components⧺auth          // Mechanical concatenation
+LIST::[A, B, C]                    # Collection
+FLOW::[START→BUILD→DEPLOY]         # Sequence
+TENSION::Speed⇌Quality→Balance     # Trade-off with resolution
 ```
-The LLM Mythology Paradox
-LLMs can exhibit paradigm blindness about their own mythological comprehension. When evaluating the approach theoretically, they may cite concerns about cultural knowledge barriers. However, when encountering mythological patterns practically, they often demonstrate perfect zero-shot understanding. This disconnect can reveal how LLMs may underestimate the depth of cultural knowledge embedded in their training data.
 
-## The OCTAVE Philosophy
+## Contributing
 
-OCTAVE embodies a synthesis:
-*   **Playful discovery** meets **engineering discipline**.
-*   **Semantic richness** meets **syntactic precision**.
-*   **Human creativity** meets **machine reliability**.
+Contributions are welcome! Please:
 
-This protocol is the result of practical experimentation, not formal academic research. It was born from curiosity, evolved through use, and matures through the rigors of production.
+1. Fork the repository
+2. Create a feature branch
+3. Add tests for new functionality
+4. Ensure all quality gates pass
+5. Submit a pull request
 
-As a living, community-driven project, it's designed to be both used and challenged. If you're curious, build with it. If you're skeptical, break it. Either way, share what you discover.
+## License
 
-## License & Resources
+Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You are free to share and adapt this work with appropriate credit.
 
-Licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). You are free to share and adapt this work, but you must give appropriate credit.
+## Resources
 
-*   **[OCTAVE v5.1.0 Specification](./specs/README.oct.md)** - Canonical v5.1.0 modular LLM profiles.
-*   **[Core Profile](./specs/octave-5-llm-core.oct.md)** - Base syntax and operators (~250 tokens).
-*   **[Legacy Versions (Archived)](./specs/_archive/README.md)** - Deprecated v3, v4, and v5.0.x specs retained for reference.
-*   **[Evidence & Evolution](./evidence)** - Data on compression, case studies, and design decisions.
-*   **[Quick Reference](./guides/llm-octave-quick-reference.oct.md)** - A one-page guide for daily use.
+- **[OCTAVE Specification](https://github.com/elevanaltd/octave/tree/main/specs)** - Full v5.1.0 specification
+- **[Evidence & Evolution](https://github.com/elevanaltd/octave/tree/main/evidence)** - Compression data and case studies
+- **[Quick Reference](https://github.com/elevanaltd/octave/blob/main/guides/llm-octave-quick-reference.oct.md)** - One-page guide
+- **[MCP Protocol](https://modelcontextprotocol.io/)** - Model Context Protocol documentation
+
+## Support
+
+- **Issues:** [GitHub Issues](https://github.com/elevanaltd/octave/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/elevanaltd/octave/discussions)
+
+---
+
+**OCTAVE MCP Server** - Making AI communication deterministic, auditable, and efficient.
