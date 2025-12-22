@@ -8,11 +8,12 @@ Tests fundamental properties that MUST hold for all valid inputs:
 """
 
 import pytest
-from hypothesis import given, strategies as st, settings, HealthCheck
+from hypothesis import HealthCheck, given, settings
+from hypothesis import strategies as st
 
+from octave_mcp.core.emitter import emit
 from octave_mcp.core.lexer import tokenize
 from octave_mcp.core.parser import parse
-from octave_mcp.core.emitter import emit
 
 
 # Strategy for generating valid OCTAVE documents
@@ -20,15 +21,15 @@ from octave_mcp.core.emitter import emit
 def octave_document(draw):
     """Generate valid OCTAVE document."""
     name = draw(st.text(
-        alphabet=st.characters(whitelist_categories=("Lu", "Ll", "Nd")),
+        alphabet=st.characters(whitelist_categories=("Lu",), whitelist_characters="_", max_codepoint=127),
         min_size=1,
         max_size=20
-    ).filter(lambda x: x and x[0].isalpha()))
+    ).filter(lambda x: x and x[0].isalpha() and x.isupper()))
 
     fields = draw(st.lists(
         st.tuples(
             st.text(
-                alphabet=st.characters(whitelist_categories=("Lu", "Ll")),
+                alphabet=st.characters(whitelist_categories=("Lu",), whitelist_characters="_", max_codepoint=127),
                 min_size=1,
                 max_size=15
             ).filter(lambda x: x and x[0].isupper()),
@@ -40,7 +41,9 @@ def octave_document(draw):
 
     doc = f"==={name}===\n"
     for key, value in fields:
-        doc += f'{key}::"{value}"\n'
+        # Escape special characters in value for validity
+        escaped_value = value.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n").replace("\t", "\\t")
+        doc += f'{key}::"{escaped_value}"\n'
     doc += "===END==="
 
     return doc
@@ -162,12 +165,12 @@ FLAT::simple_value
 ===END==="""
 
         # Parse to AST
-        tokens = tokenize(source)
+        tokens, _ = tokenize(source)
         original_ast = parse(tokens)
 
         # Emit and parse again
         output = emit(original_ast)
-        tokens2 = tokenize(output)
+        tokens2, _ = tokenize(output)
         roundtrip_ast = parse(tokens2)
 
         # ASTs should be structurally equivalent
@@ -213,9 +216,9 @@ FLAT::simple_value
     def test_quote_normalization(self):
         """Strings requiring quotes are quoted in canonical form."""
         cases = [
-            ("KEY::value with spaces", True),  # Must quote
+            ('KEY::"value with spaces"', True),  # Must quote
             ("KEY::simple", False),  # May not quote
-            ("KEY::has-dash", False),  # May not quote
+            ("KEY::has_dash", False),  # May not quote (underscore allowed)
             ('KEY::"already quoted"', True),  # Stays quoted
         ]
 

@@ -106,6 +106,10 @@ class Parser:
             section = self.parse_section(0)
             if section:
                 doc.sections.append(section)
+            elif self.current().type not in (TokenType.ENVELOPE_END, TokenType.EOF):
+                # Consume unexpected token to prevent infinite loop
+                # In lenient mode, we could log this or try to recover
+                self.advance()
 
             self.skip_whitespace()
 
@@ -130,6 +134,7 @@ class Parser:
 
         indent_level = self.current().value
         self.advance()
+        has_indented = True  # We just consumed the first indent
 
         # Parse META fields
         while True:
@@ -139,8 +144,26 @@ class Parser:
             if self.current().type == TokenType.ENVELOPE_END:
                 break
 
+            # Handle indentation
+            if self.current().type == TokenType.INDENT:
+                if self.current().value < indent_level:
+                    break  # Dedent, end of META block
+                self.advance()
+                has_indented = True
+                continue
+
+            # Handle newlines
+            if self.current().type == TokenType.NEWLINE:
+                self.advance()
+                has_indented = False
+                continue
+
             # Parse META field (must be assignment)
             if self.current().type == TokenType.IDENTIFIER:
+                # Check if we have valid indentation for this field
+                if indent_level > 0 and not has_indented:
+                    break  # Dedent to 0 (implicit)
+
                 key = self.current().value
                 self.advance()
 
@@ -151,15 +174,6 @@ class Parser:
                 else:
                     # Skip malformed field
                     continue
-            elif self.current().type == TokenType.INDENT:
-                # Check indentation level
-                if self.current().value < indent_level:
-                    break  # Dedent, end of META block
-                # Same or deeper level - consume and continue
-                self.advance()
-            elif self.current().type == TokenType.NEWLINE:
-                # Just consume the newline and continue
-                self.advance()
             else:
                 # Unknown token type, stop parsing META
                 break
@@ -175,7 +189,8 @@ class Parser:
         self.advance()
 
         # Check for assignment or block
-        if self.current().type == TokenType.ASSIGN:
+        # Lenient: allow FLOW (->) as assignment
+        if self.current().type in (TokenType.ASSIGN, TokenType.FLOW):
             self.advance()
             value = self.parse_value()
             return Assignment(key=key, value=value, line=self.current().line, column=self.current().column)
@@ -284,31 +299,38 @@ class Parser:
         self.expect(TokenType.LIST_START)
         items: list[Any] = []
 
-        # Handle empty list
-        if self.current().type == TokenType.LIST_END:
-            self.advance()
-            return ListValue(items=[])
-
         # Parse list items
         while True:
+            # Skip whitespace/newlines/indents (valid anywhere between items)
+            while self.current().type in (TokenType.NEWLINE, TokenType.INDENT):
+                self.advance()
+
+            # Check for end of list
+            if self.current().type == TokenType.LIST_END:
+                break
+
             # Parse item value
             item = self.parse_list_item()
             items.append(item)
 
-            # Check for comma or end
+            # Check for comma
             if self.current().type == TokenType.COMMA:
                 self.advance()
-                # Skip whitespace after comma
-                while self.current().type == TokenType.NEWLINE:
-                    self.advance()
+                # Loop will handle whitespace skipping at start of next iteration
             elif self.current().type == TokenType.LIST_END:
                 break
             else:
-                # Allow whitespace/newlines in lists
-                if self.current().type == TokenType.NEWLINE:
-                    self.advance()
-                else:
-                    break
+                # No comma, check if we have whitespace that acted as separator
+                # If next is LIST_END, loop will handle it
+                # If next is another item, strict syntax requires comma.
+                # But lenient parser might allow space-separated?
+                # For now, if not comma and not list end, we loop back.
+                # If next token is start of value, we might parse it as next item (lenient)
+                # or fail if parser expects comma.
+                # The loop structure handles it: it tries to parse item.
+                # If it's not a valid value start, parse_value might consume it as bare word.
+                # So we rely on LIST_END check.
+                pass
 
         self.expect(TokenType.LIST_END)
         return ListValue(items=items)
@@ -347,11 +369,11 @@ class Parser:
         return "".join(str(p) for p in parts)
 
 
-def parse(content: str) -> Document:
+def parse(content: str | list[Token]) -> Document:
     """Parse OCTAVE content into AST.
 
     Args:
-        content: Raw OCTAVE text (lenient or canonical)
+        content: Raw OCTAVE text (lenient or canonical) or list of tokens
 
     Returns:
         Document AST
@@ -359,6 +381,10 @@ def parse(content: str) -> Document:
     Raises:
         ParserError: On syntax errors
     """
-    tokens = tokenize(content)
+    if isinstance(content, str):
+        tokens, _ = tokenize(content)
+    else:
+        tokens = content
+
     parser = Parser(tokens)
     return parser.parse_document()

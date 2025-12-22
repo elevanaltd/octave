@@ -133,20 +133,22 @@ TOKEN_PATTERNS = [
 ]
 
 
-def tokenize(content: str) -> list[Token]:
+def tokenize(content: str) -> tuple[list[Token], list[Any]]:
     """Tokenize OCTAVE content with ASCII alias normalization.
 
     Args:
         content: Raw OCTAVE text
 
     Returns:
-        List of tokens with normalization metadata
+        Tuple of (tokens, repairs)
 
     Raises:
         LexerError: On invalid syntax (tabs, malformed operators)
     """
     # Apply NFC unicode normalization
     content = unicodedata.normalize("NFC", content)
+
+    # ... (existing checks)
 
     # Check for tabs
     if "\t" in content:
@@ -169,6 +171,7 @@ def tokenize(content: str) -> list[Token]:
         )
 
     tokens: list[Token] = []
+    repairs: list[Any] = []
     line = 1
     column = 1
     pos = 0
@@ -177,6 +180,7 @@ def tokenize(content: str) -> list[Token]:
     compiled_patterns = [(re.compile(pattern), token_type) for pattern, token_type in TOKEN_PATTERNS]
 
     while pos < len(content):
+        # ... (whitespace handling)
         # Track whitespace (spaces only, not newlines)
         if content[pos] == " ":
             # Count leading spaces for indentation
@@ -204,6 +208,7 @@ def tokenize(content: str) -> list[Token]:
                 matched_text = match.group()
                 normalized_from = None
 
+                # ... (value extraction logic)
                 # Handle special tokens
                 if token_type == TokenType.ENVELOPE_START:
                     value = match.group(1)  # Extract NAME from ===NAME===
@@ -253,7 +258,17 @@ def tokenize(content: str) -> list[Token]:
                         normalized_from = matched_text
                         value = ASCII_ALIASES[matched_text]
 
-                tokens.append(Token(token_type, value, line, column, normalized_from))
+                token = Token(token_type, value, line, column, normalized_from)
+                tokens.append(token)
+
+                if normalized_from:
+                    repairs.append({
+                        "type": "normalization",
+                        "original": normalized_from,
+                        "normalized": value,
+                        "line": line,
+                        "column": column
+                    })
 
                 # Update position
                 if token_type == TokenType.NEWLINE:
@@ -275,6 +290,13 @@ def tokenize(content: str) -> list[Token]:
                     pass
                 # Treat as synthesis operator
                 tokens.append(Token(TokenType.SYNTHESIS, "⊕", line, column, "+"))
+                repairs.append({
+                    "type": "normalization",
+                    "original": "+",
+                    "normalized": "⊕",
+                    "line": line,
+                    "column": column
+                })
                 column += 1
                 pos += 1
                 continue
@@ -285,4 +307,4 @@ def tokenize(content: str) -> list[Token]:
     # Add EOF token
     tokens.append(Token(TokenType.EOF, None, line, column))
 
-    return tokens
+    return tokens, repairs

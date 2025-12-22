@@ -8,12 +8,14 @@ Tests complete workflows across the system:
 """
 
 import json
+
 import pytest
-from pathlib import Path
-from octave_mcp.core.parser import parse
+
 from octave_mcp.core.emitter import emit
-from octave_mcp.core.validator import validate
+from octave_mcp.core.lexer import tokenize
+from octave_mcp.core.parser import parse
 from octave_mcp.core.projector import project
+from octave_mcp.core.validator import validate
 from octave_mcp.schemas.loader import load_builtin_schemas
 
 
@@ -57,15 +59,15 @@ STATUS::active
 INTERNAL_FIELD::debug_data
 ===END==="""
 
-        # doc = parse(canonical)
+        doc = parse(canonical)
 
         # Project to different modes
         executive_output = project(doc, mode="executive")
-        assert "STATUS" in executive_output
+        assert "STATUS" in executive_output.output
         # executive mode might filter INTERNAL_FIELD depending on schema
 
         authoring_output = project(doc, mode="authoring")
-        assert "TYPE" in authoring_output
+        assert "TYPE" in authoring_output.output
 
     def test_pipeline_with_validation(self):
         """Pipeline with schema validation."""
@@ -82,11 +84,11 @@ META:
 CONTENT::test
 ===END==="""
 
-        # doc = parse(valid)
+        doc = parse(valid)
 
         # Validate against META schema (if available)
         # Note: validation may pass without specific schema
-        errors = validate(doc, schema_name="META")
+        errors = validate(doc, schema=schemas.get("META"))
         # Just verify validation runs (may or may not have errors)
         assert isinstance(errors, list)
 
@@ -119,8 +121,9 @@ class TestCLIIntegration:
 
     def test_cli_ingest_produces_valid_output(self, tmp_path):
         """CLI ingest produces valid canonical output."""
-        from octave_mcp.cli.main import cli
         from click.testing import CliRunner
+
+        from octave_mcp.cli.main import cli
 
         runner = CliRunner()
 
@@ -142,8 +145,9 @@ TYPE :: "demo"
 
     def test_cli_eject_different_modes(self, tmp_path):
         """CLI eject works with different projection modes."""
-        from octave_mcp.cli.main import cli
         from click.testing import CliRunner
+
+        from octave_mcp.cli.main import cli
 
         runner = CliRunner()
 
@@ -171,8 +175,9 @@ STATUS::active
 
     def test_cli_validate_reports_errors(self, tmp_path):
         """CLI validate reports validation errors."""
-        from octave_mcp.cli.main import cli
         from click.testing import CliRunner
+
+        from octave_mcp.cli.main import cli
 
         runner = CliRunner()
 
@@ -195,8 +200,9 @@ class TestMCPServerToolChain:
     @pytest.mark.asyncio
     async def test_ingest_then_eject_via_mcp(self):
         """Call ingest then eject via MCP tools."""
-        from octave_mcp.mcp.server import create_server
         from mcp.types import CallToolRequest
+
+        from octave_mcp.mcp.server import create_server
 
         server = create_server()
 
@@ -256,8 +262,9 @@ STATUS :: active
     @pytest.mark.asyncio
     async def test_mcp_tools_preserve_structure(self):
         """MCP tool chain preserves document structure."""
-        from octave_mcp.mcp.server import create_server
         from mcp.types import CallToolRequest
+
+        from octave_mcp.mcp.server import create_server
 
         server = create_server()
 
@@ -304,7 +311,7 @@ DATA::[1,2,3]
 ===END==="""
 
         # Chain components
-        # doc = parse(source)
+        doc = parse(source)
         output = emit(doc)
 
         # Verify chain works
@@ -321,10 +328,10 @@ META:
 FIELD::value
 ===END==="""
 
-        # doc = parse(source)
+        doc = parse(source)
 
         # Validate (may not have schema, but should not crash)
-        errors = validate(doc, schema_name="VALIDATOR_TEST")
+        errors = validate(doc, schema=None)
         assert isinstance(errors, list)
 
     def test_repair_log_integration(self):
@@ -360,10 +367,10 @@ META:
 DATA::test
 ===END==="""
 
-        # doc = parse(test_doc)
+        doc = parse(test_doc)
 
         # Validate with loaded schemas
-        errors = validate(doc, schema_name="META")
+        errors = validate(doc, schema=schemas.get("META"))
         assert isinstance(errors, list)
 
 
@@ -377,7 +384,7 @@ class TestErrorHandling:
 
         # Should raise error during tokenization
         with pytest.raises(Exception) as exc_info:
-            # tokens = tokenize(invalid)
+            tokens = tokenize(invalid)
 
         # Check for E005 error code
         assert "E005" in str(exc_info.value) or "tab" in str(exc_info.value).lower()
@@ -394,7 +401,7 @@ DATA::value
         # Should error or infer envelope
         # Behavior depends on implementation
         try:
-            # doc = parse(multi_doc)
+            doc = parse(multi_doc)
             # May succeed with inference
             assert doc is not None
         except ValueError as e:
@@ -404,8 +411,9 @@ DATA::value
     @pytest.mark.asyncio
     async def test_mcp_tool_error_handling(self):
         """MCP tools handle errors gracefully."""
-        from octave_mcp.mcp.server import create_server
         from mcp.types import CallToolRequest
+
+        from octave_mcp.mcp.server import create_server
 
         server = create_server()
 

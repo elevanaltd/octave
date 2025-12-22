@@ -7,10 +7,9 @@ Tests unknown field detection in strict and lenient modes:
 - Error includes field path for debugging
 """
 
-import pytest
-from octave_mcp.core.lexer import tokenize
 from octave_mcp.core.parser import parse
 from octave_mcp.core.validator import validate
+from octave_mcp.schemas.loader import load_builtin_schemas
 
 
 class TestUnknownFieldsPolicy:
@@ -29,9 +28,10 @@ CONTENT::valid
 ===END==="""
 
         ast = parse(doc)
+        schemas = load_builtin_schemas()
 
         # Validate in strict mode
-        errors = validate(ast, schema_name="META", strict=True)
+        errors = validate(ast, schema=schemas.get("META"), strict=True)
 
         # Should have error for unknown field
         if isinstance(errors, list) and len(errors) > 0:
@@ -61,9 +61,10 @@ CONTENT::valid
 ===END==="""
 
         ast = parse(doc)
+        schemas = load_builtin_schemas()
 
         # Validate in lenient mode (strict=False)
-        errors = validate(ast, schema_name="META", strict=False)
+        errors = validate(ast, schema=schemas.get("META"), strict=False)
 
         # Should NOT error, but may log warnings
         # Lenient mode should be permissive
@@ -83,9 +84,10 @@ CONTENT::valid
 ===END==="""
 
         ast = parse(doc)
+        schemas = load_builtin_schemas()
 
         # Validate in strict mode
-        errors = validate(ast, schema_name="META", strict=True)
+        errors = validate(ast, schema=schemas.get("META"), strict=True)
 
         # If errors exist, check they include path information
         if isinstance(errors, list) and len(errors) > 0:
@@ -108,13 +110,14 @@ CONTENT::valid
 ===END==="""
 
         ast = parse(doc)
+        schemas = load_builtin_schemas()
 
         # Should pass in strict mode
-        errors_strict = validate(ast, schema_name="META", strict=True)
+        errors_strict = validate(ast, schema=schemas.get("META"), strict=True)
         assert isinstance(errors_strict, list)
 
         # Should pass in lenient mode
-        errors_lenient = validate(ast, schema_name="META", strict=False)
+        errors_lenient = validate(ast, schema=schemas.get("META"), strict=False)
         assert isinstance(errors_lenient, list)
 
     def test_unknown_fields_in_document_body_future(self):
@@ -131,10 +134,11 @@ UNKNOWN_TOP_LEVEL::value
 ===END==="""
 
         ast = parse(doc)
+        schemas = load_builtin_schemas()
 
         # Current scope: META only
         # This should parse successfully
-        errors = validate(ast, schema_name="META", strict=True)
+        errors = validate(ast, schema=schemas.get("META"), strict=True)
         assert isinstance(errors, list)
 
         # Future: would validate entire document body
@@ -153,8 +157,9 @@ CONTENT::valid
 ===END==="""
 
         ast = parse(doc)
+        schemas = load_builtin_schemas()
 
-        errors = validate(ast, schema_name="META", strict=True)
+        errors = validate(ast, schema=schemas.get("META"), strict=True)
 
         # If enforced, should report all unknown fields
         # Not just first one found
@@ -174,10 +179,11 @@ CONTENT::valid
 ===END==="""
 
         ast = parse(doc)
+        schemas = load_builtin_schemas()
 
         # VRESION is typo of VERSION
         # Should be treated as unknown field
-        errors = validate(ast, schema_name="META", strict=True)
+        errors = validate(ast, schema=schemas.get("META"), strict=True)
 
         # Validation should handle this
         assert isinstance(errors, list)
@@ -197,9 +203,10 @@ CONTENT::valid
 ===END==="""
 
         ast = parse(doc)
+        schemas = load_builtin_schemas()
 
         # Lenient mode should be forward-compatible
-        errors = validate(ast, schema_name="META", strict=False)
+        errors = validate(ast, schema=schemas.get("META"), strict=False)
 
         # Should not error in lenient mode
         assert isinstance(errors, list)

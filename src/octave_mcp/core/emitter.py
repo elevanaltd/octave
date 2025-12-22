@@ -10,9 +10,12 @@ Emits strict canonical OCTAVE from AST with:
 - 2-space indentation
 """
 
+import re
 from typing import Any
 
 from octave_mcp.core.ast_nodes import Assignment, Block, Document, InlineMap, ListValue
+
+IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
 
 def needs_quotes(value: Any) -> bool:
@@ -24,11 +27,17 @@ def needs_quotes(value: Any) -> bool:
     if not value:
         return True
 
-    # Check for special characters that require quoting
-    special_chars = [" ", "\t", "\n", ":", "[", "]", ",", "→", "⊕", "⧺", "⇌", "∨", "∧", "§", "#"]
-    for char in special_chars:
-        if char in value:
-            return True
+    # Reserved words need quotes to avoid becoming literals
+    if value in ("true", "false", "null"):
+        return True
+
+    # If it's not a valid identifier, it needs quotes
+    # This covers:
+    # - Numbers (start with digit)
+    # - Dashes (not allowed in identifiers)
+    # - Special chars (spaces, colons, brackets, etc.)
+    if not IDENTIFIER_PATTERN.match(value):
+        return True
 
     return False
 
