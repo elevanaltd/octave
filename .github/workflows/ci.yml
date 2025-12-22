@@ -39,14 +39,36 @@ jobs:
           # Check if all changes are docs-only
           DOCS_ONLY=true
           while IFS= read -r file; do
-            # Allow changes to: *.md, docs/, LICENSE, .markdownlint*
-            if [[ ! "$file" =~ \.(md|txt)$ ]] && \
-               [[ ! "$file" =~ ^docs/ ]] && \
-               [[ ! "$file" =~ ^LICENSE ]] && \
-               [[ ! "$file" =~ ^\.markdownlint ]]; then
+            # Runtime code that must trigger tests:
+            # - src/ directory (including src/octave_mcp/schemas/builtin/*.oct.md)
+            # - tests/ directory
+            # - pyproject.toml, setup.py, requirements.txt
+            # - .github/workflows/
+            if [[ "$file" =~ ^src/ ]] || \
+               [[ "$file" =~ ^tests/ ]] || \
+               [[ "$file" =~ ^(pyproject\.toml|setup\.py|requirements.*\.txt)$ ]] || \
+               [[ "$file" =~ ^\.github/workflows/ ]]; then
               DOCS_ONLY=false
               break
             fi
+
+            # Documentation-only paths (safe to skip tests):
+            # - specs/ directory (.oct.md specifications)
+            # - docs/ directory
+            # - Root-level markdown files (README.md, CHANGELOG.md, etc.)
+            # - LICENSE files
+            # - Markdown linter configs
+            if [[ "$file" =~ ^specs/ ]] || \
+               [[ "$file" =~ ^docs/ ]] || \
+               [[ "$file" =~ ^\w+\.(md|txt)$ ]] || \
+               [[ "$file" =~ ^LICENSE ]] || \
+               [[ "$file" =~ ^\.markdownlint ]]; then
+              continue
+            fi
+
+            # Any other file triggers full tests
+            DOCS_ONLY=false
+            break
           done <<< "$FILES"
 
           echo "docs_only=$DOCS_ONLY" >> $GITHUB_OUTPUT
