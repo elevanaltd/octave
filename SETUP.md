@@ -6,7 +6,7 @@ This is the OCTAVE MCP Server (v0.1.0) - a lenient-to-canonical pipeline for str
 
 **Version**: 0.1.0
 **Python**: >=3.11
-**License**: CC BY 4.0
+**License**: Apache 2.0
 
 ## Quick Start
 
@@ -401,7 +401,7 @@ See `docs/configurability-analysis.md` for detailed architectural decisions.
 
 - **Issues**: [GitHub Issues](https://github.com/elevanaltd/octave/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/elevanaltd/octave/discussions)
-- **License**: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+- **License**: [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
 ---
 
