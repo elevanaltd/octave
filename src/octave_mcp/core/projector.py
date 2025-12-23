@@ -26,7 +26,8 @@ def _filter_fields(doc: Document, keep: list[str]) -> Document:
     """Filter document to keep only specified top-level fields with all descendants.
 
     When a field's key matches the keep list, the entire subtree is kept.
-    Filtering is applied recursively to handle nested structures.
+    Filtering is applied only at the top level - once a Block is kept,
+    all its children are preserved (IL-PLACEHOLDER-FIX-001-REWORK).
 
     Args:
         doc: Document to filter
@@ -37,8 +38,12 @@ def _filter_fields(doc: Document, keep: list[str]) -> Document:
     """
     keep_set = set(keep)
 
-    def filter_recursively(nodes: list) -> list:
-        """Recursively filter nodes at all levels.
+    def filter_recursively(nodes: list, apply_filter: bool = True) -> list:
+        """Recursively process nodes.
+
+        Args:
+            nodes: List of nodes to process
+            apply_filter: If True, filter against keep_set; if False, keep all
 
         Returns:
             Filtered list of nodes
@@ -46,28 +51,37 @@ def _filter_fields(doc: Document, keep: list[str]) -> Document:
         filtered: list = []
         for node in nodes:
             if isinstance(node, Assignment | Block):
-                # Check if this node's key is in keep set
-                if node.key in keep_set:
-                    # Keep this node, and recursively filter its children
+                if apply_filter:
+                    # Top-level filtering: check if this node's key is in keep set
+                    if node.key in keep_set:
+                        # Keep this node with ALL descendants (no filtering on children)
+                        if isinstance(node, Block):
+                            # Preserve all children without filtering
+                            preserved_children = filter_recursively(node.children, apply_filter=False)
+                            filtered.append(replace(node, children=preserved_children))
+                        else:
+                            filtered.append(node)
+                    else:
+                        # Node key not in keep set - check children recursively
+                        # (handles case where kept field is nested under non-kept field)
+                        if isinstance(node, Block):
+                            filtered_children = filter_recursively(node.children, apply_filter=True)
+                            # Only include this node if it has children that were kept
+                            if filtered_children:
+                                filtered.append(replace(node, children=filtered_children))
+                else:
+                    # No filtering - preserve everything
                     if isinstance(node, Block):
-                        filtered_children = filter_recursively(node.children)
-                        filtered.append(replace(node, children=filtered_children))
+                        preserved_children = filter_recursively(node.children, apply_filter=False)
+                        filtered.append(replace(node, children=preserved_children))
                     else:
                         filtered.append(node)
-                else:
-                    # Node key not in keep set - check children recursively
-                    # (handles case where kept field is nested under non-kept field)
-                    if isinstance(node, Block):
-                        filtered_children = filter_recursively(node.children)
-                        # Only include this node if it has children that were kept
-                        if filtered_children:
-                            filtered.append(replace(node, children=filtered_children))
             else:
                 # Keep other node types (comments, etc.)
                 filtered.append(node)
         return filtered
 
-    filtered_sections = filter_recursively(doc.sections)
+    filtered_sections = filter_recursively(doc.sections, apply_filter=True)
     return replace(doc, sections=filtered_sections)
 
 
