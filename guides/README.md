@@ -48,6 +48,18 @@ OCTAVE follows the **Golden Rule**: "If your OCTAVE document were a database sch
 
 The focus is on creating **networks of relationships** rather than flat lists, enabling deeper understanding and more effective LLM processing.
 
+## Claude Code Skills
+
+Three specialized skills integrate with Claude Code to enhance OCTAVE workflows:
+
+| Skill | Purpose | Triggers |
+|-------|---------|----------|
+| **octave-literacy** | Foundation: Core syntax and operators | `octave format`, `write octave`, `octave syntax` |
+| **octave-compression** | Workflow: Transform prose into OCTAVE structures | `compress to octave`, `semantic compression` |
+| **octave-mastery** | Advanced: Semantic vocabulary and patterns | `octave architecture`, `agent design` |
+
+See **AGENTS.md** for full skill documentation.
+
 ## Getting Started
 
 1. Read **octave-quick-start.md** for immediate orientation
