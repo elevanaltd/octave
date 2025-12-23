@@ -63,7 +63,7 @@ class IngestTool(BaseTool):
 
         Args:
             content: OCTAVE content to ingest
-            schema: Schema name for validation
+            schema: Schema name (reserved for future use in P2.5, currently not used for validation)
             tier: Compression tier (LOSSLESS, CONSERVATIVE, AGGRESSIVE, ULTRA)
             fix: Whether to apply TIER_REPAIR fixes
             verbose: Whether to show pipeline stages
@@ -72,7 +72,7 @@ class IngestTool(BaseTool):
             Dictionary with:
             - canonical: Canonical OCTAVE output
             - repairs: List of repairs applied
-            - warnings: List of validation warnings
+            - warnings: List of validation warnings (basic validation only, schema validation deferred to P2.5)
             - stages: Pipeline stage details (if verbose=true)
         """
         # Validate and extract parameters
