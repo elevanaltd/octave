@@ -43,7 +43,7 @@ def _filter_fields(doc: Document, keep: list[str]) -> Document:
         Returns:
             Filtered list of nodes
         """
-        filtered = []
+        filtered: list = []
         for node in nodes:
             if isinstance(node, Assignment | Block):
                 # Check if this node's key is in keep set
