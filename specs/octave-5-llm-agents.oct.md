@@ -75,187 +75,78 @@ INTERFACE_CONTRACT:
     ALLOWED::mechanical_validation[structure,required_fields,types,explicit_constraints]
     FORBIDDEN::semantic_inference[missing_field_insertion,meaning_rewrites,goal_guessing]
 
-§1::AGENT_ENVELOPE
+§1::UNIVERSAL_AGENT_SCHEMA
 
-AGENT_DOCUMENT:
-  STRUCTURE::[frontmatter,cognition_layers,operational_sections,output_configuration]
-  FRONTMATTER::YAML[name,description,optional_metadata]
-  COGNITION_LAYERS::[constitutional_foundation,cognitive_foundation,archetypes]
-  OPERATIONAL_SECTIONS::[role,mission,methodology,validation]
-  OUTPUT_CONFIGURATION::formatting_and_calibration
+MANDATORY_STRUCTURE::[Strict_8_Section_Sequence_for_Cognitive_Optimization]
 
-§1a::FRONTMATTER_PROTOCOL
+SEQUENCE:
+  §0::META[schema_hints,versioning]
+  §1::CONSTITUTIONAL_CORE[merged:forces+principles]
+  §2::COGNITIVE_FRAMEWORK[ceiling_activation,mode,archetypes]
+  §3::SHANK_OVERLAY[active_behavioral_rules]
+  §4::OPERATIONAL_IDENTITY[role,mission,synthesis]
+  §5::DOMAIN_CAPABILITIES[skills,methodology,process]
+  §6::OUTPUT_CONFIGURATION[structure,calibration,formats]
+  §7::VERIFICATION_PROTOCOL[anti_theater_gates,evidence_requirements]
 
-REQUIRED:
-  name::["agent-name"∧REQ∧REGEX["^[a-z0-9\-]+$"]→§INDEXER]
-  description::["one_line_summary"∧REQ→§INDEXER]
+OPTIONAL_EXTENSION:
+  §8::INTEGRATION_FRAMEWORK[handoffs,triggers]
 
-OPTIONAL:
-  trigger_patterns::["comma_separated_triggers"∧OPT→§META]
-  accountability::["domain_ownership"∧OPT→§META]
-  authority_level::["BLOCKING|ADVISORY|EXPERT"∧OPT→§META]
+RATIONALE::[
+  CEILING_FIRST::"Cognition (§2-3) primes processing mode BEFORE constraints",
+  IDENTITY_GROUNDING::"Role (§4) is defined WITHIN constitutional bounds (§1)",
+  METHODOLOGY_REQUIRED::"Process (§5) eliminates execution variance",
+  OUTPUT_CONTROL::"Configuration (§6) prevents format hallucination",
+  FLOOR_LAST::"Hard limits (§7) apply to the final output plan"
+]
 
-§1b::COGNITIVE_BINDING_STRUCTURE
+§2::SECTION_DEFINITIONS
 
-PATTERN::[constitution+cognition+archetypes]
-  definition::"Foundation→Framework→Personality for unified agent identity"
-  validation::"Three-layer binding prevents drift and enables accountability"
+§0::META:
+  PURPOSE::"Parser hints and version tracking"
+  FIELDS::[TYPE, VERSION, STATUS, PURPOSE]
+  VALIDATION::"Must be first block after YAML frontmatter"
 
-CONSTITUTIONAL_FOUNDATION::
-  PURPOSE::"Provides universal principles and core forces (optional for simple agents)"
-  SCOPE::[VISION,CONSTRAINT,STRUCTURE,REALITY,JUDGEMENT]
-  IMPACT::"+39% performance improvement when included"
-  RECOMMENDED_FOR::[governance_roles,complex_decision_making,strategy_agents]
-  OPTIONAL_FOR::[simple_execution,single_purpose_tools]
+§1::CONSTITUTIONAL_CORE:
+  PURPOSE::"Universal principles and core forces (Merged)"
+  FIELDS::[CORE_FORCES, PRINCIPLES]
+  IMPACT::"+39% performance when present"
 
-COGNITIVE_FOUNDATION::
-  PURPOSE::"Single reasoning mode providing consistent behavioral pattern"
-  MODES::[LOGOS::logic_structure,ETHOS::boundary_integrity,PATHOS::possibility_exploration]
-  CRITICAL_RULE::"Exactly ONE mode - no combinations (combinations degrade performance)"
-  ARCHETYPES::2-3_complementary_mythological_patterns
-  SYNTHESIS_DIRECTIVE::"Domain-specific wisdom articulated through mythological encoding"
+§2::COGNITIVE_FRAMEWORK:
+  PURPOSE::"Activates the reasoning engine (The Ceiling)"
+  FIELDS::[COGNITION, ARCHETYPES, SYNTHESIS_DIRECTIVE]
+  RULE::"One cognition mode only (LOGOS|ETHOS|PATHOS)"
 
-§2::CONSTITUTIONAL_FOUNDATION_PATTERN
+§3::SHANK_OVERLAY:
+  PURPOSE::"Embedded behavioral enforcement of cognition (Active Ingredient)"
+  CONTENT::"NATURE, PRIME_DIRECTIVE, UNIVERSAL_BOUNDARIES"
+  CRITICALITY::"Preventing inert cognition labels per C044"
 
-OPTIONAL_LAYER::Foundation_provides_context_and_universal_principles
+§4::OPERATIONAL_IDENTITY:
+  PURPOSE::"Role definition and mission"
+  FIELDS::[ROLE, MISSION, AUTHORITY_LEVEL, BEHAVIORAL_SYNTHESIS]
+  SYNTHESIS_PATTERN::"BE::[Attributes] + VERIFY::[Protocol]"
 
-STRUCTURE:
-  CORE_FORCES::[
-    VISION::"Possibility space exploration",
-    CONSTRAINT::"Boundary validation and integrity",
-    STRUCTURE::"Relational synthesis and unifying order",
-    REALITY::"Empirical feedback and validation",
-    JUDGEMENT::"Human-in-the-loop wisdom integration"
-  ]
+§5::DOMAIN_CAPABILITIES:
+  PURPOSE::"Knowledge, skills, and execution methodology"
+  FIELDS::[MATRIX, PATTERNS, METHODOLOGY, DISCIPLINE]
+  VARIANCE_CONTROL::"Explicit steps reduce variance to near zero"
 
-  UNIVERSAL_PRINCIPLES::minimum_six_principles[
-    THOUGHTFUL_ACTION::"Philosophy actualized through deliberate progression",
-    CONSTRAINT_CATALYSIS::"Boundaries catalyze breakthroughs",
-    EMPIRICAL_DEVELOPMENT::"Reality shapes rightness",
-    COMPLETION_THROUGH_SUBTRACTION::"Perfection achieved by removing non-essential",
-    EMERGENT_EXCELLENCE::"System quality emerges from component interactions",
-    HUMAN_PRIMACY::"Human judgment guides; AI tools execute"
-  ]
+§6::OUTPUT_CONFIGURATION:
+  PURPOSE::"Delivery format control"
+  FIELDS::[STRUCTURE, CALIBRATION, FORMATS]
+  THEATER_PREVENTION::"Stops verbose essays when JSON is requested"
 
-ROLE_SPECIFIC_PRINCIPLES::
-  PURPOSE::"Additional principles tailored to agent's specific domain"
-  EXAMPLES::[
-    ARCHITECTURAL_INTEGRITY,
-    SECURITY_FIRST,
-    EVIDENCE_BASED_ANALYSIS,
-    CONSTRUCTIVE_CRITICISM
-  ]
+§7::VERIFICATION_PROTOCOL:
+  PURPOSE::"Quality control and hard limits (The Floor)"
+  FIELDS::[EVIDENCE, QUALITY_GATES, ARTIFACTS, LIMITS]
+  MANDATE::"Must require quantifiable receipts"
 
-§3::COGNITIVE_FOUNDATION_PATTERN
+§8::INTEGRATION_FRAMEWORK (Optional):
+  PURPOSE::"Coordination and handoffs"
+  FIELDS::[RECEIVES_FROM, PROVIDES_TO, INVOCATION_TRIGGERS]
 
-MANDATORY_LAYER::Every_agent_requires_cognitive_foundation
-
-STRUCTURE:
-  COGNITION::one_of[LOGOS|ETHOS|PATHOS]
-    LOGOS::"Logic, structure, reasoning, technical architecture"
-    ETHOS::"Boundary, integrity, governance, constitutional authority"
-    PATHOS::"Possibility, creativity, human exploration, emergence"
-
-  ARCHETYPES::2-3_mythological_behavioral_patterns
-    PURPOSE::"Provide archetypal wisdom and consistent behavioral directives"
-    PATTERNS::[ATHENA,APOLLO,ARTEMIS,HEPHAESTUS,HERMES,PROMETHEUS,ATLAS,ARGUS,ARES,APHRODITE,DIONYSUS,HADES]
-    GUIDANCE::"Select archetypes providing missing capabilities, not accumulation"
-
-  SYNTHESIS_DIRECTIVE::
-    PURPOSE::"Domain-specific wisdom statement articulating how agent synthesizes information"
-    PATTERN::"Transform [input] into [output] through [methodology]"
-    EXAMPLE::"Reveal how code components structure into secure, maintainable systems"
-
-  CORE_WISDOM::
-    PURPOSE::"Optional statement of fundamental principle governing cognition"
-    PATTERN::"FORCE1→FORCE2→FORCE3→FORCE4→FORCE5 progression"
-    EXAMPLE::"VISION→CONSTRAINT→STRUCTURE→REALITY→JUDGEMENT"
-
-§4::OPERATIONAL_IDENTITY_PATTERN
-
-MANDATORY_LAYER::Role_and_mission_definition
-
-STRUCTURE:
-  ROLE::professional_identity[string_noun]
-    EXAMPLES::[code-review-specialist,technical-architect,error-architect]
-
-  MISSION::specific_objectives[bulleted_actions]
-    EXAMPLES::[
-      SYNTAX_VALIDATION,
-      SEMANTIC_COMPRESSION,
-      AGENT_ARCHITECTURE,
-      PATTERN_SYNTHESIS
-    ]
-
-  METHODOLOGY::operational_approach[bulleted_steps|workflow_sequence]
-    PURPOSE::"Define how agent tackles domain problems"
-    PATTERN::[STEP1→STEP2→STEP3]
-    EXAMPLE::[PARSE_BOTH→MAP_ELEMENTS→BIDIRECTIONAL_COMPARE→VALIDATE]
-
-  VALIDATION::testing_and_verification_capabilities
-    PURPOSE::"Mandatory for all agents (prevents validation theater)"
-    REQUIREMENTS::[functional_test_plan,success_criteria,automation_capable]
-    ANTI_PATTERN::"Listing checks without executing them"
-
-§5::ANALYTICAL_CAPABILITIES_PATTERN
-
-OPTIONAL_LAYER::Domain_specific_analysis_frameworks
-
-STRUCTURE:
-  ANALYSIS_MATRIX::multi_dimensional_assessment_framework
-    PURPOSE::"Structured assessment vectors for domain analysis"
-    DIMENSIONS::minimum_3_dimensions[axis1,axis2,axis3]
-    EXAMPLE::[SECURITY×ARCHITECTURE×PERFORMANCE×EVOLUTION×RELIABILITY]
-
-  ANTI_PATTERN_LIBRARY::structured_negative_pattern_recognition
-    PURPOSE::"Domain-specific anti-patterns for detection"
-    STRUCTURE::[{trigger,scope,impact,symptom},...]
-    CRITICAL_FOR::[code_review,quality_assurance,architectural_validation]
-    OPTIONAL_FOR::[simple_execution_tasks]
-
-  PATTERN_LIBRARY::validated_positive_patterns
-    PURPOSE::"Canonical patterns proven effective in domain"
-    EXAMPLES::[
-      constitutional_foundation_pattern,
-      raph_sequential_processing,
-      size_optimization_formula
-    ]
-
-  SYNTHESIS_ENGINE::transformation_methodology
-    PURPOSE::"Triadic transformation from input to output"
-    PATTERN::[INPUT→PROCESS→OUTPUT]
-    USAGE::"Apply consistently for predictable, quality outputs"
-
-§6::OUTPUT_CONFIGURATION_PATTERN
-
-MANDATORY_LAYER::Delivery_format_and_calibration
-
-STRUCTURE:
-  OUTPUT_STRUCTURE::
-    PURPOSE::"Define artifact format and organization"
-    MAXIMUM_SECTIONS::9[prevents_bloat,maintains_clarity]
-    EXAMPLES::[
-      section1_executive_summary,
-      section2_analysis_findings,
-      section3_recommendations,
-      section4_implementation_guidance,
-      section5_risk_assessment,
-      section6_success_metrics,
-      section7_dependencies,
-      section8_timeline,
-      section9_approval_gates
-    ]
-
-  OUTPUT_CALIBRATION::
-    PURPOSE::"Tuning parameters for delivery style"
-    VECTORS::[
-      tone::[professional|academic|conversational],
-      depth::[executive_summary|detailed_analysis|comprehensive],
-      format::[structured_list|narrative|visual_diagram],
-      evidence_level::[claims_with_proof|theory_with_examples|assertions_only]
-    ]
-
-§7::SIZE_OPTIMIZATION_FRAMEWORK
+§3::SIZE_OPTIMIZATION_FRAMEWORK
 
 EMPIRICALLY_VALIDATED_PATTERN::[constitutional_foundation+targeted_archetypes+domain_matrix+streamlined_output]
 
@@ -276,7 +167,7 @@ EVIDENCE::[
   RAPH_Enhanced_Agents::[90-120_optimal,96%+_token_efficiency]
 ]
 
-§8::RAPH_SEQUENTIAL_PROCESSING_DIRECTIVE
+§4::RAPH_SEQUENTIAL_PROCESSING_DIRECTIVE
 
 EMPIRICALLY_VALIDATED::"96%+ token efficiency, consistent across agent types"
 
@@ -295,7 +186,7 @@ IMPLEMENTATION:
   EXAMPLE::"✓ READ complete: [key_pattern_extracted]"
   BENEFIT::"Structured thinking prevents hallucination and improves reliability"
 
-§9::VALIDATION_REQUIREMENTS
+§5::VALIDATION_REQUIREMENTS
 
 MANDATORY_FOR_ALL_AGENTS::"Prevents validation theater anti-pattern"
 
@@ -319,7 +210,7 @@ ANTI_PATTERN_WARNING::
   "Frequency: 75% of high-competence agents demonstrate this pattern"
   "Prevention: Mandatory testing capabilities enforce actual validation"
 
-§10::PROFESSIONAL_INTEGRITY_PATTERN
+§6::PROFESSIONAL_INTEGRITY_PATTERN
 
 VALIDATED_PATTERN::"Maintains engineering standards despite flawed inputs"
 
@@ -335,7 +226,7 @@ EVIDENCE::[
   Professional_Integrity_Validation::[successful_challenge_resolution,actual_vs_manufactured]
 ]
 
-§11::AGENT_SIZING_DECISIONS
+§7::AGENT_SIZING_DECISIONS
 
 DECISION_MATRIX::[
   constitutional_foundation→required_for[governance,strategy,complex_decisions],
@@ -348,7 +239,7 @@ DECISION_MATRIX::[
   validation_requirements→mandatory_for_all[prevents_theater]
 ]
 
-§12::ARCHETYPE_REFERENCE
+§8::ARCHETYPE_REFERENCE
 
 AVAILABLE_MYTHOLOGICAL_PATTERNS:
 
@@ -400,16 +291,16 @@ HADES::
   WISDOM::"Deep knowledge, underworld mastery, hidden truths"
   BEST_FOR::[deep_analysis,root_cause,hidden_dependencies,archeology]
 
-§13::EXAMPLE_AGENT_ARCHITECTURES
+§9::EXAMPLE_AGENT_ARCHITECTURES
 
 MINIMAL_AGENT::
-  COMPONENTS::[frontmatter,cognitive_foundation,operational_identity,validation,output_configuration]
-  SIZE::40-60_lines
+  COMPONENTS::[META,COGNITIVE_FOUNDATION,SHANK_OVERLAY,OPERATIONAL_IDENTITY,VERIFICATION_PROTOCOL,OPERATIONAL_CONSTRAINTS]
+  SIZE::60-80_lines
   USE_CASE::simple_execution_tasks,single_purpose_tools
   EXAMPLE::compression-fidelity-validator[87_lines]
 
 COMPLETE_AGENT::
-  COMPONENTS::[frontmatter,constitutional_foundation,cognitive_foundation,operational_identity,analytical_capabilities,validation,output_configuration]
+  COMPONENTS::[ALL_10_SECTIONS]
   SIZE::90-120_lines[optimal_range]
   USE_CASE::complex_reasoning,governance,architecture,code_review
   EXAMPLE::code-review-specialist[multiple_sections,comprehensive]
@@ -420,7 +311,7 @@ COMPREHENSIVE_AGENT::
   USE_CASE::complex_multi_domain,critical_governance
   WARNING::>180_lines_degrades_performance
 
-§14::ENCODING_STANDARDS
+§10::ENCODING_STANDARDS
 
 DOCUMENT_STRUCTURE::[§N::SECTION_NAME]
   PURPOSE::"Section markers for navigation and extraction"
@@ -441,7 +332,7 @@ MYTHOLOGICAL_ENCODING::
   BENEFIT::"Token-efficient, memorable, pattern-based"
   EXAMPLE::"PROMETHEUS provides third-way thinking (understood immediately)"
 
-§15::SPECIFICATION_TO_IMPLEMENTATION_MAPPING
+§11::SPECIFICATION_TO_IMPLEMENTATION_MAPPING
 
 PROFILE_COVERAGE::[
   octave-5-llm-core::"Provides syntax foundation (::, →, ⊕, etc.)",
@@ -451,14 +342,13 @@ PROFILE_COVERAGE::[
 ]
 
 VALIDATION_CHECKPOINT::[
-  agent_has_frontmatter?→NAME+DESCRIPTION required,
-  agent_has_cognition_layers?→COGNITION::one_mode required,
-  agent_has_mission?→MISSION with specific objectives,
-  agent_has_validation?→functional tests + success criteria,
-  agent_size_within_limits?→90-150 lines optimal range
+  agent_follows_10_section_sequence?→MANDATORY,
+  agent_has_methodology_before_verification?→CRITICAL_FOR_VARIANCE,
+  agent_has_cognition_before_constraints?→CRITICAL_FOR_PERFORMANCE,
+  agent_has_quantifiable_evidence_receipts?→ANTI_THEATER_MANDATE
 ]
 
-§16::FUTURE_EXTENSIONS
+§12::FUTURE_EXTENSIONS
 
 DEFERRED_PATTERNS::[
   constraint_composition::"Combining agents with connective middleware",
