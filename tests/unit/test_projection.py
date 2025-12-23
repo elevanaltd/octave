@@ -25,3 +25,119 @@ class TestProjectionModes:
         doc = parse("===TEST===\nKEY::value\n===END===")
         result = project(doc, "developer")
         assert result.lossy is True
+
+
+class TestProjectionFieldFiltering:
+    """Test actual field filtering in projection modes (IL-PLACEHOLDER-FIX-001)."""
+
+    def test_executive_mode_includes_status_risks_decisions(self):
+        """Executive mode should include STATUS, RISKS, DECISIONS fields."""
+        content = """===TEST===
+STATUS::ACTIVE
+RISKS::[security, performance]
+DECISIONS::use_redis
+TESTS::pytest_suite
+CI::github_actions
+DEPS::[python, redis]
+===END==="""
+        doc = parse(content)
+        result = project(doc, "executive")
+
+        # Should include executive fields
+        assert "STATUS" in result.output
+        assert "ACTIVE" in result.output
+        assert "RISKS" in result.output
+        assert "DECISIONS" in result.output
+
+        # Should NOT include developer fields
+        assert "TESTS::" not in result.output
+        assert "CI::" not in result.output
+        assert "DEPS::" not in result.output
+
+    def test_developer_mode_includes_tests_ci_deps(self):
+        """Developer mode should include TESTS, CI, DEPS fields."""
+        content = """===TEST===
+STATUS::ACTIVE
+RISKS::[security, performance]
+DECISIONS::use_redis
+TESTS::pytest_suite
+CI::github_actions
+DEPS::[python, redis]
+===END==="""
+        doc = parse(content)
+        result = project(doc, "developer")
+
+        # Should include developer fields
+        assert "TESTS" in result.output
+        assert "pytest_suite" in result.output
+        assert "CI" in result.output
+        assert "DEPS" in result.output
+
+        # Should NOT include executive fields
+        assert "STATUS::" not in result.output
+        assert "RISKS:" not in result.output
+        assert "DECISIONS::" not in result.output
+
+    def test_executive_mode_preserves_envelope(self):
+        """Executive mode should preserve envelope markers."""
+        content = """===TEST===
+STATUS::ACTIVE
+TESTS::pytest_suite
+===END==="""
+        doc = parse(content)
+        result = project(doc, "executive")
+
+        # Should have envelope
+        assert "===TEST===" in result.output or "===INFERRED===" in result.output
+        assert "===END===" in result.output
+
+    def test_developer_mode_preserves_envelope(self):
+        """Developer mode should preserve envelope markers."""
+        content = """===TEST===
+STATUS::ACTIVE
+TESTS::pytest_suite
+===END==="""
+        doc = parse(content)
+        result = project(doc, "developer")
+
+        # Should have envelope
+        assert "===TEST===" in result.output or "===INFERRED===" in result.output
+        assert "===END===" in result.output
+
+    def test_executive_mode_filters_multiple_fields(self):
+        """Executive mode should filter out multiple developer fields."""
+        content = """===TEST===
+STATUS::ACTIVE
+DECISIONS::use_microservices
+TESTS::comprehensive
+CI::enabled
+===END==="""
+        doc = parse(content)
+        result = project(doc, "executive")
+
+        # Should include executive fields
+        assert "STATUS::" in result.output
+        assert "DECISIONS::" in result.output
+
+        # Should NOT include developer fields
+        assert "TESTS::" not in result.output
+        assert "CI::" not in result.output
+
+    def test_developer_mode_filters_multiple_fields(self):
+        """Developer mode should filter out multiple executive fields."""
+        content = """===TEST===
+STATUS::PLANNED
+RISKS::[data_loss, performance]
+TESTS::comprehensive
+DEPS::[python, redis]
+===END==="""
+        doc = parse(content)
+        result = project(doc, "developer")
+
+        # Should include developer fields
+        assert "TESTS::" in result.output
+        assert "DEPS::" in result.output
+
+        # Should NOT include executive fields
+        assert "STATUS::" not in result.output
+        assert "RISKS:" not in result.output
