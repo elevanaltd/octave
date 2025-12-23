@@ -1,6 +1,6 @@
 # OCTAVE Guides
 
-This directory contains human-focused conceptual documentation for **OCTAVE** (Olympian Common Text And Vocabulary Engine).
+This directory contains conceptual documentation for **OCTAVE** (Olympian Common Text And Vocabulary Engine).
 
 ## For LLMs: Use the Skills
 
@@ -12,12 +12,23 @@ Claude Code skills provide OCTAVE capabilities directly:
 | **octave-compression** | Transform prose to OCTAVE | `compress to octave`, `semantic compression` |
 | **octave-mastery** | Semantic Pantheon and advanced patterns | `octave architecture`, `agent design` |
 
-## For Humans: Conceptual Understanding
+## Philosophy (Dual Format)
 
-| File | Purpose |
-|------|---------|
-| [octave-philosophy.md](octave-philosophy.md) | The "why" of effective OCTAVE - anti-patterns and the Golden Rule |
-| [octave-canonical-examples.oct.md](octave-canonical-examples.oct.md) | Two gold-standard examples for pattern recognition |
+The philosophy document exists in two formats for different audiences:
+
+| File | Audience | Purpose |
+|------|----------|---------|
+| [octave-philosophy.md](octave-philosophy.md) | Humans | Narrative explanation with context |
+| [octave-philosophy.oct.md](octave-philosophy.oct.md) | LLMs | Compressed OCTAVE for injection |
+
+Both contain identical information - the Golden Rule and Seven Deadly Smells.
+
+## Examples
+
+See `examples/` for comprehensive OCTAVE examples including:
+- Compression tier comparisons (lossless → ultra)
+- Assessment survey transformations
+- Templates for common patterns
 
 ## Protocol Specifications
 
