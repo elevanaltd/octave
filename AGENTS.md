@@ -188,9 +188,20 @@ octave-mastery      # For advanced design
 
 For Claude Code users, these skills integrate into your workspace and activate via keyword triggers automatically.
 
+## Architectural Layers & Ownership
+
+The system is organized into three layers with clear responsibility boundaries:
+
+- **L1 (OCTAVE Repository)**: Owns language specification, syntax, operators, and profiles
+- **L2 (Orchestration Layer)**: Owns governance tooling, prompt assembly, context injection (e.g., HestAI-MCP)
+- **L3 (Project Layer)**: Owns role definitions, local policies, success criteria
+
+See **`specs/octave-5-llm-agents.oct.md` (§0::OWNERSHIP_AND_BOUNDARIES)** for the complete architectural breakdown and responsibility allocation.
+
 ## Resources
 
 - **Quick Reference**: `guides/llm-octave-quick-reference.oct.md`
 - **Core Spec**: `specs/octave-5-llm-core.oct.md`
+- **Architecture**: `specs/octave-5-llm-agents.oct.md` (layer ownership and boundaries)
 - **API Docs**: `docs/api.md`
 - **MCP Setup**: `docs/mcp-configuration.md`
