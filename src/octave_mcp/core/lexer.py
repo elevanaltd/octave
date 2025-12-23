@@ -156,20 +156,6 @@ def tokenize(content: str) -> tuple[list[Token], list[Any]]:
         column = len(content[: content.index("\t")].split("\n")[-1]) + 1
         raise LexerError("Tabs are not allowed. Use 2 spaces for indentation.", line, column, "E005")
 
-    # Check for 'vs' without word boundaries (before tokenization)
-    vs_pattern = re.compile(r"\w+vs\w+|\wvs\b|\bvs\w+")
-    match = vs_pattern.search(content)
-    if match:
-        line = content[: match.start()].count("\n") + 1
-        column = match.start() - content.rfind("\n", 0, match.start())
-        raise LexerError(
-            f"Operator 'vs' requires word boundaries. Found: '{match.group()}'. "
-            "Use spaces or brackets: 'A vs B' or '[A vs B]'.",
-            line,
-            column,
-            "E005",
-        )
-
     tokens: list[Token] = []
     repairs: list[Any] = []
     line = 1
