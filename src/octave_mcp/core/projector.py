@@ -7,9 +7,9 @@ Implements eject() projection modes:
 - developer: TESTS,CI,DEPS only, lossy=true
 """
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
-from octave_mcp.core.ast_nodes import Document
+from octave_mcp.core.ast_nodes import Assignment, Block, Document
 from octave_mcp.core.emitter import emit
 
 
@@ -20,6 +20,55 @@ class ProjectionResult:
     output: str
     lossy: bool
     fields_omitted: list[str]
+
+
+def _filter_fields(doc: Document, keep: list[str]) -> Document:
+    """Filter document to keep only specified top-level fields with all descendants.
+
+    When a field's key matches the keep list, the entire subtree is kept.
+    Filtering is applied recursively to handle nested structures.
+
+    Args:
+        doc: Document to filter
+        keep: List of field names to keep
+
+    Returns:
+        Filtered document with only specified fields and their descendants
+    """
+    keep_set = set(keep)
+
+    def filter_recursively(nodes: list) -> list:
+        """Recursively filter nodes at all levels.
+
+        Returns:
+            Filtered list of nodes
+        """
+        filtered = []
+        for node in nodes:
+            if isinstance(node, Assignment | Block):
+                # Check if this node's key is in keep set
+                if node.key in keep_set:
+                    # Keep this node, and recursively filter its children
+                    if isinstance(node, Block):
+                        filtered_children = filter_recursively(node.children)
+                        filtered.append(replace(node, children=filtered_children))
+                    else:
+                        filtered.append(node)
+                else:
+                    # Node key not in keep set - check children recursively
+                    # (handles case where kept field is nested under non-kept field)
+                    if isinstance(node, Block):
+                        filtered_children = filter_recursively(node.children)
+                        # Only include this node if it has children that were kept
+                        if filtered_children:
+                            filtered.append(replace(node, children=filtered_children))
+            else:
+                # Keep other node types (comments, etc.)
+                filtered.append(node)
+        return filtered
+
+    filtered_sections = filter_recursively(doc.sections)
+    return replace(doc, sections=filtered_sections)
 
 
 def project(doc: Document, mode: str = "canonical") -> ProjectionResult:
@@ -44,13 +93,14 @@ def project(doc: Document, mode: str = "canonical") -> ProjectionResult:
 
     elif mode == "executive":
         # Executive view: STATUS, RISKS, DECISIONS only
-        # For minimal implementation, return canonical with note
-        output = emit(doc)
+        filtered_doc = _filter_fields(doc, keep=["STATUS", "RISKS", "DECISIONS"])
+        output = emit(filtered_doc)
         return ProjectionResult(output=output, lossy=True, fields_omitted=["TESTS", "CI", "DEPS"])
 
     elif mode == "developer":
         # Developer view: TESTS, CI, DEPS only
-        output = emit(doc)
+        filtered_doc = _filter_fields(doc, keep=["TESTS", "CI", "DEPS"])
+        output = emit(filtered_doc)
         return ProjectionResult(output=output, lossy=True, fields_omitted=["STATUS", "RISKS", "DECISIONS"])
 
     else:
