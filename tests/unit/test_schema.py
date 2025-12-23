@@ -1,7 +1,5 @@
 """Tests for schema validation (P1.5)."""
 
-import pytest
-
 from octave_mcp.core.parser import parse
 from octave_mcp.core.validator import validate
 
@@ -31,25 +29,6 @@ META:
         assert len(errors) > 0
         assert any("VERSION" in e.message for e in errors)
         assert any(e.code == "E003" for e in errors)
-
-
-class TestTypeValidation:
-    """Test type checking."""
-
-    def test_validates_string_type(self):
-        """Should validate STRING type."""
-        schema = {"META": {"fields": {"TYPE": {"type": "STRING"}}}}
-
-        content = """===TEST===
-META:
-  TYPE::TEST_DOC
-===END===
-"""
-        doc = parse(content)
-        errors = validate(doc, schema)
-        # TYPE is a string, should pass
-        type_errors = [e for e in errors if "TYPE" in e.field_path and "expected" in e.message]
-        assert len(type_errors) == 0
 
 
 class TestUnknownFields:
@@ -87,10 +66,48 @@ META:
         assert len(unknown_errors) == 0  # Lenient mode allows unknown fields
 
 
+class TestTypeValidation:
+    """Test type checking."""
+
+    def test_validates_string_type(self):
+        """Should validate STRING type."""
+        schema = {"META": {"fields": {"TYPE": {"type": "STRING"}}}}
+
+        content = """===TEST===
+META:
+  TYPE::TEST_DOC
+===END===
+"""
+        doc = parse(content)
+        errors = validate(doc, schema)
+        # TYPE is a string, should pass
+        type_errors = [e for e in errors if "TYPE" in e.field_path and "expected" in e.message]
+        assert len(type_errors) == 0
+
+    def test_rejects_bool_for_number_type(self):
+        """Should reject boolean values for NUMBER type (I1: bools are not numbers).
+
+        In Python, isinstance(True, (int, float)) returns True because bool inherits from int.
+        This test ensures the validator explicitly rejects booleans for NUMBER type.
+        """
+        from octave_mcp.core.ast_nodes import Document
+
+        schema = {"META": {"fields": {"COUNT": {"type": "NUMBER"}}}}
+
+        # Create document with direct boolean value (not parsed from text)
+        doc = Document(name="TEST", meta={"TYPE": "TEST_DOC", "COUNT": True}, sections=[])  # Direct boolean
+
+        errors = validate(doc, schema)
+        # Should error because True is boolean, not number
+        count_errors = [e for e in errors if "COUNT" in e.field_path]
+        assert len(count_errors) > 0
+        assert any(e.code == "E007" for e in count_errors)
+        assert any("expected NUMBER" in e.message for e in count_errors)
+
+
 class TestEnumValidation:
     """Test enum validation (E006)."""
 
-    @pytest.mark.skip(reason="E006: Enum validation not implemented yet (P1.5)")
     def test_errors_on_ambiguous_enum_match(self):
         """Should error when multiple enum values match (E006)."""
         schema = {
@@ -117,7 +134,6 @@ META:
         assert any(e.code == "E006" for e in errors)
         assert any("ambiguous" in e.message.lower() for e in errors)
 
-    @pytest.mark.skip(reason="E006: Enum validation not implemented yet (P1.5)")
     def test_allows_unambiguous_enum_match(self):
         """Should allow unambiguous partial enum match."""
         schema = {
