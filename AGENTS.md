@@ -128,6 +128,66 @@ The package provides `octave_ingest` and `octave_eject` MCP tools:
 
 Configure with `./setup-mcp.sh` for Claude Desktop, Claude Code, Codex, or Gemini.
 
+## Claude Code Skills
+
+Three specialized skills enhance Claude Code's capabilities for OCTAVE work:
+
+### 1. **octave-literacy** (Foundation)
+**Purpose**: Fundamental reading and writing capability for the OCTAVE format.
+
+Provides:
+- Core syntax and operators
+- Critical formatting rules
+- Basic structural competence
+
+**Triggers**: `octave format`, `write octave`, `octave syntax`, `structured output`
+
+**When to use**: Agents need basic OCTAVE competence without architectural overhead
+
+### 2. **octave-compression** (Workflow)
+**Purpose**: Specialized workflow for transforming verbose prose into semantic OCTAVE structures.
+
+Provides:
+- 4-phase compression transformation
+- Token reduction strategies (60-80% target)
+- Fidelity preservation rules
+- Anti-patterns to avoid
+
+**Requires**: Load `octave-literacy` first
+
+**Triggers**: `compress to octave`, `semantic compression`, `documentation refactoring`
+
+**When to use**: Refactoring documentation or generating compressed knowledge artifacts
+
+### 3. **octave-mastery** (Advanced)
+**Purpose**: Advanced semantic vocabulary and architectural patterns.
+
+Provides:
+- Semantic Pantheon (mythological vocabulary)
+- Narrative dynamics patterns
+- System forces and dynamics
+- Advanced syntax (holographic, inline objects)
+- Anti-patterns and smells
+
+**Requires**: Load `octave-literacy` first
+
+**Triggers**: `octave architecture`, `agent design`, `semantic pantheon`, `advanced octave`
+
+**When to use**: Designing agents, crafting high-density specifications, system architecture
+
+### Skill Usage Pattern
+
+```bash
+# Load foundation skill
+octave-literacy
+
+# Then load either/both specialized skills
+octave-compression  # For document refactoring
+octave-mastery      # For advanced design
+```
+
+For Claude Code users, these skills integrate into your workspace and activate via keyword triggers automatically.
+
 ## Resources
 
 - **Quick Reference**: `guides/llm-octave-quick-reference.oct.md`
