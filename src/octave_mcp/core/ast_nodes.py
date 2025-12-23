@@ -32,6 +32,20 @@ class Block(ASTNode):
 
 
 @dataclass
+class Section(ASTNode):
+    """§NUMBER::NAME section with nested children.
+
+    section_id supports both plain numbers ("1", "2") and suffix forms ("2b", "2c").
+    annotation is the optional bracket tail [content] after section name.
+    """
+
+    section_id: str = "0"
+    key: str = ""
+    annotation: str | None = None
+    children: list[ASTNode] = field(default_factory=list)
+
+
+@dataclass
 class Document(ASTNode):
     """Top-level OCTAVE document with envelope."""
 
