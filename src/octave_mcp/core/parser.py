@@ -11,7 +11,7 @@ Parses lexer tokens into AST with:
 
 from typing import Any
 
-from octave_mcp.core.ast_nodes import Assignment, ASTNode, Block, Document, InlineMap, ListValue
+from octave_mcp.core.ast_nodes import Assignment, ASTNode, Block, Document, InlineMap, ListValue, Section
 from octave_mcp.core.lexer import Token, TokenType, tokenize
 
 
@@ -180,8 +180,156 @@ class Parser:
 
         return meta
 
-    def parse_section(self, base_indent: int) -> Assignment | Block | None:
-        """Parse a top-level section (assignment or block)."""
+    def parse_section_marker(self) -> Section | None:
+        """Parse §NUMBER::NAME section marker with nested children.
+
+        Pattern: §NUMBER[SUFFIX]::NAME[bracket_tail] followed by indented children.
+        Examples:
+            §1::GOLDEN_RULE
+              LITMUS::"value"
+            §2b::LEXER_RULES
+              RULE::"pattern"
+            §0::META[schema_hints,versioning]
+              TYPE::"SPEC"
+        """
+        section_token = self.current()
+        self.expect(TokenType.SECTION)  # Consume §
+
+        # Expect NUMBER
+        if self.current().type != TokenType.NUMBER:
+            raise ParserError(
+                f"Expected number after § section marker, got {self.current().type}",
+                self.current(),
+                "E006",
+            )
+
+        # Build section ID (supports "1", "2b", "2c" forms)
+        section_id = str(self.current().value)
+        self.advance()
+
+        # Check for optional suffix (IDENTIFIER like 'b', 'c')
+        if self.current().type == TokenType.IDENTIFIER:
+            # Only consume single-letter suffixes to avoid consuming the section name
+            suffix_candidate = self.current().value
+            if len(suffix_candidate) == 1 and suffix_candidate.isalpha():
+                section_id += suffix_candidate
+                self.advance()
+
+        # Expect ::
+        if self.current().type != TokenType.ASSIGN:
+            raise ParserError(
+                f"Expected :: after §{section_id}, got {self.current().type}",
+                self.current(),
+                "E006",
+            )
+        self.advance()
+
+        # Expect section name (IDENTIFIER)
+        if self.current().type != TokenType.IDENTIFIER:
+            raise ParserError(
+                f"Expected section name after §{section_id}::, got {self.current().type}",
+                self.current(),
+                "E006",
+            )
+
+        section_name = self.current().value
+        self.advance()
+
+        # Capture optional bracket annotation tail [...]
+        # Example: §0::META[schema_hints,versioning]
+        annotation = None
+        if self.current().type == TokenType.LIST_START:
+            # Consume [ and capture content until matching ]
+            bracket_depth = 1
+            annotation_tokens = []
+            self.advance()  # Consume [
+
+            while bracket_depth > 0 and self.current().type != TokenType.EOF:
+                if self.current().type == TokenType.LIST_START:
+                    bracket_depth += 1
+                    annotation_tokens.append("[")
+                elif self.current().type == TokenType.LIST_END:
+                    bracket_depth -= 1
+                    if bracket_depth > 0:  # Don't include the final ]
+                        annotation_tokens.append("]")
+                elif self.current().type == TokenType.IDENTIFIER:
+                    annotation_tokens.append(self.current().value)
+                elif self.current().type == TokenType.COMMA:
+                    annotation_tokens.append(",")
+                elif self.current().type == TokenType.STRING:
+                    annotation_tokens.append(f'"{self.current().value}"')
+                self.advance()
+
+            # Join tokens to create annotation string
+            if annotation_tokens:
+                annotation = "".join(annotation_tokens)
+
+        self.skip_whitespace()
+
+        # Parse section children (similar to block parsing)
+        children: list[ASTNode] = []
+
+        # Expect indentation for children
+        if self.current().type == TokenType.INDENT:
+            child_indent = self.current().value
+            self.advance()
+
+            # Track current line's indentation to determine if SECTION is child or sibling
+            current_line_indent = child_indent
+
+            while True:
+                # End conditions
+                if self.current().type in (TokenType.EOF, TokenType.ENVELOPE_END):
+                    break
+
+                # Check indentation first to track current line's indent level
+                if self.current().type == TokenType.INDENT:
+                    current_line_indent = self.current().value
+                    if current_line_indent < child_indent:
+                        break  # Dedent, end of section
+                    # Same or deeper level - consume and continue to parse
+                    self.advance()
+                    continue
+
+                # Check for section marker - only break if at shallower indent than children
+                # Nested child sections are at same or deeper indent as other children
+                if self.current().type == TokenType.SECTION:
+                    # If section is at shallower indent than current section's children, it's a sibling
+                    if current_line_indent < child_indent:
+                        break  # Sibling or parent section, end current section
+                    # Otherwise (current_line_indent >= child_indent), it's a nested child section
+                    # Let parse_section handle it by falling through to the parse_section call
+
+                # Skip newlines
+                if self.current().type == TokenType.NEWLINE:
+                    self.advance()
+                    # Reset indent tracking after newline
+                    current_line_indent = 0
+                    continue
+
+                # Parse child
+                child = self.parse_section(child_indent)
+                if child:
+                    children.append(child)
+                else:
+                    # No valid child parsed, might be end of section
+                    break
+
+        return Section(
+            section_id=section_id,
+            key=section_name,
+            annotation=annotation,
+            children=children,
+            line=section_token.line,
+            column=section_token.column,
+        )
+
+    def parse_section(self, base_indent: int) -> Assignment | Block | Section | None:
+        """Parse a top-level section (assignment, block, or § section)."""
+        # Check for § section marker first
+        if self.current().type == TokenType.SECTION:
+            return self.parse_section_marker()
+
         if self.current().type != TokenType.IDENTIFIER:
             return None
 

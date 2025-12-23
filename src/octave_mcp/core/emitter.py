@@ -13,7 +13,7 @@ Emits strict canonical OCTAVE from AST with:
 import re
 from typing import Any
 
-from octave_mcp.core.ast_nodes import Assignment, Block, Document, InlineMap, ListValue
+from octave_mcp.core.ast_nodes import Assignment, Block, Document, InlineMap, ListValue, Section
 
 IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 
@@ -88,6 +88,32 @@ def emit_block(block: Block, indent: int = 0) -> str:
             lines.append(emit_assignment(child, indent + 1))
         elif isinstance(child, Block):
             lines.append(emit_block(child, indent + 1))
+        elif isinstance(child, Section):
+            lines.append(emit_section(child, indent + 1))
+
+    return "\n".join(lines)
+
+
+def emit_section(section: Section, indent: int = 0) -> str:
+    """Emit a § section in canonical form.
+
+    Supports both plain numbers ("1", "2") and suffix forms ("2b", "2c").
+    Includes optional bracket annotation if present.
+    """
+    indent_str = "  " * indent
+    section_line = f"{indent_str}§{section.section_id}::{section.key}"
+    if section.annotation:
+        section_line += f"[{section.annotation}]"
+    lines = [section_line]
+
+    # Emit children
+    for child in section.children:
+        if isinstance(child, Assignment):
+            lines.append(emit_assignment(child, indent + 1))
+        elif isinstance(child, Block):
+            lines.append(emit_block(child, indent + 1))
+        elif isinstance(child, Section):
+            lines.append(emit_section(child, indent + 1))
 
     return "\n".join(lines)
 
@@ -134,6 +160,8 @@ def emit(doc: Document) -> str:
             lines.append(emit_assignment(section, 0))
         elif isinstance(section, Block):
             lines.append(emit_block(section, 0))
+        elif isinstance(section, Section):
+            lines.append(emit_section(section, 0))
 
     # Always emit END envelope
     lines.append("===END===")
