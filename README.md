@@ -5,39 +5,52 @@
 [![Tests](https://img.shields.io/badge/tests-178%20passing-brightgreen.svg)]()
 [![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen.svg)]()
 
-Production-ready MCP (Model Context Protocol) server implementing the **OCTAVE protocol** - a lenient-to-canonical pipeline for structured AI communication with schema validation.
+This repository ships the **OCTAVE MCP Server**—a Model Context Protocol implementation that exposes the OCTAVE document protocol as deterministic tools (`octave ingest`, `octave eject`, `octave validate`). The MCP layer is delivery plumbing; the value is the OCTAVE protocol itself.
 
-## What is OCTAVE?
+OCTAVE (Olympian Common Text And Vocabulary Engine) is a deterministic document format and control plane for LLM systems. It keeps meaning durable when text is compressed, routed between agents, or projected into different views.
 
-OCTAVE (Olympian Common Text And Vocabulary Engine) is a protocol for AI communication that achieves 3-20x token reduction while maintaining clarity through:
+- **Non-reasoning**: OCTAVE never guesses intent; it only accepts, validates, and projects what you declare.
+- **Lenient → canonical**: ASCII aliases and flexible whitespace are accepted on ingest, then normalized to canonical Unicode with a logged repair tier.
+- **Schema-anchored**: Data and schema blocks travel together so routing and validation remain explicit.
+- **Auditable loss**: Compression and projections must declare what was dropped; nothing is silently tightened or weakened.
 
-- **Structured syntax** using mythological vocabulary and precise operators
-- **Lenient input** with deterministic normalization (ASCII aliases, flexible whitespace)
-- **Schema validation** ensuring documents meet requirements
-- **Projection modes** for different stakeholders (executive, developer, authoring, canonical)
+### Language, operators, and readability
 
-See the [main OCTAVE repository](https://github.com/elevanaltd/octave) for full specification and philosophy.
+- **Syntax**: Unicode-first operators (`→`, `⊕`, `⧺`, `⇌`, `∨`, `∧`, `§`) with ASCII aliases (`->`, `+`, `~`, `vs`, `|`, `&`, `§`) keep documents compact while staying typable everywhere.
+- **Vocabulary**: Mythological terms are deliberate compression shorthands (e.g., `ICARIAN`, `SISYPHEAN`, `HUBRIS→NEMESIS`) that pack multiple related concepts into single tokens for higher semantic density.
+- **Authoring**: Humans typically write in the lenient view and rely on `octave ingest` to normalize into canonical Unicode; both views stay human-auditable.
 
-## Features
+See the [protocol specs in `specs/`](specs/README.oct.md) for the precise operators, envelopes, and schema rules (v5.1.0).
 
-This MCP server provides two core tools:
+## What this server provides
 
-### `octave_ingest` - Bring information in safely
-- Accepts lenient OCTAVE syntax (ASCII aliases like `->` for `→`)
-- Normalizes to canonical Unicode format
-- Validates against schema requirements
-- Optional schema-driven repairs for common errors
-- Returns canonical OCTAVE + detailed repair log
+`octave-mcp` bundles the OCTAVE tooling as MCP tools and as a CLI:
 
-### `octave_eject` - Present information appropriately
-- Generates tailored views from canonical OCTAVE
-- Multiple projection modes (canonical, authoring, executive, developer)
-- Multiple output formats (octave, json, yaml, markdown)
-- Tracks lossy transformations for transparency
+- **`octave ingest`** – normalize lenient OCTAVE to canonical form, validate against schemas, and log every change.
+- **`octave eject`** – project canonical OCTAVE into multiple views (canonical, authoring, executive, developer) and formats (OCTAVE, JSON, YAML, Markdown) with declared loss tiers.
+- **`octave validate`** – run validation-only flows for schema conformance and error reporting.
 
-## Installation
+These tools make it easy for LLMs to emit minimal intent while relying on deterministic mechanics for structure and safety. If the LLM were replaced by a plain text emitter, OCTAVE would still provide value.
 
-### From PyPI (recommended)
+## When OCTAVE helps
+
+Use OCTAVE when documents must survive multiple agent/tool hops, repeated compression, or auditing:
+
+- coordination briefs, decision logs, or policy/control artifacts that circulate between agents
+- reusable prompts or RAG artifacts that need stable structure across context windows
+- documents that mix prose with routing/targets (e.g., §targets for tools or indexes)
+
+It is usually overkill for one-off chat replies, casual notes, or prose that will never be reused or validated.
+
+### Proven efficiency
+
+- **Token reduction**: Benchmarks show OCTAVE documents use **32–46% of the tokens** of equivalent JSON, a **54–68% reduction** that grows with document complexity while preserving fidelity (see `docs/research/README.md`).
+- **Model comprehension**: Zero-shot tests across Claude, GPT-4o, and Gemini families show an **average 90.7% comprehension rate** (88–96% range) of OCTAVE syntax without fine-tuning, validating the readability of the language choices (see `docs/research/README.md`).
+- **Behavior under compression**: In comparative studies, calibrated OCTAVE agents produced higher-quality outputs than verbose baselines (9.3/10 vs 8.3/10), demonstrating that explicit compression controls avoid semantic loss (see `docs/research/subagent-compression-study.md`).
+
+## Installing
+
+### From PyPI
 
 ```bash
 pip install octave-mcp
@@ -51,297 +64,91 @@ cd octave
 pip install -e .
 ```
 
-## Quick Start
+## Quick start
 
-### 1. Command-Line Interface
-
-#### Ingest lenient OCTAVE to canonical
+### CLI
 
 ```bash
+# Normalize and validate lenient OCTAVE
 octave ingest document.oct.md --schema DECISION_LOG
-```
 
-#### Eject to different formats
-
-```bash
+# Project to a view/format
 octave eject document.oct.md --mode executive --format markdown
-```
 
-#### Validate against schema
-
-```bash
+# Validate only
 octave validate document.oct.md --schema DECISION_LOG --strict
 ```
 
-### 2. MCP Server Setup
+### MCP setup
 
-Use the setup script to automatically configure the MCP server for your AI clients:
+Use the setup script to configure common MCP clients:
 
 ```bash
-# Interactive setup
-./setup-mcp.sh
-
-# Or configure specific clients
 ./setup-mcp.sh --claude-desktop   # Claude Desktop
 ./setup-mcp.sh --claude-code      # Claude Code CLI
 ./setup-mcp.sh --codex            # OpenAI Codex CLI
 ./setup-mcp.sh --gemini           # Google Gemini CLI
-./setup-mcp.sh --all              # All clients
+./setup-mcp.sh --all              # Configure all
 
-# Show copy/paste configuration for manual setup
+# Show copy/paste configuration without writing files
 ./setup-mcp.sh --show-config
 ```
 
-**Supported clients:**
-- Claude Desktop (macOS, Linux, Windows/WSL)
-- Claude Code CLI
-- OpenAI Codex CLI
-- Google Gemini CLI
+See [docs/mcp-configuration.md](docs/mcp-configuration.md) for details.
 
-See [MCP Configuration Guide](docs/mcp-configuration.md) for detailed setup.
-
-### 3. Python API
+### Python API
 
 ```python
 from octave_mcp.core.parser import parse
 from octave_mcp.core.emitter import emit
 from octave_mcp.core.validator import validate
 
-# Parse lenient OCTAVE
-doc = parse(content)
-
-# Validate against schema
-errors = validate(doc, strict=True)
-
-# Emit canonical OCTAVE
-canonical = emit(doc)
+doc = parse(content)                 # lenient → AST
+errors = validate(doc, strict=True)  # schema checks
+canonical = emit(doc)                # canonical OCTAVE
 ```
 
-## Architecture
+## How the control plane works
 
-The OCTAVE MCP server implements a **non-reasoning control plane** that separates mechanical syntax operations from semantic decisions:
+OCTAVE separates semantic decisions (LLM/human) from mechanical guarantees (syntax, validation, projection, routing). The control plane is deterministic and non-reasoning:
 
 ```
-REASONING MACHINE (LLM / human)
-    │
-    │  (decides meaning, importance, tier)
-    ▼
-OCTAVE CONTROL PLANE (non-reasoning)
-    │
-    │  (normalizes, validates, projects, routes, logs loss)
-    ▼
-CANONICAL ARTIFACTS + VIEWS
+REASONING (LLM / human)
+  decides meaning, compression intent, routing
+          │
+          ▼
+OCTAVE CONTROL PLANE
+  normalizes, validates, classifies changes, projects
+          │
+          ▼
+CANONICAL OCTAVE + VIEW PROJECTIONS
 ```
 
-### Three-Tier Repair Classification
+### Repair and change tiers
 
-Every transformation is classified and logged:
+- **NORMALIZATION (always)**: mechanical fixes only (ASCII → Unicode, whitespace). Semantics preserved.
+- **REPAIR (opt-in)**: schema-bounded coercions (enum casefold, type conversions). May adjust values but not invent structure or targets.
+- **FORBIDDEN (never automatic)**: semantic inference or structure invention (target guessing, missing field insertion, semantic rewrites).
 
-#### TIER: NORMALIZATION (always-on)
-- Syntactic and lexical only
-- Examples: ASCII → Unicode (`->` → `→`), whitespace normalization
-- Guarantee: Semantics preserved
-
-#### TIER: REPAIR (opt-in via `fix=true`)
-- Schema-bounded value transforms only
-- Examples: Enum casefold, type coercion
-- Guarantee: May change value, but not structure or meaning
-
-#### TIER: FORBIDDEN (never automatic)
-- Semantic intent and structure—never touched
-- Examples: Target inference, missing field insertion, semantic rewriting
-- Rationale: Schema constraints cannot tell you what the author intended
+Every change is logged so you can audit how meaning moved through the system.
 
 ## Documentation
 
-- **[Usage Guide](docs/usage.md)** - Detailed usage examples and workflows
-- **[API Reference](docs/api.md)** - Complete API documentation
-- **[MCP Configuration](docs/mcp-configuration.md)** - Setup guide for MCP clients
-- **[OCTAVE Specification](https://github.com/elevanaltd/octave/tree/main/specs)** - Full protocol specification
+- [Usage guide](docs/usage.md)
+- [API reference](docs/api.md)
+- [MCP configuration](docs/mcp-configuration.md)
+- [Protocol specs](specs/README.oct.md) – canonical operator, envelope, schema, and data rules
 
 ## Development
 
-### Setup development environment
-
 ```bash
-# Clone and setup
-git clone https://github.com/elevanaltd/octave.git
-cd octave
 python -m venv .venv
 source .venv/bin/activate  # or `.venv\Scripts\activate` on Windows
 pip install -e ".[dev]"
-```
 
-### Run tests
-
-```bash
-# Run full test suite (178 tests)
-pytest
-
-# Run with coverage report
-pytest --cov=octave_mcp --cov-report=html
-
-# Run specific test categories
-pytest tests/unit/
-pytest tests/integration/
-pytest tests/properties/  # Property-based tests with Hypothesis
-```
-
-### Quality gates
-
-```bash
-# Type checking
+# Quality gates
 mypy src
-
-# Linting
 ruff check src tests
-
-# Code formatting
 black --check src tests
+pytest
 ```
-
-### CI/CD
-
-The project uses GitHub Actions for continuous integration:
-- Python 3.11, 3.12, 3.13 matrix testing
-- Full test suite with coverage reporting
-- Type checking with mypy
-- Linting with ruff
-- Automated PyPI publishing on release tags
-
-See [`.github/workflows/ci.yml`](.github/workflows/ci.yml) for details.
-
-## Examples
-
-### Example 1: Decision Log
-
-**Input (lenient OCTAVE):**
-```octave
-DECISION:
-  ID::"DEC-001"
-  STATUS::"approved"
-  RATIONALE::"Performance improvement needed"
-  ALTERNATIVES::[caching, optimization, horizontal scaling]
-  CHOICE::"horizontal scaling"
-```
-
-**Output (canonical OCTAVE):**
-```octave
-DECISION:
-  ID::"DEC-001"
-  STATUS::APPROVED
-  RATIONALE::"Performance improvement needed"
-  ALTERNATIVES::[caching, optimization, horizontal_scaling]
-  CHOICE::horizontal_scaling
-```
-
-### Example 2: MCP Tool Usage
-
-```python
-# Via MCP server (async)
-result = await ingest_tool.execute(
-    content=lenient_octave,
-    schema="DECISION_LOG",
-    fix=True,
-    verbose=True
-)
-
-# Result includes:
-# - canonical: Normalized OCTAVE
-# - repair_log: List of all transformations
-# - validation_errors: Any schema violations
-```
-
-### Example 3: Projection Modes
-
-```python
-# Executive view (high-level summary)
-executive = await eject_tool.execute(
-    content=canonical,
-    schema="PROJECT_STATUS",
-    mode="executive",
-    format="markdown"
-)
-# Result: Status, risks, decisions only
-
-# Developer view (implementation focus)
-developer = await eject_tool.execute(
-    content=canonical,
-    schema="PROJECT_STATUS",
-    mode="developer",
-    format="octave"
-)
-# Result: Tests, CI, dependencies, technical detail
-```
-
-## Use Cases
-
-### When to Use OCTAVE
-
-- **Multi-agent systems** requiring deterministic, auditable communication
-- **Knowledge artifacts** needing structured, queryable representations
-- **High-density prompts** where context isn't in the code
-- **Documentation** that must be both human-readable and machine-parsable
-
-### When a Simple Prompt is Better
-
-- **Interactive tasks** with full context in code
-- **One-off requests** without audit requirements
-- **Prototyping** where structure overhead isn't justified
-
-See the [main README](https://github.com/elevanaltd/octave#readme) for detailed use case analysis.
-
-## Core Syntax (v5.1.0)
-
-**Structural operators:**
-- `::` — Assignment (KEY::value)
-- `:` — Block header (KEY: with indented children)
-
-**Expression operators (Unicode canonical, ASCII alias):**
-- `→` / `->` — Flow/sequence
-- `⊕` / `+` — Synthesis (emergent combination)
-- `⧺` / `~` — Concatenation (mechanical join)
-- `⇌` / `vs` — Tension (binary opposition)
-- `∨` / `|` — Alternative (choice)
-- `∧` / `&` — Constraint (all required)
-- `§` — Target reference
-
-**Basic structure:**
-```octave
-KEY::VALUE                         # Assignment
-NESTED:                            # Block with children
-  CHILD::VALUE
-LIST::[A, B, C]                    # Collection
-FLOW::[START→BUILD→DEPLOY]         # Sequence
-TENSION::Speed⇌Quality→Balance     # Trade-off with resolution
-```
-
-## Contributing
-
-Contributions are welcome! Please:
-
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new functionality
-4. Ensure all quality gates pass
-5. Submit a pull request
-
-## License
-
-Licensed under the [Apache License 2.0](https://opensource.org/licenses/Apache-2.0).
-
-## Resources
-
-- **[OCTAVE Specification](https://github.com/elevanaltd/octave/tree/main/specs)** - Full v5.1.0 specification
-- **[Evidence & Evolution](https://github.com/elevanaltd/octave/tree/main/evidence)** - Compression data and case studies
-- **[Quick Reference](https://github.com/elevanaltd/octave/blob/main/guides/llm-octave-quick-reference.oct.md)** - One-page guide
-- **[MCP Protocol](https://modelcontextprotocol.io/)** - Model Context Protocol documentation
-
-## Support
-
-- **Issues:** [GitHub Issues](https://github.com/elevanaltd/octave/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/elevanaltd/octave/discussions)
-
----
-
-**OCTAVE MCP Server** - Making AI communication deterministic, auditable, and efficient.
