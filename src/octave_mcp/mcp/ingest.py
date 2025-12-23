@@ -79,7 +79,16 @@ class IngestTool(BaseTool):
         params = self.validate_parameters(kwargs)
         content = params["content"]
         schema_name = params["schema"]
-        # tier = params.get("tier", "LOSSLESS")  # Reserved for future compression levels
+        # DEFERRED: tier parameter ignored until compression infrastructure ready
+        # See docs/implementation-roadmap.md Gap 6 (Compression Tier Logic)
+        # Estimated: 3-4 days, Phase 4 work (after schema validation complete)
+        #
+        # Once Gap 6 is complete, tier will control compression:
+        # - LOSSLESS (100%): Preserve all prose, examples, tradeoffs
+        # - CONSERVATIVE (85-90%): Drop stopwords, compress examples
+        # - AGGRESSIVE (70%): Drop narratives, inline all
+        # - ULTRA (50%): Bare assertions, minimal lists, no examples
+        # tier = params.get("tier", "LOSSLESS")  # Ignored for now
         fix = params.get("fix", False)
         verbose = params.get("verbose", False)
 

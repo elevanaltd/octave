@@ -18,9 +18,19 @@ class SchemaRepository:
     def _load_builtin_schemas(self):
         """Load builtin schemas from package.
 
-        Reserved for future implementation when builtin schemas are defined.
+        DEFERRED: Builtin schema loading requires holographic pattern parser.
+        See docs/implementation-roadmap.md Gap 1 (Holographic Pattern Parsing).
+        Estimated: 1-2 days, Phase 1 foundational work
+
+        Once Gap 1 is complete, this will:
+        - Load schemas from src/octave_mcp/schemas/builtin/*.oct.md
+        - Parse holographic patterns: KEY::["example"∧CONSTRAINT→§TARGET]
+        - Register builtin schemas (META, SESSION_LOG, etc.)
+        - Enable schema-driven validation
+
+        Current status: No builtin schemas can be parsed without holographic parser
         """
-        # TODO: Load from src/octave_mcp/schemas/builtin/
+        # Will load from src/octave_mcp/schemas/builtin/ once Gap 1 complete
         pass
 
     def register(self, name: str, schema: Schema | None):

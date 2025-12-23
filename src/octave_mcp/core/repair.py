@@ -29,8 +29,14 @@ def repair(doc: Document, validation_errors: list[ValidationError], fix: bool = 
 
     # TIER_REPAIR: Only when fix=true
     if fix:
-        # Could implement enum casefold, type coercion here
-        # For now, just return as-is
+        # DEFERRED: Implementation requires constraint evaluation infrastructure
+        # See docs/implementation-roadmap.md Gap 2 (Constraint Chain Evaluation)
+        # Estimated: 2-3 days, Phase 1 foundational work
+        #
+        # Once Gap 2 is complete, this will implement:
+        # - Enum casefold: "active" → ACTIVE (only if unique match)
+        # - Type coercion: "42" → 42 (if schema says NUMBER)
+        # - Never add missing fields or invent targets (forbidden tier)
         pass
 
     # TIER_FORBIDDEN: Never automatic

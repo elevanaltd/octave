@@ -179,3 +179,67 @@ STATUS::active
                 content="test content"
                 # schema is missing
             )
+
+    @pytest.mark.asyncio
+    async def test_eject_json_format(self, eject_tool):
+        """Eject in JSON format returns valid JSON."""
+        content = """===TEST===
+META:
+  VERSION::"1.0"
+  TYPE::"TEST"
+
+STATUS::active
+FIELD::"value"
+===END==="""
+
+        result = await eject_tool.execute(content=content, schema="TEST", format="json")
+
+        assert result["output"] is not None
+        # Verify JSON is valid by parsing
+        import json
+
+        parsed = json.loads(result["output"])
+        assert parsed["META"]["VERSION"] == "1.0"
+        assert parsed["STATUS"] == "active"
+
+    @pytest.mark.asyncio
+    async def test_eject_yaml_format(self, eject_tool):
+        """Eject in YAML format returns valid YAML."""
+        content = """===TEST===
+META:
+  VERSION::"1.0"
+  TYPE::"TEST"
+
+STATUS::active
+FIELD::"value"
+===END==="""
+
+        result = await eject_tool.execute(content=content, schema="TEST", format="yaml")
+
+        assert result["output"] is not None
+        # Verify YAML is valid by parsing
+        import yaml
+
+        parsed = yaml.safe_load(result["output"])
+        assert parsed["META"]["VERSION"] == "1.0"
+        assert parsed["STATUS"] == "active"
+
+    @pytest.mark.asyncio
+    async def test_eject_markdown_format(self, eject_tool):
+        """Eject in Markdown format returns readable markdown."""
+        content = """===TEST===
+META:
+  VERSION::"1.0"
+  TYPE::"TEST"
+
+STATUS::active
+FIELD::"value"
+===END==="""
+
+        result = await eject_tool.execute(content=content, schema="TEST", format="markdown")
+
+        assert result["output"] is not None
+        # Markdown should have headers and structure
+        assert "# TEST" in result["output"] or "## META" in result["output"]
+        assert "VERSION" in result["output"]
+        assert "STATUS" in result["output"]
