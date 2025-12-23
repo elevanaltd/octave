@@ -14,6 +14,12 @@ OCTAVE (Olympian Common Text And Vocabulary Engine) is a deterministic document 
 - **Schema-anchored**: Data and schema blocks travel together so routing and validation remain explicit.
 - **Auditable loss**: Compression and projections must declare what was dropped; nothing is silently tightened or weakened.
 
+### Language, operators, and readability
+
+- **Syntax**: Unicode-first operators (`→`, `⊕`, `⧺`, `⇌`, `∨`, `∧`, `§`) with ASCII aliases (`->`, `+`, `~`, `vs`, `|`, `&`, `§`) keep documents compact while staying typable everywhere.
+- **Vocabulary**: Mythological terms are deliberate compression shorthands (e.g., `ICARIAN`, `SISYPHEAN`, `HUBRIS→NEMESIS`) that pack multiple related concepts into single tokens for higher semantic density.
+- **Authoring**: Humans typically write in the lenient view and rely on `octave ingest` to normalize into canonical Unicode; both views stay human-auditable.
+
 See the [protocol specs in `specs/`](specs/README.oct.md) for the precise operators, envelopes, and schema rules (v5.1.0).
 
 ## What this server provides
@@ -35,6 +41,12 @@ Use OCTAVE when documents must survive multiple agent/tool hops, repeated compre
 - documents that mix prose with routing/targets (e.g., §targets for tools or indexes)
 
 It is usually overkill for one-off chat replies, casual notes, or prose that will never be reused or validated.
+
+### Proven efficiency
+
+- **Token reduction**: Benchmarks show OCTAVE documents use **32–46% of the tokens** of equivalent JSON, a **54–68% reduction** that grows with document complexity while preserving fidelity (see `docs/research/README.md`).
+- **Model comprehension**: Zero-shot tests across Claude, GPT-4o, and Gemini families show **~91% average comprehension** of OCTAVE syntax without fine-tuning, validating the readability of the language choices (see `docs/research/README.md`).
+- **Behavior under compression**: In comparative studies, calibrated OCTAVE agents produced higher-quality outputs than verbose baselines (9.3/10 vs 8.3/10), demonstrating that explicit compression controls avoid semantic loss (see `docs/research/subagent-compression-study.md`).
 
 ## Installing
 
