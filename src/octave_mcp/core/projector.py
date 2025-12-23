@@ -20,6 +20,7 @@ class ProjectionResult:
     output: str
     lossy: bool
     fields_omitted: list[str]
+    filtered_doc: Document  # Filtered AST for serialization to JSON/YAML/MD
 
 
 def _filter_fields(doc: Document, keep: list[str]) -> Document:
@@ -93,31 +94,35 @@ def project(doc: Document, mode: str = "canonical") -> ProjectionResult:
         mode: Projection mode (canonical, authoring, executive, developer)
 
     Returns:
-        ProjectionResult with output, lossy flag, and omitted fields
+        ProjectionResult with output, lossy flag, omitted fields, and filtered AST
     """
     if mode == "canonical":
         # Full document
         output = emit(doc)
-        return ProjectionResult(output=output, lossy=False, fields_omitted=[])
+        return ProjectionResult(output=output, lossy=False, fields_omitted=[], filtered_doc=doc)
 
     elif mode == "authoring":
         # Lenient format (for now, same as canonical)
         output = emit(doc)
-        return ProjectionResult(output=output, lossy=False, fields_omitted=[])
+        return ProjectionResult(output=output, lossy=False, fields_omitted=[], filtered_doc=doc)
 
     elif mode == "executive":
         # Executive view: STATUS, RISKS, DECISIONS only
         filtered_doc = _filter_fields(doc, keep=["STATUS", "RISKS", "DECISIONS"])
         output = emit(filtered_doc)
-        return ProjectionResult(output=output, lossy=True, fields_omitted=["TESTS", "CI", "DEPS"])
+        return ProjectionResult(
+            output=output, lossy=True, fields_omitted=["TESTS", "CI", "DEPS"], filtered_doc=filtered_doc
+        )
 
     elif mode == "developer":
         # Developer view: TESTS, CI, DEPS only
         filtered_doc = _filter_fields(doc, keep=["TESTS", "CI", "DEPS"])
         output = emit(filtered_doc)
-        return ProjectionResult(output=output, lossy=True, fields_omitted=["STATUS", "RISKS", "DECISIONS"])
+        return ProjectionResult(
+            output=output, lossy=True, fields_omitted=["STATUS", "RISKS", "DECISIONS"], filtered_doc=filtered_doc
+        )
 
     else:
         # Default to canonical
         output = emit(doc)
-        return ProjectionResult(output=output, lossy=False, fields_omitted=[])
+        return ProjectionResult(output=output, lossy=False, fields_omitted=[], filtered_doc=doc)

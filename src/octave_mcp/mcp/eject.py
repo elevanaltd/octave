@@ -220,21 +220,22 @@ META:
         result = project(doc, mode=mode)
 
         # Convert to requested output format
+        # IL-PLACEHOLDER-FIX-002-REWORK: Use filtered AST from projection for all formats
         if output_format == "json":
-            # Convert AST to dictionary, then serialize as JSON
-            data = _ast_to_dict(doc)
+            # Convert filtered AST to dictionary, then serialize as JSON
+            data = _ast_to_dict(result.filtered_doc)
             output = json.dumps(data, indent=2, ensure_ascii=False)
             return {"output": output, "lossy": result.lossy, "fields_omitted": result.fields_omitted}
 
         elif output_format == "yaml":
-            # Convert AST to dictionary, then serialize as YAML
-            data = _ast_to_dict(doc)
+            # Convert filtered AST to dictionary, then serialize as YAML
+            data = _ast_to_dict(result.filtered_doc)
             output = yaml.dump(data, allow_unicode=True, sort_keys=False, default_flow_style=False)
             return {"output": output, "lossy": result.lossy, "fields_omitted": result.fields_omitted}
 
         elif output_format == "markdown":
-            # Convert AST to Markdown
-            output = _ast_to_markdown(doc)
+            # Convert filtered AST to Markdown
+            output = _ast_to_markdown(result.filtered_doc)
             return {"output": output, "lossy": result.lossy, "fields_omitted": result.fields_omitted}
 
         else:  # output_format == "octave"

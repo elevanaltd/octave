@@ -243,3 +243,46 @@ FIELD::"value"
         assert "# TEST" in result["output"] or "## META" in result["output"]
         assert "VERSION" in result["output"]
         assert "STATUS" in result["output"]
+
+    @pytest.mark.asyncio
+    async def test_eject_executive_mode_json_format_filters_fields(self, eject_tool):
+        """Executive mode + JSON format should omit technical fields (TESTS, CI, DEPS).
+
+        IL-PLACEHOLDER-FIX-002-REWORK: Verify projection mode filters are applied
+        to JSON/YAML/MD output formats, not just OCTAVE format.
+        """
+        content = """===TEST===
+META:
+  VERSION::"1.0"
+  TYPE::"TEST"
+
+STATUS::active
+RISKS::[risk1, risk2]
+DECISIONS::[decision1, decision2]
+TESTS::passing
+CI::green
+DEPS::[lib1, lib2]
+===END==="""
+
+        result = await eject_tool.execute(content=content, schema="TEST", mode="executive", format="json")
+
+        # Verify lossy projection
+        assert result["lossy"] is True
+        assert "TESTS" in result["fields_omitted"]
+        assert "CI" in result["fields_omitted"]
+        assert "DEPS" in result["fields_omitted"]
+
+        # Parse JSON output
+        import json
+
+        parsed = json.loads(result["output"])
+
+        # Executive mode should INCLUDE these fields
+        assert "STATUS" in parsed
+        assert "RISKS" in parsed
+        assert "DECISIONS" in parsed
+
+        # Executive mode should EXCLUDE these fields
+        assert "TESTS" not in parsed, "TESTS field should be filtered out in executive mode"
+        assert "CI" not in parsed, "CI field should be filtered out in executive mode"
+        assert "DEPS" not in parsed, "DEPS field should be filtered out in executive mode"
