@@ -141,3 +141,41 @@ DEPS::[python, redis]
         # Should NOT include executive fields
         assert "STATUS::" not in result.output
         assert "RISKS:" not in result.output
+
+    def test_executive_mode_preserves_block_children(self):
+        """Executive mode should preserve Block children when parent is kept (IL-PLACEHOLDER-FIX-001-REWORK)."""
+        content = """===TEST===
+RISKS:
+  SECURITY::HIGH
+  PERFORMANCE::LOW
+STATUS::ACTIVE
+===END==="""
+        doc = parse(content)
+        result = project(doc, "executive")
+
+        # Should keep RISKS block with ALL children
+        assert "RISKS:" in result.output
+        assert "SECURITY::HIGH" in result.output
+        assert "PERFORMANCE::LOW" in result.output
+
+        # Should keep STATUS
+        assert "STATUS::ACTIVE" in result.output
+
+    def test_developer_mode_preserves_block_children(self):
+        """Developer mode should preserve Block children when parent is kept (IL-PLACEHOLDER-FIX-001-REWORK)."""
+        content = """===TEST===
+DEPS:
+  PYTHON::3.11
+  REDIS::7.0
+TESTS::pytest_suite
+===END==="""
+        doc = parse(content)
+        result = project(doc, "developer")
+
+        # Should keep DEPS block with ALL children
+        assert "DEPS:" in result.output
+        assert "PYTHON::3.11" in result.output
+        assert "REDIS::7.0" in result.output
+
+        # Should keep TESTS
+        assert "TESTS::pytest_suite" in result.output
