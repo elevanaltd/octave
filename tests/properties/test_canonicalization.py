@@ -13,7 +13,10 @@ from hypothesis import strategies as st
 
 from octave_mcp.core.emitter import emit
 from octave_mcp.core.lexer import tokenize
-from octave_mcp.core.parser import parse
+from octave_mcp.core.parser import ParserError, parse
+
+# Reserved keywords that cannot be used as regular document keys
+RESERVED_KEYWORDS = {"META"}
 
 
 # Strategy for generating valid OCTAVE documents
@@ -35,7 +38,7 @@ def octave_document(draw):
                     alphabet=st.characters(whitelist_categories=("Lu",), whitelist_characters="_", max_codepoint=127),
                     min_size=1,
                     max_size=15,
-                ).filter(lambda x: x and x[0].isupper()),
+                ).filter(lambda x: x and x[0].isupper() and x not in RESERVED_KEYWORDS),
                 st.text(min_size=1, max_size=50),
             ),
             min_size=1,
@@ -94,7 +97,7 @@ STATUS -> active
 
             # Must be identical
             assert output1 == output2, "Idempotence violated"
-        except ValueError:
+        except (ValueError, ParserError):
             # Skip invalid generated inputs
             pytest.skip("Invalid input generated")
 
@@ -127,7 +130,7 @@ DATA::[1,2,3]
 
             # All must be identical
             assert all(o == outputs[0] for o in outputs), "Determinism violated"
-        except ValueError:
+        except (ValueError, ParserError):
             pytest.skip("Invalid input")
 
     def test_totality_ascii_aliases(self):

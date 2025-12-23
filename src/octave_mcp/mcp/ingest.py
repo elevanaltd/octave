@@ -63,7 +63,7 @@ class IngestTool(BaseTool):
 
         Args:
             content: OCTAVE content to ingest
-            schema: Schema name for validation
+            schema: Schema name (reserved for future use in P2.5, currently not used for validation)
             tier: Compression tier (LOSSLESS, CONSERVATIVE, AGGRESSIVE, ULTRA)
             fix: Whether to apply TIER_REPAIR fixes
             verbose: Whether to show pipeline stages
@@ -72,14 +72,23 @@ class IngestTool(BaseTool):
             Dictionary with:
             - canonical: Canonical OCTAVE output
             - repairs: List of repairs applied
-            - warnings: List of validation warnings
+            - warnings: List of validation warnings (basic validation only, schema validation deferred to P2.5)
             - stages: Pipeline stage details (if verbose=true)
         """
         # Validate and extract parameters
         params = self.validate_parameters(kwargs)
         content = params["content"]
         schema_name = params["schema"]
-        # tier = params.get("tier", "LOSSLESS")  # Reserved for future compression levels
+        # DEFERRED: tier parameter ignored until compression infrastructure ready
+        # See docs/implementation-roadmap.md Gap 6 (Compression Tier Logic)
+        # Estimated: 3-4 days, Phase 4 work (after schema validation complete)
+        #
+        # Once Gap 6 is complete, tier will control compression:
+        # - LOSSLESS (100%): Preserve all prose, examples, tradeoffs
+        # - CONSERVATIVE (85-90%): Drop stopwords, compress examples
+        # - AGGRESSIVE (70%): Drop narratives, inline all
+        # - ULTRA (50%): Bare assertions, minimal lists, no examples
+        # tier = params.get("tier", "LOSSLESS")  # Ignored for now
         fix = params.get("fix", False)
         verbose = params.get("verbose", False)
 

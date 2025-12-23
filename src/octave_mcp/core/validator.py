@@ -90,8 +90,22 @@ class Validator:
                 self._validate_type(field, value, fields_schema[field])
 
     def _validate_section(self, section: ASTNode, strict: bool) -> None:
-        """Validate a section."""
-        # Basic validation - can be extended
+        """Validate a section.
+
+        DEFERRED: Section validation requires schema infrastructure.
+        See docs/implementation-roadmap.md:
+        - Gap 1: Holographic Pattern Parsing (1-2 days)
+        - Gap 2: Constraint Chain Evaluation (2-3 days)
+        - Gap 3: Target Routing & Validation (1-2 days)
+
+        Total Phase 1: 3-4 weeks foundational work
+
+        Once complete, this will validate:
+        - Holographic patterns: ["example"∧CONSTRAINT→§TARGET]
+        - Constraint chains: REQ∧ENUM[A,B]∧REGEX["^[a-z]+$"]
+        - Target routing: →§INDEXER, →§META, etc.
+        - Block inheritance: Children inherit parent targets
+        """
         # Type narrowing: section is typically Assignment | Block from Document.sections
         pass
 

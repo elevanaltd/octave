@@ -3,9 +3,13 @@ META:
   TYPE::LLM_PROFILE
   VERSION::"5.1.0"
   STATUS::APPROVED
+  IMPLEMENTATION::PLANNED
   TOKENS::"~90"
   REQUIRES::octave-5-llm-core
   PURPOSE::L4_holographic_definitions
+  IMPLEMENTATION_NOTES::"Schema class skeleton exists (35 LOC) but raises NotImplementedError. Holographic patterns, constraint chains, targets, and block inheritance not implemented."
+  IMPLEMENTATION_REF::[src/octave_mcp/core/schema.py]
+  CRITICAL_GAPS::[holographic_pattern_parsing,constraint_evaluation,target_routing,block_inheritance,policy_blocks,constraint_conflicts]
 
 ---
 

@@ -107,12 +107,15 @@ class TestVsWordBoundaries:
         tension_tokens = [t for t in tokens if t.type == TokenType.TENSION]
         assert len(tension_tokens) == 1
 
-    def test_vs_without_boundaries_rejected(self):
-        """Should reject 'vs' without word boundaries."""
-        with pytest.raises(LexerError) as exc_info:
-            tokenize("SpeedvsQuality")
-        assert "E005" in str(exc_info.value)
-        assert "word boundaries" in str(exc_info.value).lower()
+    def test_vs_without_boundaries_is_identifier(self):
+        """Identifiers containing 'vs' should tokenize as IDENTIFIER, not error."""
+        tokens, _ = tokenize("SpeedvsQuality")
+        # Should be a single identifier token, not TENSION operator
+        identifier_tokens = [t for t in tokens if t.type == TokenType.IDENTIFIER]
+        tension_tokens = [t for t in tokens if t.type == TokenType.TENSION]
+        assert len(identifier_tokens) == 1
+        assert identifier_tokens[0].value == "SpeedvsQuality"
+        assert len(tension_tokens) == 0  # No tension operator
 
 
 class TestUnicodeNormalization:

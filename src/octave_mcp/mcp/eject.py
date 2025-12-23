@@ -7,11 +7,130 @@ Implements octave_eject tool with projection modes:
 - developer: TESTS,CI,DEPS only, lossy=true
 """
 
+import json
 from typing import Any
 
+import yaml
+
+from octave_mcp.core.ast_nodes import Assignment, Block, Document, InlineMap, ListValue
 from octave_mcp.core.parser import parse
 from octave_mcp.core.projector import project
 from octave_mcp.mcp.base_tool import BaseTool, SchemaBuilder
+
+
+def _ast_to_dict(doc: Document) -> dict[str, Any]:
+    """Convert AST Document to dictionary for JSON/YAML export.
+
+    Args:
+        doc: Document AST
+
+    Returns:
+        Dictionary representation of document
+    """
+    result: dict[str, Any] = {}
+
+    # Add META if present
+    if doc.meta:
+        result["META"] = doc.meta
+
+    # Convert sections
+    for section in doc.sections:
+        if isinstance(section, Assignment):
+            result[section.key] = _convert_value(section.value)
+        elif isinstance(section, Block):
+            result[section.key] = _convert_block(section)
+
+    return result
+
+
+def _convert_value(value: Any) -> Any:
+    """Convert AST value to native Python type.
+
+    Args:
+        value: AST value node
+
+    Returns:
+        Native Python value
+    """
+    if isinstance(value, ListValue):
+        return [_convert_value(item) for item in value.items]
+    elif isinstance(value, InlineMap):
+        return {k: _convert_value(v) for k, v in value.pairs.items()}
+    else:
+        return value
+
+
+def _convert_block(block: Block) -> dict[str, Any]:
+    """Convert Block AST node to dictionary.
+
+    Args:
+        block: Block node
+
+    Returns:
+        Dictionary representation
+    """
+    result: dict[str, Any] = {}
+
+    for child in block.children:
+        if isinstance(child, Assignment):
+            result[child.key] = _convert_value(child.value)
+        elif isinstance(child, Block):
+            result[child.key] = _convert_block(child)
+
+    return result
+
+
+def _ast_to_markdown(doc: Document) -> str:
+    """Convert AST Document to Markdown format.
+
+    Args:
+        doc: Document AST
+
+    Returns:
+        Markdown representation
+    """
+    lines: list[str] = []
+
+    # Add title
+    lines.append(f"# {doc.name}")
+    lines.append("")
+
+    # Add META section
+    if doc.meta:
+        lines.append("## META")
+        lines.append("")
+        for key, value in doc.meta.items():
+            lines.append(f"- **{key}**: {value}")
+        lines.append("")
+
+    # Add sections
+    for section in doc.sections:
+        if isinstance(section, Assignment):
+            lines.append(f"**{section.key}**: {section.value}")
+            lines.append("")
+        elif isinstance(section, Block):
+            lines.append(f"## {section.key}")
+            lines.append("")
+            _block_to_markdown(section, lines, level=3)
+
+    return "\n".join(lines)
+
+
+def _block_to_markdown(block: Block, lines: list[str], level: int = 3) -> None:
+    """Convert Block to Markdown recursively.
+
+    Args:
+        block: Block node
+        lines: Output lines list (mutated)
+        level: Heading level
+    """
+    for child in block.children:
+        if isinstance(child, Assignment):
+            lines.append(f"- **{child.key}**: {child.value}")
+        elif isinstance(child, Block):
+            lines.append(f"{'#' * level} {child.key}")
+            lines.append("")
+            _block_to_markdown(child, lines, level + 1)
 
 
 class EjectTool(BaseTool):
@@ -100,11 +219,24 @@ META:
         # Project to desired mode
         result = project(doc, mode=mode)
 
-        # For now, only OCTAVE format is implemented
-        # JSON, YAML, markdown are deferred to future work
-        if output_format != "octave":
-            # Return canonical OCTAVE with note
-            output = f"# Format '{output_format}' not yet implemented - returning OCTAVE\n{result.output}"
+        # Convert to requested output format
+        # IL-PLACEHOLDER-FIX-002-REWORK: Use filtered AST from projection for all formats
+        if output_format == "json":
+            # Convert filtered AST to dictionary, then serialize as JSON
+            data = _ast_to_dict(result.filtered_doc)
+            output = json.dumps(data, indent=2, ensure_ascii=False)
             return {"output": output, "lossy": result.lossy, "fields_omitted": result.fields_omitted}
 
-        return {"output": result.output, "lossy": result.lossy, "fields_omitted": result.fields_omitted}
+        elif output_format == "yaml":
+            # Convert filtered AST to dictionary, then serialize as YAML
+            data = _ast_to_dict(result.filtered_doc)
+            output = yaml.dump(data, allow_unicode=True, sort_keys=False, default_flow_style=False)
+            return {"output": output, "lossy": result.lossy, "fields_omitted": result.fields_omitted}
+
+        elif output_format == "markdown":
+            # Convert filtered AST to Markdown
+            output = _ast_to_markdown(result.filtered_doc)
+            return {"output": output, "lossy": result.lossy, "fields_omitted": result.fields_omitted}
+
+        else:  # output_format == "octave"
+            return {"output": result.output, "lossy": result.lossy, "fields_omitted": result.fields_omitted}

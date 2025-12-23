@@ -128,7 +128,7 @@ get_claude_desktop_config_path() {
 
 # Get Claude Code CLI config path
 get_claude_code_config_path() {
-    echo "$HOME/.claude/settings.json"
+    echo "$HOME/.claude.json"
 }
 
 # Get Codex CLI config path
@@ -440,7 +440,7 @@ configure_claude_code() {
     local python_cmd=$(get_venv_python)
     local server_path=$(get_server_path)
 
-    # Claude Code uses a different structure - mcpServers is nested
+    # Claude Code uses mcpServers at root level in ~/.claude.json
     if [[ ! -f "$config_path" ]]; then
         print_warning "Claude Code config not found: $config_path"
         print_info "Claude Code CLI may not be installed"
@@ -739,7 +739,7 @@ Without options, runs interactive setup.
 
 Supported Clients:
   - Claude Desktop (macOS, Linux, Windows/WSL)
-  - Claude Code CLI (~/.claude/settings.json)
+  - Claude Code CLI (~/.claude.json)
   - OpenAI Codex CLI (~/.codex/config.toml)
   - Google Gemini CLI (~/.gemini/settings.json)
 

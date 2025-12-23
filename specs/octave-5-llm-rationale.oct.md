@@ -3,9 +3,11 @@ META:
   TYPE::LLM_PROFILE
   VERSION::"5.1.0"
   STATUS::APPROVED
+  IMPLEMENTATION::REFERENCE
   TOKENS::"~160"
   REQUIRES::octave-5-llm-core
   PURPOSE::architectural_decision_record
+  IMPLEMENTATION_NOTES::"Design rationale document only. No code implementation. Referenced by core, data, schema, execution profiles."
 
 ---
 
