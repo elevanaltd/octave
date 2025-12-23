@@ -10,6 +10,12 @@
 
 The OCTAVE MCP server has **strong foundations** (lexer, parser, emitter, canonicalization) but **critical schema validation and routing features are unimplemented**. This roadmap prioritizes the work needed to move from "basic OCTAVE processing" to "production-grade semantic control surface."
 
+**Recent Updates (2025-12-23)**:
+- ✅ **Output formats implemented**: JSON, YAML, Markdown export now functional (eject.py)
+- ⚠️ **Placeholder documentation**: All deferred items now have honest docstrings referencing roadmap gaps
+- 📊 **Test coverage**: Improved from 43% to 82% overall project coverage
+- 🔒 **Deferred with rationale**: Items 4, 5, 6, 7, 9 explicitly documented as requiring Phase 1-4 infrastructure
+
 ### Current State by Component
 
 | Component | Status | Coverage | Priority |
@@ -17,11 +23,12 @@ The OCTAVE MCP server has **strong foundations** (lexer, parser, emitter, canoni
 | **Lexer & Parser** | ✅ IMPLEMENTED | 100% | — |
 | **Canonicalization** | ✅ IMPLEMENTED | 100% | — |
 | **Projector (4 modes)** | ✅ IMPLEMENTED | 100% | — |
+| **Output Formats (JSON/YAML/MD)** | ✅ IMPLEMENTED | 100% | — |
 | **Schema Validation** | ❌ PLANNED | 0% | **HIGH** |
 | **Constraint Evaluation** | ❌ PLANNED | 0% | **HIGH** |
 | **Target Routing** | ❌ PLANNED | 0% | **HIGH** |
 | **Compression Tiers** | ❌ PLANNED | 0% | MEDIUM |
-| **Repair Logic** | ⚠️ PARTIAL | 10% | MEDIUM |
+| **Repair Logic** | ⚠️ DEFERRED | 0% | MEDIUM |
 | **Error Messages** | ❌ PLANNED | 0% | LOW |
 | **Agent Architecture** | 📖 REFERENCE | N/A | N/A |
 
@@ -390,8 +397,8 @@ src/octave_mcp/core/
   └── compressor.py      ❌ TODO - compression tiers
 
 src/octave_mcp/mcp/
-  ├── ingest.py          ✅ DONE (200 LOC) - tool frontend
-  ├── eject.py           ✅ DONE (110 LOC) - projection tool
+  ├── ingest.py          ✅ DONE (200 LOC) - tool frontend (tier param deferred)
+  ├── eject.py           ✅ DONE (242 LOC) - projection + JSON/YAML/MD formats
   └── base_tool.py       ✅ DONE (153 LOC) - MCP base class
 
 tests/unit/

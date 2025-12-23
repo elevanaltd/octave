@@ -1,7 +1,11 @@
 """OCTAVE schema definitions and validation.
 
-Stub for P1.5: schema_validator_with_constraint_checking
+Provides Schema class and validation function that delegates to validator.py.
 """
+
+from octave_mcp.core.ast_nodes import Document
+from octave_mcp.core.validator import ValidationError
+from octave_mcp.core.validator import validate as validate_impl
 
 
 class Schema:
@@ -22,14 +26,20 @@ class Schema:
         self._data = schema_data or {}
 
 
-def validate(ast: dict, schema: Schema) -> dict:
+def validate(ast: Document, schema: Schema | dict) -> list[ValidationError]:
     """Validate AST against schema.
 
+    Delegates to validator.py for actual validation logic.
+
     Args:
-        ast: Parsed AST structure
-        schema: Schema definition
+        ast: Parsed Document AST
+        schema: Schema definition (Schema object or dict)
 
     Returns:
-        Validation result with errors and warnings
+        List of validation errors (empty if valid)
     """
-    raise NotImplementedError("P1.5: schema_validator_with_constraint_checking")
+    # Convert Schema object to dict if needed
+    schema_dict = schema._data if isinstance(schema, Schema) else schema
+
+    # Delegate to working validator implementation
+    return validate_impl(ast, schema_dict, strict=False)
