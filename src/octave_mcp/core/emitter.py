@@ -27,8 +27,9 @@ def needs_quotes(value: Any) -> bool:
     if not value:
         return True
 
-    # Reserved words need quotes to avoid becoming literals
-    if value in ("true", "false", "null"):
+    # Reserved words need quotes to avoid becoming literals or operators
+    # This includes boolean/null literals and operator keywords
+    if value in ("true", "false", "null", "vs"):
         return True
 
     # If it's not a valid identifier, it needs quotes
