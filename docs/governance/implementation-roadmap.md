@@ -10,7 +10,10 @@
 
 The OCTAVE MCP server has **strong foundations** (lexer, parser, emitter, canonicalization) but **critical schema validation and routing features are unimplemented**. This roadmap prioritizes the work needed to move from "basic OCTAVE processing" to "production-grade semantic control surface."
 
-**Recent Updates (2025-12-23)**:
+**Recent Updates (2025-12-24)**:
+- ✅ **Gap 2 Complete**: Constraint chain evaluation implemented with 12 constraint types
+- ✅ **New constraints**: RANGE, MAX_LENGTH, MIN_LENGTH, DATE, ISO8601 added
+- ✅ **§ section markers**: Parser now preserves § section markers (Issue #31)
 - ✅ **Output formats implemented**: JSON, YAML, Markdown export now functional (eject.py)
 - ⚠️ **Placeholder documentation**: All deferred items now have honest docstrings referencing roadmap gaps
 - 📊 **Test coverage**: Improved from 43% to 82% overall project coverage
@@ -24,8 +27,8 @@ The OCTAVE MCP server has **strong foundations** (lexer, parser, emitter, canoni
 | **Canonicalization** | ✅ IMPLEMENTED | 100% | — |
 | **Projector (4 modes)** | ✅ IMPLEMENTED | 100% | — |
 | **Output Formats (JSON/YAML/MD)** | ✅ IMPLEMENTED | 100% | — |
+| **Constraint Evaluation** | ✅ IMPLEMENTED | 91% | — |
 | **Schema Validation** | ❌ PLANNED | 0% | **HIGH** |
-| **Constraint Evaluation** | ❌ PLANNED | 0% | **HIGH** |
 | **Target Routing** | ❌ PLANNED | 0% | **HIGH** |
 | **Compression Tiers** | ❌ PLANNED | 0% | MEDIUM |
 | **Repair Logic** | ⚠️ DEFERRED | 0% | MEDIUM |
@@ -69,47 +72,38 @@ The OCTAVE MCP server has **strong foundations** (lexer, parser, emitter, canoni
 
 ---
 
-### Gap 2: Constraint Chain Evaluation
+### Gap 2: Constraint Chain Evaluation ✅ COMPLETE
 
-**Current State**: Constraint enum exists (REQ, OPT, ENUM, etc.) but no evaluation logic
+**Status**: Implemented (PR #35)
 
-**What's Missing**:
-- Evaluate constraint chains: `REQ∧ENUM[A,B]∧REGEX["^[a-z]+$"]`
-- Chain evaluation left-to-right, fail-fast
-- Detect conflicts: `REQ∧OPT`, `ENUM[A,B]∧CONST[C]`, `CONST[X]∧CONST[Y]`
-- Type validation: STRING, NUMBER, LIST, BOOLEAN
-- Regex compilation and matching
-- Enum value validation
+**Implementation**: `src/octave_mcp/core/constraints.py` (282 LOC, 91% coverage)
 
-**Available Constraints** (from spec):
-- `REQ` - Required field
-- `OPT` - Optional field
-- `CONST[value]` - Constant value (immutable)
-- `ENUM[a,b,c]` - Enumerated values
-- `TYPE(STRING|NUMBER|LIST|BOOLEAN)` - Type check
-- `REGEX[pattern]` - Pattern matching
-- `DIR` - Directory path
-- `APPEND_ONLY` - List append semantics
+**Available Constraints** (12 total):
+| Constraint | Syntax | Description |
+|------------|--------|-------------|
+| `REQ` | `REQ` | Required field |
+| `OPT` | `OPT` | Optional field |
+| `CONST` | `CONST[value]` | Constant value (immutable) |
+| `ENUM` | `ENUM[a,b,c]` | Enumerated values with prefix matching |
+| `TYPE` | `TYPE(STRING\|NUMBER\|LIST\|BOOLEAN)` | Type check |
+| `REGEX` | `REGEX[pattern]` | Pattern matching |
+| `DIR` | `DIR` | Directory path |
+| `APPEND_ONLY` | `APPEND_ONLY` | List append semantics |
+| `RANGE` | `RANGE[min,max]` | Numeric bounds (inclusive) |
+| `MAX_LENGTH` | `MAX_LENGTH[N]` | Max string/list length |
+| `MIN_LENGTH` | `MIN_LENGTH[N]` | Min string/list length |
+| `DATE` | `DATE` | Strict YYYY-MM-DD |
+| `ISO8601` | `ISO8601` | Full ISO8601 datetime |
 
-**Specification Reference**: `octave-5-llm-schema.oct.md` § 2, § 3
+**Features Implemented**:
+- ✅ Constraint chain parsing (`REQ∧ENUM[A,B]∧RANGE[1,10]`)
+- ✅ Left-to-right, fail-fast evaluation
+- ✅ Conflict detection: `REQ∧OPT`, `ENUM∧CONST`, `CONST∧CONST`
+- ✅ Structured validation errors (code, path, constraint, expected, got)
+- ✅ Parse-time validation (malformed params raise ValueError)
+- ✅ Type safety (RANGE/NUMBER reject booleans, LENGTH only accepts str/list)
 
-**Implementation Tasks**:
-1. Create `Constraint` dataclass hierarchy (one per type)
-2. Create `ConstraintChain` class with evaluation method
-3. Implement each constraint evaluator:
-   - `eval_req(value) → bool | ValidationError`
-   - `eval_opt(value) → bool`
-   - `eval_enum(value, allowed) → bool`
-   - `eval_type(value, expected_type) → bool`
-   - `eval_regex(value, pattern) → bool`
-   - etc.
-4. Implement conflict detection logic
-5. Return structured validation errors with path + constraint + expected + got
-6. Unit tests: all constraint types, chains, conflicts, edge cases
-
-**Implementation File**: `src/octave_mcp/core/validator.py`
-
-**Est. Complexity**: High (2-3 days)
+**Tests**: 112 passing (91% coverage)
 
 ---
 
