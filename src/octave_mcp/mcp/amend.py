@@ -12,6 +12,7 @@ import hashlib
 from pathlib import Path
 from typing import Any
 
+from octave_mcp.core.ast_nodes import Assignment
 from octave_mcp.core.emitter import emit
 from octave_mcp.core.lexer import tokenize
 from octave_mcp.core.parser import parse
@@ -157,8 +158,9 @@ class AmendTool(BaseTool):
         for key, new_value in changes.items():
             # Find section with matching key
             for section in doc.sections:
-                # Check if this is an Assignment with matching key
-                if hasattr(section, "key") and section.key == key:
+                # I3 FIX: Use isinstance instead of hasattr to avoid matching Block nodes
+                # Block nodes also have 'key' attribute but shouldn't be updated as assignments
+                if isinstance(section, Assignment) and section.key == key:
                     # Update the value
                     section.value = new_value
                     break
@@ -305,14 +307,42 @@ class AmendTool(BaseTool):
                     "errors": [{"code": "E_WRITE", "message": "Cannot write to symlink target"}],
                 }
 
+            # I2 FIX: Preserve original file permissions
+            # mkstemp creates files with 0600 mode by default
+            # We must capture and restore the original permissions
+            original_stat = os.stat(target_path)
+            original_mode = original_stat.st_mode & 0o777
+
             # Atomic write: tempfile→fsync→os.replace
             # Prevents partial writes and race conditions
             fd, temp_path = tempfile.mkstemp(dir=path_obj.parent, suffix=".tmp", text=True)
             try:
+                # Apply original permissions to temp file before writing
+                os.fchmod(fd, original_mode)
+
                 with os.fdopen(fd, "w", encoding="utf-8") as f:
                     f.write(canonical_content)
                     f.flush()
                     os.fsync(f.fileno())  # Ensure data written to disk
+
+                # I4 FIX: Recheck base_hash immediately before replace (TOCTOU protection)
+                # File could have been modified between initial check and now
+                if base_hash:
+                    with open(target_path, encoding="utf-8") as verify_f:
+                        verify_content = verify_f.read()
+                    verify_hash = self._compute_hash(verify_content)
+                    if verify_hash != base_hash:
+                        # File was modified during our operation - abort
+                        os.unlink(temp_path)
+                        return {
+                            "status": "error",
+                            "errors": [
+                                {
+                                    "code": "E_HASH",
+                                    "message": f"Hash mismatch before write - file was modified during operation (expected {base_hash[:8]}..., got {verify_hash[:8]}...)",
+                                }
+                            ],
+                        }
 
                 # Atomic replace (POSIX guarantees atomicity)
                 os.replace(temp_path, target_path)
