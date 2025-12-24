@@ -293,3 +293,15 @@ class TestWhitespace:
         tokens, _ = tokenize("LINE1::a\nLINE2::b")
         line2_tokens = [t for t in tokens if hasattr(t, "line") and t.line == 2]
         assert len(line2_tokens) > 0
+
+
+class TestEdgeOptimizations:
+    """Test edge case optimizations (P1.3 Assimilation)."""
+
+    def test_dotted_identifiers(self):
+        """Should tokenize identifiers with dots as single tokens (Issue #37)."""
+        tokens, _ = tokenize("pkg.tool::value")
+        # Should be IDENTIFIER(pkg.tool) ASSIGN(::) IDENTIFIER(value)
+        assert tokens[0].type == TokenType.IDENTIFIER
+        assert tokens[0].value == "pkg.tool"
+        assert tokens[1].type == TokenType.ASSIGN
