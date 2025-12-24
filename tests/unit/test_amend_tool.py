@@ -270,3 +270,43 @@ TIMEOUT::30
             error = amend_result["errors"][0]
             assert "code" in error
             assert "message" in error
+
+    @pytest.mark.asyncio
+    async def test_amend_preserves_file_permissions(self):
+        """Test that file permissions are preserved after amendment (I2 fix).
+
+        mkstemp creates files with 0600 mode by default.
+        The amend operation must preserve the original file's permissions.
+        """
+        create_tool = CreateTool()
+        amend_tool = AmendTool()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            target_path = os.path.join(tmpdir, "test.oct.md")
+
+            # Create initial file
+            await create_tool.execute(
+                content="===TEST===\nKEY::value1\n===END===",
+                target_path=target_path,
+            )
+
+            # Set specific permissions (e.g., 0644 = rw-r--r--)
+            original_mode = 0o644
+            os.chmod(target_path, original_mode)
+
+            # Verify permissions before amendment
+            stat_before = os.stat(target_path)
+            mode_before = stat_before.st_mode & 0o777
+            assert mode_before == original_mode
+
+            # Amend the file
+            amend_result = await amend_tool.execute(
+                target_path=target_path,
+                changes={"KEY": "value2"},
+            )
+            assert amend_result["status"] == "success"
+
+            # Verify permissions are preserved after amendment
+            stat_after = os.stat(target_path)
+            mode_after = stat_after.st_mode & 0o777
+            assert mode_after == original_mode, f"Permissions changed from {oct(mode_before)} to {oct(mode_after)}"
