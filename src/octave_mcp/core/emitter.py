@@ -15,7 +15,7 @@ from typing import Any
 
 from octave_mcp.core.ast_nodes import Assignment, Block, Document, InlineMap, ListValue, Section
 
-IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
+IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_.]*$")
 
 
 def needs_quotes(value: Any) -> bool:

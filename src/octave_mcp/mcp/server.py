@@ -11,6 +11,7 @@ from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool
 
+from octave_mcp.mcp.create import CreateTool
 from octave_mcp.mcp.eject import EjectTool
 from octave_mcp.mcp.ingest import IngestTool
 
@@ -26,6 +27,7 @@ def create_server() -> Server:
     # Initialize tools
     ingest_tool = IngestTool()
     eject_tool = EjectTool()
+    create_tool = CreateTool()
 
     @server.list_tools()
     async def handle_list_tools() -> list[Tool]:
@@ -40,6 +42,11 @@ def create_server() -> Server:
                 name=eject_tool.get_name(),
                 description=eject_tool.get_description(),
                 inputSchema=eject_tool.get_input_schema(),
+            ),
+            Tool(
+                name=create_tool.get_name(),
+                description=create_tool.get_description(),
+                inputSchema=create_tool.get_input_schema(),
             ),
         ]
 
@@ -65,6 +72,8 @@ def create_server() -> Server:
             result = await ingest_tool.execute(**arguments)
         elif name == "octave_eject":
             result = await eject_tool.execute(**arguments)
+        elif name == "octave_create":
+            result = await create_tool.execute(**arguments)
         else:
             raise ValueError(f"Unknown tool: {name}")
 
