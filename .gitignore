@@ -36,8 +36,14 @@ htmlcov/
 # Claude Code
 CLAUDE.md
 
-# HestAI session files
-.hestai/
+# HestAI report scratch area
+.hestai/reports/scratch/
+
+# Active Sessions (Ephemeral)
+.hestai/sessions/active/
+
+# Operational timestamps (session-specific state)
+.hestai/last_cleanup
 
 # Git worktrees
 worktrees/
