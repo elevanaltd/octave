@@ -102,7 +102,7 @@ PARENT:
         """Leading colon should not be treated as identifier."""
         # This would be invalid syntax - parser should handle gracefully
         # Not a primary test case, but document behavior
-        pass  # Skip for now - edge case
+        # A3 FIX: Removed placeholder pass - test is documentary only
 
     def test_empty_value_between_colons(self):
         """Should handle MODULE::SUBMODULE (empty between colons)."""
