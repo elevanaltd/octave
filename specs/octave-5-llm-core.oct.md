@@ -13,6 +13,8 @@ META:
 ---
 
 // OCTAVE CORE: The spine. Always inject this.
+// Operators map to mythological domains for semantic density (see octave-mastery skill).
+// Mythology = compression shorthand, not decoration (docs/research/mythology-evidence-synthesis.oct.md).
 
 §1::ENVELOPE
 START::===NAME===[first_line,exact_match]
