@@ -4,6 +4,8 @@ Tests constraint parsing, evaluation, conflict detection, and error formatting.
 Covers all 8 constraint types: REQ, OPT, CONST, ENUM, TYPE, REGEX, DIR, APPEND_ONLY.
 """
 
+import pytest
+
 from octave_mcp.core.constraints import (
     AppendOnlyConstraint,
     ConstConstraint,
@@ -436,6 +438,299 @@ class TestValidationResult:
         assert result.errors[0].code == "E001"
 
 
+class TestRangeConstraint:
+    """Test RANGE[min,max] constraint."""
+
+    def test_range_accepts_value_in_bounds(self):
+        """RANGE[1,10] should accept value within bounds."""
+        from octave_mcp.core.constraints import RangeConstraint
+
+        constraint = RangeConstraint(min_value=1, max_value=10)
+        result = constraint.evaluate(5)
+        assert result.valid is True
+
+    def test_range_accepts_min_boundary(self):
+        """RANGE[1,10] should accept min boundary (inclusive)."""
+        from octave_mcp.core.constraints import RangeConstraint
+
+        constraint = RangeConstraint(min_value=1, max_value=10)
+        result = constraint.evaluate(1)
+        assert result.valid is True
+
+    def test_range_accepts_max_boundary(self):
+        """RANGE[1,10] should accept max boundary (inclusive)."""
+        from octave_mcp.core.constraints import RangeConstraint
+
+        constraint = RangeConstraint(min_value=1, max_value=10)
+        result = constraint.evaluate(10)
+        assert result.valid is True
+
+    def test_range_rejects_below_min(self):
+        """RANGE[1,10] should reject value below min."""
+        from octave_mcp.core.constraints import RangeConstraint
+
+        constraint = RangeConstraint(min_value=1, max_value=10)
+        result = constraint.evaluate(0)
+        assert result.valid is False
+        assert len(result.errors) == 1
+        assert result.errors[0].code == "E011"
+
+    def test_range_rejects_above_max(self):
+        """RANGE[1,10] should reject value above max."""
+        from octave_mcp.core.constraints import RangeConstraint
+
+        constraint = RangeConstraint(min_value=1, max_value=10)
+        result = constraint.evaluate(11)
+        assert result.valid is False
+        assert len(result.errors) == 1
+        assert result.errors[0].code == "E011"
+
+    def test_range_supports_negative_range(self):
+        """RANGE[-50,50] should support negative ranges."""
+        from octave_mcp.core.constraints import RangeConstraint
+
+        constraint = RangeConstraint(min_value=-50, max_value=50)
+        result = constraint.evaluate(-25)
+        assert result.valid is True
+
+    def test_range_supports_float_values(self):
+        """RANGE[0.0,1.0] should support float values."""
+        from octave_mcp.core.constraints import RangeConstraint
+
+        constraint = RangeConstraint(min_value=0.0, max_value=1.0)
+        result = constraint.evaluate(0.5)
+        assert result.valid is True
+
+    def test_range_edge_case_min_equals_max(self):
+        """RANGE[5,5] should only accept exact value."""
+        from octave_mcp.core.constraints import RangeConstraint
+
+        constraint = RangeConstraint(min_value=5, max_value=5)
+        assert constraint.evaluate(5).valid is True
+        assert constraint.evaluate(4).valid is False
+        assert constraint.evaluate(6).valid is False
+
+    def test_range_parsing_integers(self):
+        """RANGE[1,10] should parse from string."""
+        chain = ConstraintChain.parse("RANGE[1,10]")
+        assert chain.evaluate(5).valid is True
+        assert chain.evaluate(0).valid is False
+
+    def test_range_parsing_floats(self):
+        """RANGE[0.0,100.0] should parse float bounds."""
+        chain = ConstraintChain.parse("RANGE[0.0,100.0]")
+        assert chain.evaluate(50.5).valid is True
+
+    def test_range_parsing_negative(self):
+        """RANGE[-50,50] should parse negative bounds."""
+        chain = ConstraintChain.parse("RANGE[-50,50]")
+        assert chain.evaluate(-25).valid is True
+
+    def test_range_to_string(self):
+        """RangeConstraint.to_string() should return RANGE[min,max]."""
+        from octave_mcp.core.constraints import RangeConstraint
+
+        constraint = RangeConstraint(min_value=1, max_value=10)
+        assert constraint.to_string() == "RANGE[1,10]"
+
+
+class TestMaxLengthConstraint:
+    """Test MAX_LENGTH[N] constraint."""
+
+    def test_max_length_accepts_string_within_limit(self):
+        """MAX_LENGTH[5] should accept string with length <= 5."""
+        from octave_mcp.core.constraints import MaxLengthConstraint
+
+        constraint = MaxLengthConstraint(max_length=5)
+        assert constraint.evaluate("abc").valid is True
+        assert constraint.evaluate("abcde").valid is True
+
+    def test_max_length_rejects_string_exceeding_limit(self):
+        """MAX_LENGTH[5] should reject string with length > 5."""
+        from octave_mcp.core.constraints import MaxLengthConstraint
+
+        constraint = MaxLengthConstraint(max_length=5)
+        result = constraint.evaluate("abcdef")
+        assert result.valid is False
+        assert len(result.errors) == 1
+        assert result.errors[0].code == "E012"
+
+    def test_max_length_accepts_list_within_limit(self):
+        """MAX_LENGTH[3] should accept list with length <= 3."""
+        from octave_mcp.core.constraints import MaxLengthConstraint
+
+        constraint = MaxLengthConstraint(max_length=3)
+        assert constraint.evaluate([1, 2]).valid is True
+        assert constraint.evaluate([1, 2, 3]).valid is True
+
+    def test_max_length_rejects_list_exceeding_limit(self):
+        """MAX_LENGTH[3] should reject list with length > 3."""
+        from octave_mcp.core.constraints import MaxLengthConstraint
+
+        constraint = MaxLengthConstraint(max_length=3)
+        result = constraint.evaluate([1, 2, 3, 4])
+        assert result.valid is False
+        assert result.errors[0].code == "E012"
+
+    def test_max_length_accepts_empty_string(self):
+        """MAX_LENGTH[5] should accept empty string."""
+        from octave_mcp.core.constraints import MaxLengthConstraint
+
+        constraint = MaxLengthConstraint(max_length=5)
+        assert constraint.evaluate("").valid is True
+
+    def test_max_length_parsing(self):
+        """MAX_LENGTH[100] should parse from string."""
+        chain = ConstraintChain.parse("MAX_LENGTH[100]")
+        assert chain.evaluate("short").valid is True
+
+    def test_max_length_to_string(self):
+        """MaxLengthConstraint.to_string() should return MAX_LENGTH[N]."""
+        from octave_mcp.core.constraints import MaxLengthConstraint
+
+        constraint = MaxLengthConstraint(max_length=100)
+        assert constraint.to_string() == "MAX_LENGTH[100]"
+
+
+class TestMinLengthConstraint:
+    """Test MIN_LENGTH[N] constraint."""
+
+    def test_min_length_accepts_string_meeting_minimum(self):
+        """MIN_LENGTH[3] should accept string with length >= 3."""
+        from octave_mcp.core.constraints import MinLengthConstraint
+
+        constraint = MinLengthConstraint(min_length=3)
+        assert constraint.evaluate("abc").valid is True
+        assert constraint.evaluate("abcd").valid is True
+
+    def test_min_length_rejects_string_below_minimum(self):
+        """MIN_LENGTH[3] should reject string with length < 3."""
+        from octave_mcp.core.constraints import MinLengthConstraint
+
+        constraint = MinLengthConstraint(min_length=3)
+        result = constraint.evaluate("ab")
+        assert result.valid is False
+        assert len(result.errors) == 1
+        assert result.errors[0].code == "E013"
+
+    def test_min_length_accepts_list_meeting_minimum(self):
+        """MIN_LENGTH[2] should accept list with length >= 2."""
+        from octave_mcp.core.constraints import MinLengthConstraint
+
+        constraint = MinLengthConstraint(min_length=2)
+        assert constraint.evaluate([1, 2]).valid is True
+        assert constraint.evaluate([1, 2, 3]).valid is True
+
+    def test_min_length_rejects_list_below_minimum(self):
+        """MIN_LENGTH[2] should reject list with length < 2."""
+        from octave_mcp.core.constraints import MinLengthConstraint
+
+        constraint = MinLengthConstraint(min_length=2)
+        result = constraint.evaluate([1])
+        assert result.valid is False
+        assert result.errors[0].code == "E013"
+
+    def test_min_length_zero_always_passes(self):
+        """MIN_LENGTH[0] should always pass (like OPT for length)."""
+        from octave_mcp.core.constraints import MinLengthConstraint
+
+        constraint = MinLengthConstraint(min_length=0)
+        assert constraint.evaluate("").valid is True
+        assert constraint.evaluate([]).valid is True
+
+    def test_min_length_parsing(self):
+        """MIN_LENGTH[1] should parse from string."""
+        chain = ConstraintChain.parse("MIN_LENGTH[1]")
+        assert chain.evaluate("a").valid is True
+        assert chain.evaluate("").valid is False
+
+    def test_min_length_to_string(self):
+        """MinLengthConstraint.to_string() should return MIN_LENGTH[N]."""
+        from octave_mcp.core.constraints import MinLengthConstraint
+
+        constraint = MinLengthConstraint(min_length=1)
+        assert constraint.to_string() == "MIN_LENGTH[1]"
+
+
+class TestDateConstraint:
+    """Test DATE/ISO8601 constraint."""
+
+    def test_date_accepts_yyyy_mm_dd(self):
+        """DATE should accept YYYY-MM-DD format."""
+        from octave_mcp.core.constraints import DateConstraint
+
+        constraint = DateConstraint()
+        assert constraint.evaluate("2025-01-15").valid is True
+
+    def test_iso8601_accepts_full_datetime(self):
+        """ISO8601 should accept full datetime with time."""
+        from octave_mcp.core.constraints import Iso8601Constraint
+
+        constraint = Iso8601Constraint()
+        assert constraint.evaluate("2025-01-15T10:30:00").valid is True
+
+    def test_iso8601_accepts_datetime_with_z(self):
+        """ISO8601 should accept datetime with Z timezone."""
+        from octave_mcp.core.constraints import Iso8601Constraint
+
+        constraint = Iso8601Constraint()
+        assert constraint.evaluate("2025-01-15T10:30:00Z").valid is True
+
+    def test_date_rejects_invalid_format(self):
+        """DATE should reject invalid date format."""
+        from octave_mcp.core.constraints import DateConstraint
+
+        constraint = DateConstraint()
+        result = constraint.evaluate("not-a-date")
+        assert result.valid is False
+        assert len(result.errors) == 1
+        assert result.errors[0].code == "E014"
+
+    def test_date_rejects_invalid_date_values(self):
+        """DATE should reject invalid date values like month 13."""
+        from octave_mcp.core.constraints import DateConstraint
+
+        constraint = DateConstraint()
+        result = constraint.evaluate("2025-13-01")
+        assert result.valid is False
+        assert result.errors[0].code == "E014"
+
+    def test_date_parsing(self):
+        """DATE should parse from string."""
+        chain = ConstraintChain.parse("DATE")
+        assert chain.evaluate("2025-01-15").valid is True
+        assert chain.evaluate("invalid").valid is False
+
+    def test_date_rejects_datetime(self):
+        """DATE should reject full datetime, only accept YYYY-MM-DD."""
+        chain = ConstraintChain.parse("DATE")
+        # DATE only accepts YYYY-MM-DD
+        assert chain.evaluate("2025-01-15").valid is True
+        assert chain.evaluate("2025-01-15T10:30:00").valid is False
+        assert chain.evaluate("2025-01-15T10:30:00Z").valid is False
+
+    def test_iso8601_accepts_datetime(self):
+        """ISO8601 should accept full datetime formats."""
+        chain = ConstraintChain.parse("ISO8601")
+        assert chain.evaluate("2025-01-15").valid is True  # Date only
+        assert chain.evaluate("2025-01-15T10:30:00").valid is True  # Datetime
+        assert chain.evaluate("2025-01-15T10:30:00Z").valid is True  # With Z
+
+    def test_date_to_string(self):
+        """DateConstraint.to_string() should return DATE."""
+        from octave_mcp.core.constraints import DateConstraint
+
+        constraint = DateConstraint()
+        assert constraint.to_string() == "DATE"
+
+    def test_iso8601_to_string(self):
+        """Iso8601Constraint.to_string() should return ISO8601."""
+        from octave_mcp.core.constraints import Iso8601Constraint
+
+        constraint = Iso8601Constraint()
+        assert constraint.to_string() == "ISO8601"
+
+
 class TestErrorFormatting:
     """Test error message formatting."""
 
@@ -482,3 +777,84 @@ class TestErrorFormatting:
         assert req_result.errors[0].code != type_result.errors[0].code
         assert req_result.errors[0].code == "E003"
         assert type_result.errors[0].code == "E007"
+
+
+class TestMalformedParameterValidation:
+    """Tests for parse-time validation of constraint parameters."""
+
+    def test_max_length_rejects_non_integer(self):
+        """MAX_LENGTH[abc] should raise ValueError at parse time."""
+        with pytest.raises(ValueError, match="non-negative integer"):
+            ConstraintChain.parse("MAX_LENGTH[abc]")
+
+    def test_max_length_rejects_negative(self):
+        """MAX_LENGTH[-1] should raise ValueError at parse time."""
+        with pytest.raises(ValueError, match="non-negative integer"):
+            ConstraintChain.parse("MAX_LENGTH[-1]")
+
+    def test_max_length_rejects_float(self):
+        """MAX_LENGTH[3.5] should raise ValueError (must be int)."""
+        with pytest.raises(ValueError, match="non-negative integer"):
+            ConstraintChain.parse("MAX_LENGTH[3.5]")
+
+    def test_min_length_rejects_non_integer(self):
+        """MIN_LENGTH[abc] should raise ValueError at parse time."""
+        with pytest.raises(ValueError, match="non-negative integer"):
+            ConstraintChain.parse("MIN_LENGTH[abc]")
+
+    def test_min_length_rejects_negative(self):
+        """MIN_LENGTH[-1] should raise ValueError at parse time."""
+        with pytest.raises(ValueError, match="non-negative integer"):
+            ConstraintChain.parse("MIN_LENGTH[-1]")
+
+    def test_range_rejects_non_numeric_min(self):
+        """RANGE[abc,10] should raise ValueError at parse time."""
+        with pytest.raises(ValueError, match="numeric bounds"):
+            ConstraintChain.parse("RANGE[abc,10]")
+
+    def test_range_rejects_non_numeric_max(self):
+        """RANGE[0,xyz] should raise ValueError at parse time."""
+        with pytest.raises(ValueError, match="numeric bounds"):
+            ConstraintChain.parse("RANGE[0,xyz]")
+
+    def test_range_rejects_missing_comma(self):
+        """RANGE[10] should raise ValueError (needs two values)."""
+        with pytest.raises(ValueError, match="two values"):
+            ConstraintChain.parse("RANGE[10]")
+
+    def test_range_rejects_min_greater_than_max(self):
+        """RANGE[10,5] should raise ValueError (min > max)."""
+        with pytest.raises(ValueError, match="min must be <= max"):
+            ConstraintChain.parse("RANGE[10,5]")
+
+    def test_range_accepts_equal_min_max(self):
+        """RANGE[5,5] should be valid (exact value constraint)."""
+        chain = ConstraintChain.parse("RANGE[5,5]")
+        assert chain.evaluate(5).valid
+        assert not chain.evaluate(4).valid
+
+    def test_range_rejects_boolean(self):
+        """RANGE should reject boolean values (bool is subclass of int)."""
+        chain = ConstraintChain.parse("RANGE[0,1]")
+        assert not chain.evaluate(True).valid
+        assert not chain.evaluate(False).valid
+        # But actual numbers should work
+        assert chain.evaluate(0).valid
+        assert chain.evaluate(1).valid
+
+    def test_max_length_rejects_dict(self):
+        """MAX_LENGTH should only accept str/list, not dict."""
+        chain = ConstraintChain.parse("MAX_LENGTH[5]")
+        assert not chain.evaluate({"a": 1, "b": 2}).valid
+        assert chain.evaluate([1, 2, 3]).valid  # List is OK
+        assert chain.evaluate("abc").valid  # String is OK
+
+    def test_max_length_rejects_set(self):
+        """MAX_LENGTH should only accept str/list, not set."""
+        chain = ConstraintChain.parse("MAX_LENGTH[5]")
+        assert not chain.evaluate({1, 2, 3}).valid
+
+    def test_min_length_rejects_tuple(self):
+        """MIN_LENGTH should only accept str/list, not tuple."""
+        chain = ConstraintChain.parse("MIN_LENGTH[1]")
+        assert not chain.evaluate((1, 2, 3)).valid

@@ -1,6 +1,6 @@
 """OCTAVE constraint evaluation (Gap 2).
 
-Implements constraint chain evaluation with 8 constraint types:
+Implements constraint chain evaluation with 11 constraint types:
 - REQ: Required field (must be present, not None/empty)
 - OPT: Optional field (can be missing)
 - CONST[X]: Constant value (must equal X)
@@ -9,6 +9,10 @@ Implements constraint chain evaluation with 8 constraint types:
 - REGEX[pat]: Pattern matching
 - DIR: Directory path validation
 - APPEND_ONLY: List append semantics
+- RANGE[min,max]: Numeric bounds validation
+- MAX_LENGTH[N]: Maximum collection/string size
+- MIN_LENGTH[N]: Minimum collection/string size
+- DATE: ISO8601 date format validation
 
 Constraint chains are evaluated left-to-right with fail-fast semantics.
 Conflict detection identifies incompatible constraint combinations.
@@ -17,6 +21,7 @@ Conflict detection identifies incompatible constraint combinations.
 import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any
 
 
@@ -371,6 +376,284 @@ class AppendOnlyConstraint(Constraint):
         return "APPEND_ONLY"
 
 
+@dataclass
+class RangeConstraint(Constraint):
+    """RANGE[min,max] constraint - value must be within numeric bounds (inclusive)."""
+
+    min_value: int | float
+    max_value: int | float
+
+    def evaluate(self, value: Any, path: str = "") -> ValidationResult:
+        """Evaluate RANGE constraint."""
+        # Reject booleans (same issue as TYPE(NUMBER) - bool is subclass of int)
+        if isinstance(value, bool):
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E011",
+                        path=path,
+                        constraint="RANGE",
+                        expected=f"numeric value in range [{self.min_value}, {self.max_value}]",
+                        got="boolean",
+                        message=f"Field '{path}' must be numeric (not boolean) for RANGE constraint",
+                    )
+                ],
+            )
+        # Convert value to numeric type
+        try:
+            numeric_value = float(value) if isinstance(value, int | float) else float(value)
+        except (ValueError, TypeError):
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E011",
+                        path=path,
+                        constraint="RANGE",
+                        expected=f"numeric value in range [{self.min_value}, {self.max_value}]",
+                        got=str(value),
+                        message=f"Field '{path}' must be numeric for RANGE constraint",
+                    )
+                ],
+            )
+
+        # Check bounds (inclusive)
+        if numeric_value < self.min_value or numeric_value > self.max_value:
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E011",
+                        path=path,
+                        constraint="RANGE",
+                        expected=f"value in range [{self.min_value}, {self.max_value}]",
+                        got=str(value),
+                        message=f"Value {value} is outside range [{self.min_value}, {self.max_value}]",
+                    )
+                ],
+            )
+
+        return ValidationResult(valid=True)
+
+    def to_string(self) -> str:
+        return f"RANGE[{self.min_value},{self.max_value}]"
+
+
+@dataclass
+class MaxLengthConstraint(Constraint):
+    """MAX_LENGTH[N] constraint - string/list length must not exceed N."""
+
+    max_length: int
+
+    def evaluate(self, value: Any, path: str = "") -> ValidationResult:
+        """Evaluate MAX_LENGTH constraint."""
+        # Only accept strings and lists (not dicts, sets, tuples, etc.)
+        if not isinstance(value, str | list):
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E012",
+                        path=path,
+                        constraint="MAX_LENGTH",
+                        expected="string or list",
+                        got=type(value).__name__,
+                        message=f"Field '{path}' must be string or list for MAX_LENGTH constraint",
+                    )
+                ],
+            )
+        # Get length
+        try:
+            length = len(value)
+        except TypeError:
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E012",
+                        path=path,
+                        constraint="MAX_LENGTH",
+                        expected="string or list",
+                        got=type(value).__name__,
+                        message=f"Field '{path}' must have length for MAX_LENGTH constraint",
+                    )
+                ],
+            )
+
+        if length > self.max_length:
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E012",
+                        path=path,
+                        constraint="MAX_LENGTH",
+                        expected=f"length <= {self.max_length}",
+                        got=str(length),
+                        message=f"Length {length} exceeds maximum {self.max_length}",
+                    )
+                ],
+            )
+
+        return ValidationResult(valid=True)
+
+    def to_string(self) -> str:
+        return f"MAX_LENGTH[{self.max_length}]"
+
+
+@dataclass
+class MinLengthConstraint(Constraint):
+    """MIN_LENGTH[N] constraint - string/list length must be at least N."""
+
+    min_length: int
+
+    def evaluate(self, value: Any, path: str = "") -> ValidationResult:
+        """Evaluate MIN_LENGTH constraint."""
+        # Only accept strings and lists (not dicts, sets, tuples, etc.)
+        if not isinstance(value, str | list):
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E013",
+                        path=path,
+                        constraint="MIN_LENGTH",
+                        expected="string or list",
+                        got=type(value).__name__,
+                        message=f"Field '{path}' must be string or list for MIN_LENGTH constraint",
+                    )
+                ],
+            )
+        # Get length
+        try:
+            length = len(value)
+        except TypeError:
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E013",
+                        path=path,
+                        constraint="MIN_LENGTH",
+                        expected="string or list",
+                        got=type(value).__name__,
+                        message=f"Field '{path}' must be string or list for MIN_LENGTH constraint",
+                    )
+                ],
+            )
+
+        if length < self.min_length:
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E013",
+                        path=path,
+                        constraint="MIN_LENGTH",
+                        expected=f"length >= {self.min_length}",
+                        got=str(length),
+                        message=f"Length {length} is below minimum {self.min_length}",
+                    )
+                ],
+            )
+
+        return ValidationResult(valid=True)
+
+    def to_string(self) -> str:
+        return f"MIN_LENGTH[{self.min_length}]"
+
+
+@dataclass
+class DateConstraint(Constraint):
+    """DATE constraint - value must be a valid date in YYYY-MM-DD format only.
+
+    For full ISO8601 datetime support, use ISO8601 constraint instead.
+    """
+
+    def evaluate(self, value: Any, path: str = "") -> ValidationResult:
+        """Evaluate DATE constraint (strict YYYY-MM-DD only)."""
+        import re
+
+        value_str = str(value)
+
+        # Strict YYYY-MM-DD pattern only
+        if not re.match(r"^\d{4}-\d{2}-\d{2}$", value_str):
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E014",
+                        path=path,
+                        constraint="DATE",
+                        expected="date in YYYY-MM-DD format",
+                        got=value_str,
+                        message="Value must be a date in YYYY-MM-DD format (use ISO8601 for datetime)",
+                    )
+                ],
+            )
+
+        # Validate it's actually a valid date
+        try:
+            datetime.fromisoformat(value_str)
+            return ValidationResult(valid=True)
+        except ValueError:
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E014",
+                        path=path,
+                        constraint="DATE",
+                        expected="valid date",
+                        got=value_str,
+                        message=f"'{value_str}' is not a valid date",
+                    )
+                ],
+            )
+
+    def to_string(self) -> str:
+        return "DATE"
+
+
+@dataclass
+class Iso8601Constraint(Constraint):
+    """ISO8601 constraint - value must be a valid ISO8601 date or datetime.
+
+    Accepts:
+    - YYYY-MM-DD (date only)
+    - YYYY-MM-DDTHH:MM:SS (datetime)
+    - YYYY-MM-DDTHH:MM:SSZ (datetime with UTC)
+    - YYYY-MM-DDTHH:MM:SS+HH:MM (datetime with timezone)
+    """
+
+    def evaluate(self, value: Any, path: str = "") -> ValidationResult:
+        """Evaluate ISO8601 constraint."""
+        value_str = str(value)
+
+        try:
+            # datetime.fromisoformat handles various ISO8601 formats
+            datetime.fromisoformat(value_str.replace("Z", "+00:00"))
+            return ValidationResult(valid=True)
+        except (ValueError, AttributeError):
+            return ValidationResult(
+                valid=False,
+                errors=[
+                    ValidationError(
+                        code="E015",
+                        path=path,
+                        constraint="ISO8601",
+                        expected="ISO8601 date/datetime format",
+                        got=value_str,
+                        message="Value is not a valid ISO8601 date or datetime",
+                    )
+                ],
+            )
+
+    def to_string(self) -> str:
+        return "ISO8601"
+
+
 def _parse_atom(s: str) -> Any:
     """Parse atom value from constraint string.
 
@@ -460,6 +743,12 @@ class ConstraintChain:
                 constraints.append(DirConstraint())
             elif part == "APPEND_ONLY":
                 constraints.append(AppendOnlyConstraint())
+            elif part == "DATE":
+                # Strict YYYY-MM-DD only
+                constraints.append(DateConstraint())
+            elif part == "ISO8601":
+                # Full ISO8601 datetime support
+                constraints.append(Iso8601Constraint())
             elif part.startswith("CONST[") and part.endswith("]"):
                 # Extract value from CONST[value] - I2 fix: use _parse_atom
                 const_value_str = part[6:-1]
@@ -481,6 +770,34 @@ class ConstraintChain:
                 if pattern.startswith('"') and pattern.endswith('"'):
                     pattern = pattern[1:-1]
                 constraints.append(RegexConstraint(pattern=pattern))
+            elif part.startswith("RANGE[") and part.endswith("]"):
+                # Extract min and max from RANGE[min,max]
+                range_str = part[6:-1]
+                try:
+                    min_str, max_str = range_str.split(",", 1)
+                except ValueError as err:
+                    raise ValueError(f"RANGE requires two values: RANGE[min,max], got: {part}") from err
+                min_value = _parse_atom(min_str.strip())
+                max_value = _parse_atom(max_str.strip())
+                if not isinstance(min_value, int | float) or not isinstance(max_value, int | float):
+                    raise ValueError(f"RANGE requires numeric bounds, got: {range_str}")
+                if min_value > max_value:
+                    raise ValueError(f"RANGE min must be <= max, got: {min_value} > {max_value}")
+                constraints.append(RangeConstraint(min_value=min_value, max_value=max_value))
+            elif part.startswith("MAX_LENGTH[") and part.endswith("]"):
+                # Extract N from MAX_LENGTH[N]
+                length_str = part[11:-1]
+                max_length = _parse_atom(length_str.strip())
+                if not isinstance(max_length, int) or max_length < 0:
+                    raise ValueError(f"MAX_LENGTH requires non-negative integer, got: {length_str}")
+                constraints.append(MaxLengthConstraint(max_length=max_length))
+            elif part.startswith("MIN_LENGTH[") and part.endswith("]"):
+                # Extract N from MIN_LENGTH[N]
+                length_str = part[11:-1]
+                min_length = _parse_atom(length_str.strip())
+                if not isinstance(min_length, int) or min_length < 0:
+                    raise ValueError(f"MIN_LENGTH requires non-negative integer, got: {length_str}")
+                constraints.append(MinLengthConstraint(min_length=min_length))
             else:
                 raise ValueError(f"Unknown constraint: {part}")
 
