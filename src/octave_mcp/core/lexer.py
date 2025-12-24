@@ -126,8 +126,8 @@ TOKEN_PATTERNS = [
     (r"\bnull\b", TokenType.NULL),
     # Section marker (ASCII alias)
     (r"#", TokenType.SECTION),
-    # Identifiers (bare words)
-    (r"[A-Za-z_][A-Za-z0-9_]*", TokenType.IDENTIFIER),
+    # Identifiers (bare words, allows dots for property paths)
+    (r"[A-Za-z_][A-Za-z0-9_.]*", TokenType.IDENTIFIER),
     # Newlines
     (r"\n", TokenType.NEWLINE),
 ]

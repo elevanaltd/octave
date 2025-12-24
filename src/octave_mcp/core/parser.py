@@ -352,8 +352,9 @@ class Parser:
             next_token = self.current()
             if next_token.type == TokenType.IDENTIFIER and next_token.line == block_token.line:
                 raise ParserError(
-                    "Single colon assignment not allowed. Use KEY::value (double colon). "
-                    "OCTAVE uses :: for assignment because : is the block operator. This prevents ambiguity.",
+                    f"Single colon assignment detected: '{key}: {next_token.value}'. "
+                    f"OCTAVE REQUIREMENT: Use '{key}::{next_token.value}' (double colon) for assignments. "
+                    "Single colon ':' is reserved for block definitions only.",
                     block_token,
                     "E001",
                 )
