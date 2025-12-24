@@ -15,25 +15,28 @@ Load them in this order (octave-compression and octave-mastery require octave-li
 ## Skill Overview
 
 ### octave-literacy
-**Purpose**: Fundamental reading and writing capability for the OCTAVE format.
+**Domain**: HERMES (language/syntax)
+**Purpose**: Core syntax, operators, structure
 
-Provides core syntax rules, critical operators, and structural competence for working with OCTAVE documents.
+Enables reading/writing OCTAVE documents. Prerequisite for compression and mastery.
 
 **Triggers**: `octave format`, `write octave`, `octave syntax`, `structured output`
 
 ### octave-compression
-**Purpose**: Transform verbose prose into semantic OCTAVE structures.
+**Domain**: HEPHAESTUS (engineering/implementation)
+**Purpose**: Prose → OCTAVE transformation (60-80% token reduction)
 
-Provides a 4-phase workflow (Read → Extract → Compress → Validate) with rules for achieving 60-80% token reduction while preserving decision logic fidelity.
+4-phase workflow: Read → Extract → Compress → Validate. Preserves decision logic while compressing tokens.
 
 **Requires**: octave-literacy
 
 **Triggers**: `compress to octave`, `semantic compression`, `documentation refactoring`
 
 ### octave-mastery
-**Purpose**: Advanced semantic vocabulary and architectural patterns.
+**Domain**: ATHENA (strategy/wisdom)
+**Purpose**: Semantic density, pattern recognition, high-level design
 
-Provides the Semantic Pantheon (mythological vocabulary for complex concepts), narrative dynamics, system forces, and advanced syntax patterns for high-density specifications and agent design.
+Semantic Pantheon (10 domains), narrative dynamics (SISYPHEAN, ICARIAN, PROMETHEAN, PANDORAN, etc.), system forces (HUBRIS→NEMESIS, KAIROS, CHRONOS), advanced syntax.
 
 **Requires**: octave-literacy
 

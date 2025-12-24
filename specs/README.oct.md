@@ -3,6 +3,8 @@ META:
   TYPE::DOCUMENTATION
   VERSION::"5.1.0"
   STATUS::DRAFT
+  MYTHOLOGY_INTEGRATED::true[domains_map_operators→archetypes_for_semantic_compression]
+  EVIDENCE::docs/research/mythology-evidence-synthesis.oct.md[60-70%_compression,88-96%_comprehension]
 
 §1::CANONICAL_FILES
 LLM_PROFILES::[

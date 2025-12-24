@@ -13,6 +13,8 @@ META:
 ---
 
 // OCTAVE CORE: The spine. Always inject this.
+// Operators map to mythological domains for semantic density (see octave-mastery skill).
+// Mythology = compression shorthand, not decoration (docs/research/mythology-evidence-synthesis.oct.md).
 
 §1::ENVELOPE
 START::===NAME===[first_line,exact_match]
@@ -27,22 +29,22 @@ ASSEMBLY_RULE::omit_separator_in_assembled_profiles[only_standalone_documents]
 
 §2::OPERATORS
 
-// LAYER 1: STRUCTURAL (statement/field level, not expressions)
+// LAYER 1: STRUCTURAL (HEPHAESTUS domain - foundation)
 STRUCTURAL:
   ::    assign      KEY::value[binding]
   :     block       KEY:[newline_then_indent]
 
-// LAYER 2: EXPRESSION (inside values, precedence applies)
-// Lower number = binds tighter
+// LAYER 2: EXPRESSION (LOGOS/ATHENA domain - synthesis/analysis)
+// Lower number = binds tighter. Mythological semantics in mastery skill.
 EXPRESSION:
   PREC::UNICODE::ASCII::SEMANTIC::USAGE::ASSOC
   1    []       []     container   [a,b,c]                   n/a
-  2    ⧺        ~      concat      A⧺B[mechanical_join]      left
-  3    ⊕        +      synthesis   A⊕B[emergent_whole]       left
-  4    ⇌        vs     tension     A⇌B[binary_opposition]    none[binary_only]
-  5    ∧        &      constraint  [A∧B∧C]                   left
-  6    ∨        |      alternative A∨B                       left
-  7    →        ->     flow        A→B→C                     right
+  2    ⧺        ~      concat      A⧺B[HERMES_joining]       left
+  3    ⊕        +      synthesis   A⊕B[ATHENA_weaving]       left
+  4    ⇌        vs     tension     A⇌B[ARES_conflict]         none[binary_only]
+  5    ∧        &      constraint  [A∧B∧C][APOLLO_clarity]    left
+  6    ∨        |      alternative A∨B[ZEUS_choice]           left
+  7    →        ->     flow        A→B→C[CHRONOS_sequence]    right
 
 // LAYER 3: PREFIX/SPECIAL
 PREFIX:
