@@ -59,6 +59,19 @@ META:
     BOOL::true
   ]
 
+§4b::CONSTRAINTS
+  // Available constraint types for holographic patterns
+  CORE::[REQ,OPT,CONST,ENUM,TYPE,REGEX,DIR,APPEND_ONLY]
+  EXTENDED::[RANGE,MAX_LENGTH,MIN_LENGTH,DATE,ISO8601]
+  EXAMPLES::[
+    "REQ"[required_field],
+    "ENUM[A,B,C]"[enumerated_values],
+    "RANGE[1,10]"[numeric_bounds],
+    "MAX_LENGTH[50]"[string_or_list_max],
+    "DATE"[strict_YYYY_MM_DD],
+    "ISO8601"[full_datetime]
+  ]
+
 §5::ANTI_PATTERNS
   SMELLS::[
     "Isolated Lists (no relationships)",

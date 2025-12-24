@@ -7,9 +7,10 @@ META:
   TOKENS::"~90"
   REQUIRES::octave-5-llm-core
   PURPOSE::L4_holographic_definitions
-  IMPLEMENTATION_NOTES::"Schema class skeleton exists (35 LOC) but raises NotImplementedError. Holographic patterns, constraint chains, targets, and block inheritance not implemented."
-  IMPLEMENTATION_REF::[src/octave_mcp/core/schema.py]
-  CRITICAL_GAPS::[holographic_pattern_parsing,constraint_evaluation,target_routing,block_inheritance,policy_blocks,constraint_conflicts]
+  IMPLEMENTATION_NOTES::"Gap 2 (constraint chain evaluation) implemented with 12 constraint types. Holographic patterns, targets, and block inheritance pending."
+  IMPLEMENTATION_REF::[src/octave_mcp/core/schema.py,src/octave_mcp/core/constraints.py]
+  CRITICAL_GAPS::[holographic_pattern_parsing,target_routing,block_inheritance,policy_blocks]
+  IMPLEMENTED::[constraint_evaluation,constraint_conflicts]
 
 ---
 
@@ -25,10 +26,18 @@ CONSTRAINT::validation_chain[∧_separated]
 TARGET::extraction_destination[§prefixed]
 
 §2::CONSTRAINTS
-AVAILABLE::[REQ,OPT,CONST,REGEX,ENUM,TYPE,DIR,APPEND_ONLY]
+AVAILABLE::[REQ,OPT,CONST,REGEX,ENUM,TYPE,DIR,APPEND_ONLY,RANGE,MAX_LENGTH,MIN_LENGTH,DATE,ISO8601]
 CHAIN::constraint∧constraint∧constraint[left_to_right]
 EVALUATION::fail_fast[stop_on_first_failure]
 REGEX_BRACKETS::quote_if_contains_brackets[REGEX["^[a-z]+$"]_not_REGEX[^[a-z]+$]]
+
+CONSTRAINT_SYNTAX::[
+  RANGE::"RANGE[min,max]"[numeric_bounds_inclusive],
+  MAX_LENGTH::"MAX_LENGTH[N]"[string_or_list_max_size],
+  MIN_LENGTH::"MIN_LENGTH[N]"[string_or_list_min_size],
+  DATE::"DATE"[strict_YYYY_MM_DD_only],
+  ISO8601::"ISO8601"[full_datetime_support]
+]
 
 CONFLICT_ERRORS::[
   REQ∧OPT[mutually_exclusive],
