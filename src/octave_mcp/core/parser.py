@@ -428,9 +428,25 @@ class Parser:
             if next_token.type in (TokenType.FLOW, TokenType.SYNTHESIS):
                 # Flow expression like A→B→C or synthesis like X⊕Y
                 return self.parse_flow_expression()
-            # Bare word
+
+            # Consume compound identifier with colons (Issue #41 Phase 2)
+            # Examples: HERMES:API_TIMEOUT, MODULE:SUBMODULE:COMPONENT
+            # This preserves single colons WITHIN values
+            parts = [token.value]
             self.advance()
-            return token.value
+
+            # Collect colon-separated path components
+            while self.current().type == TokenType.BLOCK and self.peek().type == TokenType.IDENTIFIER:
+                # Consume BLOCK token (:)
+                self.advance()
+                # Consume IDENTIFIER token
+                parts.append(self.current().value)
+                self.advance()
+
+            # Return compound path if multiple parts, else single value
+            if len(parts) > 1:
+                return ":".join(parts)
+            return parts[0]
 
         elif token.type == TokenType.FLOW:
             # Flow expression starting with operator like →B→C
