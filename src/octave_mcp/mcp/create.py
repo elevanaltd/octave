@@ -8,6 +8,8 @@ Implements octave_create tool for writing OCTAVE files with:
 """
 
 import hashlib
+import os
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -78,8 +80,9 @@ class CreateTool(BaseTool):
             # Resolve to absolute path (validates path exists)
             _ = path.resolve()
 
-            # Check if path tries to escape using ..
-            if ".." in str(path):
+            # Check if path contains .. as a component (not substring)
+            # This prevents false positives for files like "name..ok.oct.md"
+            if any(part == ".." for part in path.parts):
                 return False, "Path traversal not allowed (..)"
 
         except Exception as e:
@@ -117,17 +120,27 @@ class CreateTool(BaseTool):
             tokenize_repairs: Repairs from tokenization
 
         Returns:
-            List of correction records with code, message, line, original, corrected
+            List of correction records with W001-W005 codes
+            Schema: {code: str, message: str, line: int, column: int, before: str, after: str}
         """
         corrections = []
 
-        # Include tokenize repairs (ASCII normalization, etc.)
+        # Map tokenize repairs to W002 (ASCII operator → Unicode)
+        # tokenize_repairs format: {type, original, normalized, line, column}
         for repair in tokenize_repairs:
-            corrections.append(repair)
+            corrections.append(
+                {
+                    "code": "W002",
+                    "message": f"ASCII operator → Unicode: {repair.get('original', '')} → {repair.get('normalized', '')}",
+                    "line": repair.get("line", 0),
+                    "column": repair.get("column", 0),
+                    "before": repair.get("original", ""),
+                    "after": repair.get("normalized", ""),
+                }
+            )
 
         # TODO: Add more correction tracking for:
         # W001: Single colon → double colon
-        # W002: ASCII operator → Unicode (already tracked via tokenize)
         # W003: Indentation normalized
         # W004: Missing envelope added
         # W005: Trailing whitespace removed
@@ -214,6 +227,7 @@ class CreateTool(BaseTool):
             }
 
         # STEP 2: Parse and normalize content
+        tokenize_repairs: list[dict[str, Any]] = []  # Initialize to preserve on error path
         try:
             # Tokenize with repairs
             tokens, tokenize_repairs = tokenize(content)
@@ -225,10 +239,12 @@ class CreateTool(BaseTool):
             canonical_content = emit(doc)
 
         except Exception as e:
+            # Track corrections even on parse error (learning feedback)
+            corrections = self._track_corrections(content, content, tokenize_repairs)
             return {
                 "status": "error",
                 "errors": [{"code": "E_PARSE", "message": f"Parse error: {str(e)}"}],
-                "corrections": [],  # Include corrections even on error
+                "corrections": corrections,
             }
 
         # STEP 3: Track corrections
@@ -239,15 +255,36 @@ class CreateTool(BaseTool):
         if mutations:
             canonical_content = self._apply_mutations(canonical_content, mutations)
 
-        # STEP 5: Write file
+        # STEP 5: Write file (atomic + symlink-safe)
         try:
             # Ensure parent directory exists
             path_obj = Path(target_path)
             path_obj.parent.mkdir(parents=True, exist_ok=True)
 
-            # Write canonical content
-            with open(target_path, "w", encoding="utf-8") as f:
-                f.write(canonical_content)
+            # Reject symlink targets (security: prevent arbitrary file overwrite)
+            if path_obj.exists() and path_obj.is_symlink():
+                return {
+                    "status": "error",
+                    "errors": [{"code": "E_WRITE", "message": "Cannot write to symlink target"}],
+                }
+
+            # Atomic write: tempfile→fsync→os.replace
+            # Prevents partial writes and race conditions
+            fd, temp_path = tempfile.mkstemp(dir=path_obj.parent, suffix=".tmp", text=True)
+            try:
+                with os.fdopen(fd, "w", encoding="utf-8") as f:
+                    f.write(canonical_content)
+                    f.flush()
+                    os.fsync(f.fileno())  # Ensure data written to disk
+
+                # Atomic replace (POSIX guarantees atomicity)
+                os.replace(temp_path, target_path)
+
+            except Exception:
+                # Clean up temp file on error
+                if os.path.exists(temp_path):
+                    os.unlink(temp_path)
+                raise
 
         except Exception as e:
             return {
