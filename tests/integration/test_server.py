@@ -25,7 +25,7 @@ class TestMCPServer:
 
     @pytest.mark.asyncio
     async def test_server_lists_both_tools(self, server):
-        """Server lists ingest and eject tools."""
+        """Server lists ingest, eject, and create tools."""
         from mcp.types import ListToolsRequest
 
         request = ListToolsRequest(method="tools/list")
@@ -41,7 +41,8 @@ class TestMCPServer:
 
         assert "octave_ingest" in tool_names
         assert "octave_eject" in tool_names
-        assert len(tool_names) == 2
+        assert "octave_create" in tool_names
+        assert len(tool_names) == 3
 
     @pytest.mark.asyncio
     async def test_ingest_tool_has_required_params(self, server):
