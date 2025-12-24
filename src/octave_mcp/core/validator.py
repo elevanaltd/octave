@@ -3,15 +3,17 @@
 Validates AST against schema definitions with:
 - Required field checking
 - Type validation
-- Enum validation
+- Enum validation (with prefix matching and ambiguity detection)
 - Regex pattern validation
 - Unknown field detection
+- Constraint chain evaluation
 """
 
 from dataclasses import dataclass
 from typing import Any
 
 from octave_mcp.core.ast_nodes import ASTNode, Document
+from octave_mcp.core.constraints import EnumConstraint
 
 
 @dataclass
@@ -110,14 +112,53 @@ class Validator:
         pass
 
     def _validate_type(self, field: str, value: Any, field_schema: dict[str, Any]) -> None:
-        """Validate value type."""
+        """Validate value type and enum constraints."""
         expected_type = field_schema.get("type")
         if not expected_type:
             return
 
+        # Handle ENUM type with constraint evaluation
+        if expected_type == "ENUM":
+            enum_values = field_schema.get("values", [])
+            constraint = EnumConstraint(allowed_values=enum_values)
+            result = constraint.evaluate(value, path=f"META.{field}")
+
+            if not result.valid:
+                for error in result.errors:
+                    self.errors.append(
+                        ValidationError(
+                            code=error.code,
+                            message=error.message,
+                            field_path=error.path,
+                        )
+                    )
+            return
+
+        # Handle standard types
+        # I1: Reject booleans for NUMBER type (bool inherits from int in Python)
+        if expected_type == "NUMBER":
+            if isinstance(value, bool):
+                self.errors.append(
+                    ValidationError(
+                        code="E007",
+                        message=f"Field '{field}' expected NUMBER, got {type(value).__name__}",
+                        field_path=field,
+                    )
+                )
+                return
+            if not isinstance(value, int | float):
+                self.errors.append(
+                    ValidationError(
+                        code="E007",
+                        message=f"Field '{field}' expected NUMBER, got {type(value).__name__}",
+                        field_path=field,
+                    )
+                )
+            return
+
+        # Handle other types
         type_map: dict[str, type | tuple[type, ...]] = {
             "STRING": str,
-            "NUMBER": (int, float),
             "BOOLEAN": bool,
             "LIST": list,
         }
@@ -126,7 +167,7 @@ class Validator:
         if expected_python_type and not isinstance(value, expected_python_type):
             self.errors.append(
                 ValidationError(
-                    code="E003",
+                    code="E007",  # I4: Use E007 for type errors (consistency with constraints.py)
                     message=f"Field '{field}' expected {expected_type}, got {type(value).__name__}",
                     field_path=field,
                 )
