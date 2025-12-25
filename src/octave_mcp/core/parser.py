@@ -181,9 +181,9 @@ class Parser:
         return meta
 
     def parse_section_marker(self) -> Section | None:
-        """Parse §NUMBER::NAME section marker with nested children.
+        """Parse §NUMBER::NAME or §IDENTIFIER::NAME section marker with nested children.
 
-        Pattern: §NUMBER[SUFFIX]::NAME[bracket_tail] followed by indented children.
+        Pattern: §NUMBER[SUFFIX]::NAME[bracket_tail] or §IDENTIFIER::[NAME] followed by indented children.
         Examples:
             §1::GOLDEN_RULE
               LITMUS::"value"
@@ -191,29 +191,40 @@ class Parser:
               RULE::"pattern"
             §0::META[schema_hints,versioning]
               TYPE::"SPEC"
+            §CONTEXT::
+              VAR::"value"
+            §CONTEXT::LOCAL
+              VAR::"local_value"
         """
         section_token = self.current()
         self.expect(TokenType.SECTION)  # Consume §
 
-        # Expect NUMBER
-        if self.current().type != TokenType.NUMBER:
+        # Accept either NUMBER or IDENTIFIER after §
+        section_id: str
+        if self.current().type == TokenType.NUMBER:
+            # Traditional numbered section: §1, §2, etc.
+            section_id = str(self.current().value)
+            self.advance()
+
+            # Check for optional suffix (IDENTIFIER like 'b', 'c')
+            if self.current().type == TokenType.IDENTIFIER:
+                # Only consume single-letter suffixes to avoid consuming the section name
+                suffix_candidate = self.current().value
+                if len(suffix_candidate) == 1 and suffix_candidate.isalpha():
+                    section_id += suffix_candidate
+                    self.advance()
+
+        elif self.current().type == TokenType.IDENTIFIER:
+            # Named section: §CONTEXT, §DEFINITIONS, etc.
+            section_id = self.current().value
+            self.advance()
+
+        else:
             raise ParserError(
-                f"Expected number after § section marker, got {self.current().type}",
+                f"Expected number or identifier after § section marker, got {self.current().type}",
                 self.current(),
                 "E006",
             )
-
-        # Build section ID (supports "1", "2b", "2c" forms)
-        section_id = str(self.current().value)
-        self.advance()
-
-        # Check for optional suffix (IDENTIFIER like 'b', 'c')
-        if self.current().type == TokenType.IDENTIFIER:
-            # Only consume single-letter suffixes to avoid consuming the section name
-            suffix_candidate = self.current().value
-            if len(suffix_candidate) == 1 and suffix_candidate.isalpha():
-                section_id += suffix_candidate
-                self.advance()
 
         # Expect ::
         if self.current().type != TokenType.ASSIGN:
@@ -224,16 +235,21 @@ class Parser:
             )
         self.advance()
 
-        # Expect section name (IDENTIFIER)
-        if self.current().type != TokenType.IDENTIFIER:
+        # Section name is optional (for patterns like §CONTEXT::)
+        # If present, it's an IDENTIFIER; if absent (newline/indent follows), use section_id as name
+        section_name: str
+        if self.current().type == TokenType.IDENTIFIER:
+            section_name = self.current().value
+            self.advance()
+        elif self.current().type in (TokenType.NEWLINE, TokenType.INDENT, TokenType.LIST_START):
+            # No explicit name, use section_id as the name (e.g., §CONTEXT:: → name is "CONTEXT")
+            section_name = section_id
+        else:
             raise ParserError(
-                f"Expected section name after §{section_id}::, got {self.current().type}",
+                f"Expected section name or newline after §{section_id}::, got {self.current().type}",
                 self.current(),
                 "E006",
             )
-
-        section_name = self.current().value
-        self.advance()
 
         # Capture optional bracket annotation tail [...]
         # Example: §0::META[schema_hints,versioning]
