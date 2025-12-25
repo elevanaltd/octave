@@ -423,10 +423,10 @@ class Parser:
             return self.parse_list()
 
         elif token.type == TokenType.IDENTIFIER:
-            # Check if this starts a flow/synthesis expression
+            # Check if this starts a flow/synthesis/at/concat expression
             next_token = self.peek()
-            if next_token.type in (TokenType.FLOW, TokenType.SYNTHESIS):
-                # Flow expression like A→B→C or synthesis like X⊕Y
+            if next_token.type in (TokenType.FLOW, TokenType.SYNTHESIS, TokenType.AT, TokenType.CONCAT):
+                # Flow expression like A→B→C, synthesis like X⊕Y, location like A@B, or concat like A⧺B
                 return self.parse_flow_expression()
 
             # Consume compound identifier with colons (Issue #41 Phase 2)
@@ -516,12 +516,19 @@ class Parser:
         return self.parse_value()
 
     def parse_flow_expression(self) -> str:
-        """Parse flow/synthesis expression like A→B→C or X⊕Y."""
+        """Parse flow/synthesis/at/concat expression like A→B→C, X⊕Y, A@B, or A⧺B."""
         parts = []
 
-        # Collect all parts of flow/synthesis expression
-        while self.current().type in (TokenType.IDENTIFIER, TokenType.FLOW, TokenType.SYNTHESIS, TokenType.STRING):
-            if self.current().type in (TokenType.FLOW, TokenType.SYNTHESIS):
+        # Collect all parts of flow/synthesis/at/concat expression
+        while self.current().type in (
+            TokenType.IDENTIFIER,
+            TokenType.FLOW,
+            TokenType.SYNTHESIS,
+            TokenType.AT,
+            TokenType.CONCAT,
+            TokenType.STRING,
+        ):
+            if self.current().type in (TokenType.FLOW, TokenType.SYNTHESIS, TokenType.AT, TokenType.CONCAT):
                 parts.append(self.current().value)
                 self.advance()
             elif self.current().type in (TokenType.IDENTIFIER, TokenType.STRING):
