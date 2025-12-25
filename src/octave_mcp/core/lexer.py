@@ -24,6 +24,7 @@ class TokenType(Enum):
     LIST_START = auto()  # [
     LIST_END = auto()  # ]
     CONCAT = auto()  # ⧺ or ~
+    AT = auto()  # @ (location/context)
     SYNTHESIS = auto()  # ⊕ or +
     TENSION = auto()  # ⇌ or vs
     CONSTRAINT = auto()  # ∧ or &
@@ -105,6 +106,7 @@ TOKEN_PATTERNS = [
     # Note: + handled specially to distinguish from numbers
     (r"⧺", TokenType.CONCAT),
     (r"~", TokenType.CONCAT),
+    (r"@", TokenType.AT),
     (r"⇌", TokenType.TENSION),
     (r"\bvs\b", TokenType.TENSION),  # Word boundaries required
     (r"∨", TokenType.ALTERNATIVE),
