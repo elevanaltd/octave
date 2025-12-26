@@ -47,3 +47,8 @@ CLAUDE.md
 
 # Git worktrees
 worktrees/
+
+# Debates (local development - per tiered lifecycle decision)
+# Existing committed debates remain as historical decision records
+# Future debates are ephemeral by default
+debates/
