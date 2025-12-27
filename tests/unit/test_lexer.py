@@ -305,3 +305,61 @@ class TestEdgeOptimizations:
         assert tokens[0].type == TokenType.IDENTIFIER
         assert tokens[0].value == "pkg.tool"
         assert tokens[1].type == TokenType.ASSIGN
+
+
+class TestHyphenatedIdentifiers:
+    """Test hyphen support in identifiers (Issue #53).
+
+    Per specs/octave-5-llm-skills.oct.md:21, skill_identifier should support
+    lowercase_hyphens_digits format (kebab-case).
+    """
+
+    def test_identifier_with_hyphens(self):
+        """Should accept hyphens in identifiers (Issue #53)."""
+        tokens, _ = tokenize("TOOL::debate-hall-mcp")
+        assert tokens[0].type == TokenType.IDENTIFIER
+        assert tokens[0].value == "TOOL"
+        assert tokens[1].type == TokenType.ASSIGN
+        assert tokens[2].type == TokenType.IDENTIFIER
+        assert tokens[2].value == "debate-hall-mcp"
+
+    def test_kebab_case_identifier(self):
+        """Should tokenize kebab-case identifiers."""
+        tokens, _ = tokenize("my-project-name")
+        assert tokens[0].type == TokenType.IDENTIFIER
+        assert tokens[0].value == "my-project-name"
+
+    def test_mixed_case_with_hyphens(self):
+        """Should tokenize mixed case identifiers with hyphens."""
+        tokens, _ = tokenize("My-Project-Name")
+        assert tokens[0].type == TokenType.IDENTIFIER
+        assert tokens[0].value == "My-Project-Name"
+
+    def test_hyphen_with_numbers(self):
+        """Should tokenize identifiers with hyphens and numbers."""
+        tokens, _ = tokenize("tool-v2-beta")
+        assert tokens[0].type == TokenType.IDENTIFIER
+        assert tokens[0].value == "tool-v2-beta"
+
+    def test_hyphen_does_not_start_identifier(self):
+        """Hyphen cannot start an identifier - should fail with E005."""
+        with pytest.raises(LexerError) as exc_info:
+            list(tokenize("-invalid-start"))
+        assert "E005" in str(exc_info.value)
+
+    def test_hyphen_does_not_conflict_with_flow_operator(self):
+        """Flow operator -> should still work correctly with hyphenated identifiers."""
+        tokens, _ = tokenize("my-tool->next-step")
+        identifiers = [t for t in tokens if t.type == TokenType.IDENTIFIER]
+        flow_tokens = [t for t in tokens if t.type == TokenType.FLOW]
+        assert len(identifiers) == 2
+        assert identifiers[0].value == "my-tool"
+        assert identifiers[1].value == "next-step"
+        assert len(flow_tokens) == 1
+
+    def test_hyphen_does_not_conflict_with_negative_numbers(self):
+        """Negative numbers should still work correctly."""
+        tokens, _ = tokenize("VALUE::-42")
+        number_tokens = [t for t in tokens if t.type == TokenType.NUMBER]
+        assert len(number_tokens) == 1
+        assert number_tokens[0].value == -42
