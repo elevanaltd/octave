@@ -128,8 +128,10 @@ TOKEN_PATTERNS = [
     (r"\bnull\b", TokenType.NULL),
     # Section marker (ASCII alias)
     (r"#", TokenType.SECTION),
-    # Identifiers (bare words, allows dots for property paths)
-    (r"[A-Za-z_][A-Za-z0-9_.]*", TokenType.IDENTIFIER),
+    # Identifiers (bare words, allows dots and hyphens for property paths and kebab-case)
+    # Hyphen allowed in identifier body, but not at start (Issue #53)
+    # Pattern uses negative lookbehind to avoid consuming -> (flow operator)
+    (r"[A-Za-z_][A-Za-z0-9_.-]*(?<!-)", TokenType.IDENTIFIER),
     # Newlines
     (r"\n", TokenType.NEWLINE),
 ]
