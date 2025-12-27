@@ -130,7 +130,7 @@ TOKEN_PATTERNS = [
     (r"#", TokenType.SECTION),
     # Identifiers (bare words, allows dots and hyphens for property paths and kebab-case)
     # Hyphen allowed in identifier body, but not at start (Issue #53)
-    # Pattern uses negative lookahead to avoid consuming -> (flow operator)
+    # Pattern uses negative lookbehind to avoid consuming -> (flow operator)
     (r"[A-Za-z_][A-Za-z0-9_.-]*(?<!-)", TokenType.IDENTIFIER),
     # Newlines
     (r"\n", TokenType.NEWLINE),
