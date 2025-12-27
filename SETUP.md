@@ -399,8 +399,8 @@ See `docs/configurability-analysis.md` for detailed architectural decisions.
 
 ## Support
 
-- **Issues**: [GitHub Issues](https://github.com/elevanaltd/octave/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/elevanaltd/octave/discussions)
+- **Issues**: [GitHub Issues](https://github.com/elevanaltd/octave-mcp/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/elevanaltd/octave-mcp/discussions)
 - **License**: [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
 ---

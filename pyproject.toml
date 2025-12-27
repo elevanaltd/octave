@@ -42,11 +42,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/elevanaltd/octave"
-Documentation = "https://github.com/elevanaltd/octave/tree/main/docs"
-Repository = "https://github.com/elevanaltd/octave.git"
-Issues = "https://github.com/elevanaltd/octave/issues"
-Changelog = "https://github.com/elevanaltd/octave/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/elevanaltd/octave-mcp"
+Documentation = "https://github.com/elevanaltd/octave-mcp/tree/main/docs"
+Repository = "https://github.com/elevanaltd/octave-mcp.git"
+Issues = "https://github.com/elevanaltd/octave-mcp/issues"
+Changelog = "https://github.com/elevanaltd/octave-mcp/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [

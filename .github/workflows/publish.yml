@@ -168,10 +168,10 @@ jobs:
 
             ## Documentation
 
-            - [README](https://github.com/elevanaltd/octave/blob/main/worktrees/octave-build/README.md)
-            - [Usage Guide](https://github.com/elevanaltd/octave/blob/main/worktrees/octave-build/docs/usage.md)
-            - [API Reference](https://github.com/elevanaltd/octave/blob/main/worktrees/octave-build/docs/api.md)
-            - [MCP Configuration](https://github.com/elevanaltd/octave/blob/main/worktrees/octave-build/docs/mcp-configuration.md)
+            - [README](https://github.com/elevanaltd/octave-mcp/blob/main/README.md)
+            - [Usage Guide](https://github.com/elevanaltd/octave-mcp/blob/main/docs/usage.md)
+            - [API Reference](https://github.com/elevanaltd/octave-mcp/blob/main/docs/api.md)
+            - [MCP Configuration](https://github.com/elevanaltd/octave-mcp/blob/main/docs/mcp-configuration.md)
 
             ## PyPI
 

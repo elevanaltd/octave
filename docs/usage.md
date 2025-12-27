@@ -15,7 +15,7 @@ This guide provides detailed examples and workflows for using the OCTAVE MCP ser
 
 ### Prerequisites
 
-- Python 3.11 or higher
+- Python 3.12 or higher
 - pip package manager
 
 ### Installation
@@ -29,8 +29,8 @@ pip install octave-mcp
 #### From Source
 
 ```bash
-git clone https://github.com/elevanaltd/octave.git
-cd octave/worktrees/octave-build
+git clone https://github.com/elevanaltd/octave-mcp.git
+cd octave-mcp
 pip install -e .
 ```
 
@@ -533,8 +533,8 @@ octave-mcp-server 2>&1 | tee server-log.txt
 ### Getting Help
 
 - **Documentation:** [docs/](.)
-- **Issues:** [GitHub Issues](https://github.com/elevanaltd/octave/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/elevanaltd/octave/discussions)
+- **Issues:** [GitHub Issues](https://github.com/elevanaltd/octave-mcp/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/elevanaltd/octave-mcp/discussions)
 
 ---
 

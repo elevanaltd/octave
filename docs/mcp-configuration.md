@@ -40,10 +40,10 @@ octave-mcp-server --help
 
 ### 2. Verify Python Environment
 
-The server requires Python 3.11 or higher:
+The server requires Python 3.12 or higher:
 
 ```bash
-python --version  # Should show 3.11+
+python --version  # Should show 3.12+
 ```
 
 ### 3. Check PATH
@@ -364,7 +364,7 @@ octave-mcp-server
 
 - **Not in PATH:** Add Python bin directory to PATH (see [Prerequisites](#prerequisites))
 - **Not installed:** Run `pip install octave-mcp`
-- **Wrong Python version:** Ensure Python 3.11+ with `python --version`
+- **Wrong Python version:** Ensure Python 3.12+ with `python --version`
 
 ### Issue: Tools Not Appearing
 
@@ -632,7 +632,7 @@ asyncio.run(test())
 - [Usage Guide](usage.md) - Detailed usage examples
 - [API Reference](api.md) - Complete API documentation
 - [MCP Protocol](https://modelcontextprotocol.io/) - Official MCP specification
-- [OCTAVE Specification](https://github.com/elevanaltd/octave/tree/main/specs) - Full protocol specification
+- [OCTAVE Specification](https://github.com/elevanaltd/octave-mcp/tree/main/specs) - Full protocol specification
 
 ---
 
@@ -641,5 +641,5 @@ asyncio.run(test())
 If you encounter issues not covered here:
 
 - **Documentation:** Check [docs/](.)
-- **Issues:** [GitHub Issues](https://github.com/elevanaltd/octave/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/elevanaltd/octave/discussions)
+- **Issues:** [GitHub Issues](https://github.com/elevanaltd/octave-mcp/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/elevanaltd/octave-mcp/discussions)
