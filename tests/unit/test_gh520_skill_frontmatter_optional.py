@@ -56,6 +56,7 @@ from octave_mcp.schemas.loader import load_schema_by_name
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _SKILLS_DIR = _REPO_ROOT / ".hestai-sys" / "library" / "skills"
+_TRACKED_SKILLS_DIR = _REPO_ROOT / "src" / "octave_mcp" / "resources" / "skills"
 
 # A hub SKILL exactly as skills-spec v9.1 permits: OCTAVE envelope only,
 # no YAML frontmatter at all.
@@ -90,9 +91,52 @@ def _frontmatter_errors(result: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _skill_files() -> list[Path]:
+    """Hub skills corpus. GITIGNORED — absent in CI (see ``_hub_corpus_params``)."""
     if not _SKILLS_DIR.is_dir():
         return []
     return sorted(_SKILLS_DIR.glob("*/SKILL.md"))
+
+
+def _tracked_skill_files() -> list[Path]:
+    """Git-TRACKED skills corpus, shipped as package resources.
+
+    GH#523 lesson: ``.hestai-sys`` is gitignored (.gitignore:65) and CI never
+    provisions it, so any corpus sourced from there collects zero items in CI
+    and its assertions become vacuous. This corpus is committed, so it exists
+    everywhere the test suite runs.
+
+    Precedent: ``tests/unit/governance/test_north_star_upog_compliance.py``
+    deliberately globs the committed tree and skips ``.hestai-sys`` for
+    exactly this reason.
+    """
+    return sorted(_TRACKED_SKILLS_DIR.glob("*/SKILL.md"))
+
+
+def _hub_corpus_params(paths: list[Path]) -> list[Any]:
+    """Parametrize over ``paths``, or emit ONE loud placeholder when empty.
+
+    A bare empty list makes pytest report the boilerplate "got empty parameter
+    set", which reads as routine noise and hides the fact that the #520
+    regression guard covered nothing. The explicit sentinel names the cause
+    and is greppable in CI output.
+    """
+    if paths:
+        return [pytest.param(p, id=p.parent.name) for p in paths]
+    return [
+        pytest.param(
+            None,
+            id="HUB-CORPUS-UNAVAILABLE",
+            marks=pytest.mark.skip(
+                reason=(
+                    f"VACUOUS-GUARD: hub skills corpus not found at {_SKILLS_DIR}. "
+                    "It is gitignored and CI does not provision it (GH#523), so this "
+                    "assertion covered ZERO files. The CI-effective guards for GH#520 "
+                    "are TestYamlLessHubSkillValidatesClean (self-contained, inline "
+                    "content) and TestTrackedSkillCorpus (git-tracked resources)."
+                )
+            ),
+        )
+    ]
 
 
 class TestSchemaDeclaresSpecAlignment:
@@ -156,6 +200,34 @@ class TestYamlLessHubSkillValidatesClean:
             f"Expected VALIDATED for a spec-compliant YAML-less hub SKILL; got "
             f"status={result.get('validation_status')!r} errors={result.get('validation_errors')!r}"
         )
+        assert result.get("valid") is True
+
+    def test_yamlless_hub_skill_without_anchor_kernel_is_valid(self) -> None:
+        """The commonest real hub shape: no YAML, no §5::ANCHOR_KERNEL.
+
+        Self-contained on purpose. This is the CI-effective GH#520 regression
+        guard: it runs identically whether or not ``.hestai-sys`` is present,
+        unlike the corpus-parametrized assertions below (GH#523). The content
+        mirrors the shape of the majority of the 50 YAML-less hub skills —
+        OCTAVE envelope, §1 body, no kernel — so a re-tightening of Zone 2
+        would fail here even in an environment with no hub corpus at all.
+        """
+        content = (
+            "===SKILL:HUB_NO_KERNEL===\n"
+            "META:\n"
+            "  TYPE::SKILL\n"
+            '  VERSION::"1.0"\n'
+            '  PURPOSE::"Ambiguity detection before implementation"\n'
+            "§1::GATE_TRIGGER\n"
+            'CONDITION::"Apply when the build plan is unclear"\n'
+            "===END===\n"
+        )
+        result = _validate_content(content)
+        assert not _frontmatter_errors(result), (
+            f"A YAML-less hub SKILL without an ANCHOR_KERNEL must not surface Zone 2 "
+            f"errors. Got {_frontmatter_errors(result)!r} (GH#520)."
+        )
+        assert result.get("validation_status") == "VALIDATED"
         assert result.get("valid") is True
 
 
@@ -329,30 +401,97 @@ KNOWN_ALLOWED_TOOLS_SCALAR_GAPS: frozenset[str] = frozenset(
 )
 
 
-class TestOnDiskHubCorpusHasNoFrontmatterErrors:
-    """Integration: no on-disk hub SKILL is rejected for lacking YAML."""
+class TestTrackedSkillCorpus:
+    """Integration over the GIT-TRACKED skills corpus — present in CI.
 
-    def test_corpus_collection_floor(self) -> None:
-        """TMG-required: guard against a silent collection-path breakage.
+    ``src/octave_mcp/resources/skills/*/SKILL.md`` ships as package resources
+    and is committed, so unlike the ``.hestai-sys`` corpus below these
+    assertions actually execute in CI (GH#523). Every one of these skills
+    authors YAML frontmatter, so together they guard the OTHER half of the
+    GH#520 contract: relaxing absence must not relax presence.
+    """
 
-        The parametrized assertion below vacuously passes if the corpus
-        resolves to zero files (e.g. ``.hestai-sys`` unlinked in a fresh
-        worktree). Pin a floor so the empty case is loud.
-        """
-        files = _skill_files()
-        if not _SKILLS_DIR.exists():
-            pytest.skip(f"{_SKILLS_DIR} not present (gitignored delivery path)")
-        assert len(files) >= 50, (
-            f"Expected the hub skills corpus to hold at least 50 SKILL.md files; "
-            f"found {len(files)} under {_SKILLS_DIR}. A near-empty corpus makes the "
-            f"parametrized assertion below vacuous."
+    def test_tracked_corpus_was_discovered(self) -> None:
+        """Hard floor — these files are committed, so absence is a real failure."""
+        files = _tracked_skill_files()
+        assert files, (
+            f"No SKILL.md found under {_TRACKED_SKILLS_DIR}. These are git-tracked "
+            "package resources; if the layout moved, update _TRACKED_SKILLS_DIR — "
+            "otherwise the parametrized assertions below cover nothing."
         )
 
     @pytest.mark.parametrize(
         "skill_path",
-        _skill_files(),
+        _tracked_skill_files(),
         ids=lambda p: p.parent.name,
     )
+    def test_tracked_skill_validates_clean(self, skill_path: Path) -> None:
+        """Every tracked skill must be free of Zone 2 diagnostics."""
+        result = _validate_content(skill_path.read_text(encoding="utf-8"))
+        assert not _frontmatter_errors(result), (
+            f"{skill_path.parent.name}/SKILL.md surfaces Zone 2 errors: " f"{_frontmatter_errors(result)!r}"
+        )
+
+    @pytest.mark.parametrize(
+        "skill_path",
+        _tracked_skill_files(),
+        ids=lambda p: p.parent.name,
+    )
+    def test_tracked_skill_frontmatter_is_still_enforced(self, skill_path: Path) -> None:
+        """Presence-conditional must not degrade into unconditional.
+
+        Each tracked skill authors frontmatter. Strip one REQUIRED field and
+        the validator must still object — proving that
+        FRONTMATTER_PRESENCE::OPTIONAL relaxed absence only.
+        """
+        content = skill_path.read_text(encoding="utf-8")
+        stripped = "\n".join(line for line in content.splitlines() if not line.startswith("description:"))
+        result = _validate_content(stripped + "\n")
+        codes = {e.get("code") for e in _frontmatter_errors(result)}
+        assert "E_FM_REQUIRED" in codes, (
+            f"{skill_path.parent.name}/SKILL.md with 'description' removed must still "
+            f"surface E_FM_REQUIRED; got {codes!r} (GH#520 must not relax presence)."
+        )
+
+
+class TestOnDiskHubCorpusHasNoFrontmatterErrors:
+    """Integration: no on-disk hub SKILL is rejected for lacking YAML."""
+
+    def test_corpus_collection_floor(self) -> None:
+        """Discovery floor for BOTH parametrized assertions in this class.
+
+        Precedent: ``test_north_star_upog_compliance.py::
+        test_north_star_docs_were_discovered``.
+
+        The floor cannot hard-fail on absence, because absence is the normal
+        CI state — ``.hestai-sys`` is gitignored and CI never provisions it
+        (GH#523). What it CAN do is (a) make the absence explicit rather than
+        silent, and (b) fire loudly when the directory exists but is
+        under-populated, which is the case where a real collection-path
+        regression would otherwise hide.
+        """
+        if not _SKILLS_DIR.exists():
+            pytest.skip(
+                f"VACUOUS-GUARD: {_SKILLS_DIR} absent (gitignored, not provisioned by CI "
+                "— GH#523). Both parametrized assertions in this class cover ZERO files "
+                "in this environment; the CI-effective GH#520 guards are "
+                "TestYamlLessHubSkillValidatesClean and TestTrackedSkillCorpus."
+            )
+
+        files = _skill_files()
+        assert len(files) >= 50, (
+            f"Expected the hub skills corpus to hold at least 50 SKILL.md files; "
+            f"found {len(files)} under {_SKILLS_DIR}. A near-empty corpus makes the "
+            f"parametrized assertions in this class vacuous."
+        )
+        # Second class filters the allowlist — floor that param set too.
+        typed = [f for f in files if f.parent.name not in KNOWN_ALLOWED_TOOLS_SCALAR_GAPS]
+        assert len(typed) >= 50 - len(KNOWN_ALLOWED_TOOLS_SCALAR_GAPS), (
+            f"Allowlist-filtered corpus collapsed to {len(typed)} files; "
+            f"test_hub_skill_file_emits_no_frontmatter_type_errors would be vacuous."
+        )
+
+    @pytest.mark.parametrize("skill_path", _hub_corpus_params(_skill_files()))
     def test_hub_skill_file_emits_no_frontmatter_errors(self, skill_path: Path) -> None:
         """No hub SKILL may be rejected for an ABSENT frontmatter block."""
         content = skill_path.read_text(encoding="utf-8")
@@ -365,8 +504,7 @@ class TestOnDiskHubCorpusHasNoFrontmatterErrors:
 
     @pytest.mark.parametrize(
         "skill_path",
-        [p for p in _skill_files() if p.parent.name not in KNOWN_ALLOWED_TOOLS_SCALAR_GAPS],
-        ids=lambda p: p.parent.name,
+        _hub_corpus_params([p for p in _skill_files() if p.parent.name not in KNOWN_ALLOWED_TOOLS_SCALAR_GAPS]),
     )
     def test_hub_skill_file_emits_no_frontmatter_type_errors(self, skill_path: Path) -> None:
         """Type checking on PRESENT fields must remain clean outside the allowlist."""
@@ -390,7 +528,11 @@ class TestOnDiskHubCorpusHasNoFrontmatterErrors:
         """
         skill_path = _SKILLS_DIR / skill_dirname / "SKILL.md"
         if not skill_path.exists():
-            pytest.skip(f"{skill_dirname}/SKILL.md no longer exists on disk")
+            pytest.skip(
+                f"VACUOUS-GUARD: {skill_dirname}/SKILL.md not readable — either the hub "
+                f"corpus is absent (gitignored, not provisioned by CI — GH#523) or the "
+                f"file was removed upstream. This pinned diagnostic covered nothing."
+            )
 
         result = _validate_content(skill_path.read_text(encoding="utf-8"))
         type_errors = [e for e in _frontmatter_errors(result) if e.get("code") == "E_FM_TYPE"]
