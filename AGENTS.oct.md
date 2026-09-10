@@ -97,15 +97,18 @@ META:
   SKILLS::[
     octave-literacy,
     octave-mastery,
-    octave-mythology
+    octave-compression,
+    octave-chatter,
+    octave-ultra-mythic
   ]
   PRIMERS::"src/octave_mcp/resources/primers/"
+  PATTERNS::"src/octave_mcp/resources/patterns/"
 §11::MYTHOLOGY
   // OCTAVE's competitive moat — pre-trained compression already in the weights
   PRINCIPLE::"Mythological terms activate rich probability distributions from LLM training data"
   EVIDENCE::"100% zero-shot comprehension, 60-70% token reduction, 10x semantic density"
   PARADIGM_BLINDNESS::"You may doubt this theoretically while understanding JOURNEY::ODYSSEAN instantly. Trust practical comprehension."
-  SKILL::"src/octave_mcp/resources/skills/octave-mythology/SKILL.md"
+  SKILL::"src/octave_mcp/resources/skills/octave-mastery/SKILL.md"
   GUIDE::"docs/guides/mythological-compression.md"
 §12::ANNOTATION_MIGRATION
   // GH-403: JIT policy for refactoring oversized annotation content

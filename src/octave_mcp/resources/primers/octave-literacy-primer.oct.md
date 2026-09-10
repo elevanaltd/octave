@@ -1,9 +1,10 @@
 ===OCTAVE_LITERACY_PRIMER===
 META:
   TYPE::PRIMER
-  VERSION::"6.3.0"
-  TOKENS::"~250"
-  TIER::ULTRA
+  VERSION::"6.4.0"
+  TOKENS::"~270"
+  COMPRESSION_TIER::ULTRA
+  LOSS_PROFILE::"[preserve:syntax_rules,drop:rationale]"
 §1::ESSENCE
 PURPOSE::"Read and write OCTAVE"
 OCTAVE::"Olympian Common Text And Vocabulary Engine — Semantic DSL for LLMs"
@@ -20,6 +21,8 @@ KEY::value        → assignment
 [a,b,c]           → list
 KEY:              → block (indent 2 spaces)
   child::value
+KEY::             → NOT a block: empty value, children below hoist out
+§1::NAME          → section header, never carries a value
 ```
 §3::SYNTAX
 OPERATORS::
@@ -34,7 +37,7 @@ OPERATORS::
 TELEGRAPHIC_PHRASE::"see octave-compression-primer §1::ESSENCE — quoted value, stopwords dropped, operators carry English connectives"
 §4::ONE_SHOT
 IN::"flow from A to B"
-OUT::A→B
+OUT::[A→B]
 §5::VALIDATE
 MUST::[
   valid_OCTAVE,
