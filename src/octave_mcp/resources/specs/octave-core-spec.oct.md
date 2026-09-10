@@ -1,154 +1,152 @@
 ===OCTAVE_CORE===
 META:
   TYPE::LLM_PROFILE
-  VERSION::"6.0.0"
+  VERSION::"6.0.1"
   STATUS::ACTIVE
   NAME::"OCTAVE (Olympian Common Text And Vocabulary Engine)"
-
   TOKENS::"~2500"
   REQUIRES::nothing
   ENABLES::[schema,data]
-  TEACHES::[§skills/octave-literacy,§skills/octave-mastery,§skills/octave-mythology]
+  TEACHES::["§skills/octave-literacy","§skills/octave-mastery"]
   IMPLEMENTATION_NOTES::"Lexer (308 LOC), Parser (389 LOC), Emitter (140 LOC), AST (62 LOC) all production-ready. Full envelope, operators, types, structure complete. v6: Generative Holographic Contracts - adds CONTRACT and GRAMMAR blocks to META."
-  IMPLEMENTATION_REF::[src/octave_mcp/core/lexer.py,src/octave_mcp/core/parser.py,src/octave_mcp/core/emitter.py,src/octave_mcp/core/ast_nodes.py]
-
-  CONTRACT::HOLOGRAPHIC[
-    PRINCIPLE::"Documents carry their own validation law",
-    MECHANISM::JIT_GRAMMAR_COMPILATION[META→GBNF],
-    ANCHORING::HERMETIC[frozen@sha256|latest@local],
-    SELF_DESCRIBING::"META block defines how to parse the document itself"
+  IMPLEMENTATION_REF::[
+    "src/octave_mcp/core/lexer.py",
+    "src/octave_mcp/core/parser.py",
+    "src/octave_mcp/core/emitter.py",
+    "src/octave_mcp/core/ast_nodes.py"
   ]
-
-  GRAMMAR::[
-    GENERATOR::OCTAVE_GBNF_COMPILER[planned],
-    INTEGRATION::[llama.cpp,Outlines,vLLM],
-    BENEFIT::IMPOSSIBLE_TO_GENERATE_INVALID_SYNTAX,
-    SELF_VALIDATION::"Document contains rules to validate itself"
-  ]
-
-  // HOLOGRAPHIC PRINCIPLE (v6.0 Core Feature):
-  // OCTAVE documents are SELF-DESCRIBING. The META block can contain
-  // CONTRACT and GRAMMAR fields that define validation rules for the
-  // document itself. A parser reads META first, compiles the grammar,
-  // then validates the document against its own rules.
-  //
-  // This enables:
-  // - Documents that cannot be parsed incorrectly (constrained generation)
-  // - Schema evolution without parser updates
-  // - Domain-specific validation embedded in documents
-  // - Hermetic reproducibility (frozen schema versions)
-
+  CONTRACT::HOLOGRAPHIC<self_describing_document>
+  GRAMMAR::GBNF_COMPILER<planned>
 ---
-
-// OCTAVE CORE: The spine. Always inject this.
-// Operators map to mythological domains for semantic density (see octave-mastery skill).
-// Mythology = compression shorthand, not decoration (docs/research/mythology-evidence-synthesis.oct.md).
-
+§0::HOLOGRAPHIC_PRINCIPLE
+  // OCTAVE CORE: The spine. Always inject this.
+  // Operators map to mythological domains for semantic density (see octave-mastery skill).
+  // Mythology = compression shorthand, not decoration (docs/research/mythology-evidence-synthesis.oct.md).
+  // v6.0 Core Feature: OCTAVE documents are SELF-DESCRIBING. The META block can contain
+  // CONTRACT and GRAMMAR fields that define validation rules for the document itself.
+  // A parser reads META first, compiles the grammar, then validates the document against its own rules.
+CONTRACT:
+  PRINCIPLE::"Documents carry their own validation law"
+  MECHANISM::"JIT_GRAMMAR_COMPILATION[META→GBNF]"
+  ANCHORING::"HERMETIC[frozen@sha256|latest@local]"
+  SELF_DESCRIBING::"META block defines how to parse the document itself"
+GRAMMAR:
+  GENERATOR::"OCTAVE_GBNF_COMPILER[planned]"
+  INTEGRATION::[
+    llama.cpp,
+    Outlines,
+    vLLM
+  ]
+  BENEFIT::IMPOSSIBLE_TO_GENERATE_INVALID_SYNTAX
+  SELF_VALIDATION::"Document contains rules to validate itself"
+ENABLES::[
+  "Documents that cannot be parsed incorrectly (constrained generation)",
+  "Schema evolution without parser updates",
+  "Domain-specific validation embedded in documents",
+  "Hermetic reproducibility (frozen schema versions)"
+]
 §1::ENVELOPE
-FILE_EXTENSION::.oct.md[canonical][.octave.txt_deprecated]
-START::===NAME===[first_line,exact_match]
+FILE_EXTENSION::".oct.md[canonical][.octave.txt_deprecated]"
+START::"===NAME===[first_line,exact_match]"
 // NAME allows typed identifiers with colon separator: ===TYPE:NAME===
 // Both segments follow identifier rules: [A-Za-z_][A-Za-z0-9_]*
 // Examples: ===MY_DOC===, ===PATTERN:MIP_BUILD===, ===SKILL:MY_SKILL===
-META::required[TYPE,VERSION][immediately_after_start]
-META_OPTIONAL::[CONTRACT,GRAMMAR][v6_holographic_contracts]
-SEPARATOR::---[optional_for_discovery,signals_metadata_boundary]
-END::===END===[last_line,exact_match,mandatory]
+META::"required[TYPE,VERSION][immediately_after_start]"
+META_OPTIONAL::"[CONTRACT,GRAMMAR][v6_holographic_contracts]"
+SEPARATOR::"---[optional_for_discovery,signals_metadata_boundary]"
+END::"===END===[last_line,exact_match,mandatory]"
 DUPLICATES::keys_must_be_unique_per_block
-COMMENTS:://[line_start_or_after_value]
+COMMENTS::"//[line_start_or_after_value]"
+ASSEMBLY:
+  RULE::"when_profiles_concatenated[core⊕schema⊕data]→only_final_===END===_terminates"
+  SEPARATOR_RULE::"omit_separator_in_assembled_profiles[only_standalone_documents]"
+  // ASSEMBLY EXAMPLE (Issue #108):
+  // When injecting OCTAVE profiles into agent context, concatenate them.
+  // Each profile omits its ===END=== except the final one.
+  EXAMPLE:
+    ```
+    STANDALONE (single file):
+      ===CORE===
+      META:
+        TYPE::LLM_PROFILE
+      ---
+      §1::CONTENT
+      ===END===
 
-ASSEMBLY::when_profiles_concatenated[core+schema+data]→only_final_===END===_terminates
-ASSEMBLY_RULE::omit_separator_in_assembled_profiles[only_standalone_documents]
-MARKDOWN_EMBEDDING::"outer_single_code_fence_allowed→strip_fence_then_parse"
+    ASSEMBLED (core+schema injected together):
+      ===CORE===
+      META:
+        TYPE::LLM_PROFILE
+      §1::CONTENT
+      ===SCHEMA===
+      META:
+        TYPE::LLM_PROFILE
+      §1::DEFINITIONS
+      ===END===
+    ```
+  USE_CASES::[
+    "agent_context_injection[core+schema+data_profiles]",
+    "specification_layering[base_spec+extensions]",
+    "multi_part_documents[header+body+footer]"
+  ]
+MARKDOWN_EMBEDDING::[outer_single_code_fence_allowed→strip_fence_then_parse]
 MARKDOWN_EMBEDDING_RULE::code_fence_is_transport_wrapper_not_document_content
-
-// ASSEMBLY EXAMPLE (Issue #108):
-// When injecting OCTAVE profiles into agent context, concatenate them.
-// Each profile omits its ===END=== except the final one.
-//
-// STANDALONE (single file):
-//   ===CORE===
-//   META:
-//     TYPE::LLM_PROFILE
-//   ---
-//   §1::CONTENT
-//   ===END===
-//
-// ASSEMBLED (core+schema injected together):
-//   ===CORE===
-//   META:
-//     TYPE::LLM_PROFILE
-//   §1::CONTENT
-//   ===SCHEMA===
-//   META:
-//     TYPE::LLM_PROFILE
-//   §1::DEFINITIONS
-//   ===END===
-//
-// USE_CASES::[
-//   agent_context_injection[core+schema+data_profiles],
-//   specification_layering[base_spec+extensions],
-//   multi_part_documents[header+body+footer]
-// ]
-
 §2::OPERATORS
-
-// LAYER 1: STRUCTURAL (statement/field level, not expressions)
+  // LAYER 1: STRUCTURAL (statement/field level, not expressions)
 STRUCTURAL:
+  ```
   ::    assign      KEY::value[binding]
   :     block       KEY:[newline_then_indent]
-
+  ```
 // LAYER 2: EXPRESSION (inside values, precedence applies)
 // Lower number = binds tighter
 EXPRESSION:
-  PREC::UNICODE::ASCII::SEMANTIC::USAGE::ASSOC
-  1    []       []     container   [a,b,c]                   n/a
-  2    ⧺        ~      concat      A⧺B[mechanical_join]      left
-  3    ⊕        +      synthesis   A⊕B[emergent_whole]       left
-  4    ⇌        vs     tension     A⇌B[binary_opposition]    none[binary_only]
-  5    ∧        &      constraint  [A∧B∧C]                   left
-  6    ∨        |      alternative A∨B                       left
-  7    →        ->     flow        A→B→C                     right
-
+  ```
+  PREC  UNICODE  ASCII  SEMANTIC    USAGE                     ASSOC
+  1     []       []     container   [a,b,c]                   n/a
+  2     ⧺        ~      concat      A⧺B[mechanical_join]      left
+  3     ⊕        +      synthesis   A⊕B[emergent_whole]       left
+  4     ⇌        vs     tension     A⇌B[binary_opposition]    none[binary_only]
+  5     ∧        &      constraint  [A∧B∧C]                   left
+  6     ∨        |      alternative A∨B                       left
+  7     →        ->     flow        A→B→C                     right
+  ```
 // LAYER 3: PREFIX/SPECIAL
 PREFIX:
+  ```
   §     target      §INDEXER∨§./path
   //    comment     //text[to_end_of_line]
-
+  ```
 §2b::LEXER_RULES
 LONGEST_MATCH::"::_recognized_before_:"
-UNICODE_NORMALIZATION::NFC[canonical_composition]
+UNICODE_NORMALIZATION::"NFC[canonical_composition]"
 ASCII_ALIASES::accepted_normalized_to_unicode
-
 // ASCII alias boundary rules
-vs::requires_word_boundaries[whitespace∨bracket∨paren∨start∨end]
-VALID::"A vs B"∨"[Speed vs Quality]"
-INVALID::"SpeedvsQuality"[no_boundaries]
+VS_ALIAS::"requires_word_boundaries[whitespace∨bracket∨paren∨start∨end]"
+VALID::["A vs B","[Speed vs Quality]"]
+INVALID::"SpeedvsQuality[no_boundaries]"
 RECOMMENDATION::prefer_canonical_unicode_in_emission
-
 §2c::BRACKET_FORMS
-CONTAINER::[a,b,c][bare_brackets_are_lists]
-CONSTRUCTOR::NAME[args][e.g._REGEX[pattern]_ENUM[a,b]]
-ANNOTATION::NAME<qualifier>[e.g._ATHENA<strategic_wisdom>_ODYSSEUS<navigation>]
-HOLOGRAPHIC::["value"∧CONSTRAINT→§TARGET][schema_mode]
-RULE::NAME[...]_is_constructor|bare_[...]_is_container|NAME<...>_is_annotation
-LITERAL_FENCE::backtick_fence[3_or_more_backticks][optional_info_tag][fenced_code_block]
-FENCE_SCALING::N_backticks_where_N_is_3_or_more[inner_content_may_contain_shorter_fences]
-
+CONTAINER::"[a,b,c][bare_brackets_are_lists]"
+CONSTRUCTOR::"NAME[args][e.g._REGEX[pattern]_ENUM[a,b]]"
+ANNOTATION::"NAME<qualifier>[e.g._ATHENA<strategic_wisdom>_ODYSSEUS<navigation>]"
+HOLOGRAPHIC::"['value'∧CONSTRAINT→§TARGET][schema_mode]"
+RULE::"NAME[...]_is_constructor|bare_[...]_is_container|NAME<...>_is_annotation"
+LITERAL_FENCE::"backtick_fence[3_or_more_backticks][optional_info_tag][fenced_code_block]"
+FENCE_SCALING::"N_backticks_where_N_is_3_or_more[inner_content_may_contain_shorter_fences]"
 // ANNOTATION vs CONSTRUCTOR:
 // NAME[args] = schema/validation construct (REGEX[pattern], ENUM[a,b], TYPE[STRING])
 // NAME<qualifier> = semantic facet qualifier (ATHENA<strategic_wisdom>, HERMES<translation>)
 // Annotations leverage LLM generics-training (TypeScript/Rust/Java) for zero-friction comprehension.
 // Angle brackets are NOT structural containers — they qualify an identifier with a semantic facet.
-
 §3::TYPES
-STRING::bare_word|"quoted"[when:spaces,special,reserved]
-NUMBER::42|3.14|-1e10[no_quotes]
-BOOLEAN::true|false[lowercase_only]
-NULL::null[lowercase_only]
-LIST::[a,b,c]|[][empty_allowed]
-ESCAPES::["quote","backslash","newline","tab"][inside_quotes_only]
-LITERAL::backtick_fence[3_or_more_backticks][optional_info_tag][fenced_code_block]
+STRING::"bare_word|'quoted'[when:spaces,special,reserved]"
+NUMBER::"42|3.14|-1e10[no_quotes]"
+BOOLEAN::"true|false[lowercase_only]"
+NULL_VALUE::"null[lowercase_only]"
+LIST::"[a,b,c]|[][empty_allowed]"
+ESCAPES::"[quote,backslash,newline,tab][inside_quotes_only]"
+LITERAL::"backtick_fence[3_or_more_backticks][optional_info_tag][fenced_code_block]"
 LITERAL_RULES::[
   zero_processing_between_fences,
   NFC_bypass_for_content,
@@ -156,89 +154,89 @@ LITERAL_RULES::[
   info_tag_preserved_not_validated,
   empty_literal_distinct_from_absent
 ]
-
 §3b::QUOTING_RULES
-// When to use quotes - critical for spec compliance
-MUST_QUOTE::[
-  spaces["hello world"],
-  special_chars["~30%","coverage::87%","REGEX[\"^pattern$\"]"],
-  operators_as_values["::","|","&","§"],
-  curly_braces["{template}"],
-  parentheses["(grouped)"],
-  backslashes["path\\to\\file"],
-  cross_references["see octave-core-spec §6"],
-  section_markers_in_values["§SELF reference"]
+  // When to use quotes - critical for spec compliance
+MUST_QUOTE:
+  SPACES::"hello world"
+  SPECIAL_CHARS::[
+    "~30%",
+    "coverage::87%",
+    "REGEX[\"^pattern$\"]"
+  ]
+  OPERATORS_AS_VALUES::[
+    "::",
+    "|",
+    "&",
+    "§"
+  ]
+  CURLY_BRACES::"{template}"
+  PARENTHESES::"(grouped)"
+  BACKSLASHES::"path\\to\\file"
+  CROSS_REFERENCES::"see octave-core-spec §6"
+  SECTION_MARKERS_IN_VALUES::"§SELF reference"
+  // NOTE: Angle brackets in NAME<qualifier> annotation form (§2c) are NOT special chars.
+  // They are a defined bracket form and do not require quoting.
+  // ATHENA<strategic_wisdom> is valid bare syntax.
+  // Standalone < or > outside annotation form must be quoted.
+QUOTE_GUIDELINES::[
+  "IF[contains_non_alphanumeric]→quote_it",
+  "IF[starts_with_§_but_not_anchor]→quote_it",
+  "IF[contains_unicode_symbols_not_operators]→quote_it",
+  "IF[ambiguous_parsing]→quote_it"
 ]
-
-// NOTE: Angle brackets in NAME<qualifier> annotation form (§2c) are NOT special chars.
-// They are a defined bracket form and do not require quoting.
-// ATHENA<strategic_wisdom> is valid bare syntax.
-// Standalone < or > outside annotation form must be quoted.
-
-QUOTE_GUIDELINES::
-  IF[contains_non_alphanumeric]→quote_it
-  IF[starts_with_§_but_not_anchor]→quote_it
-  IF[contains_unicode_symbols_not_operators]→quote_it
-  IF[ambiguous_parsing]→quote_it
-
 SAFE_WITHOUT_QUOTES::[
-  bare_identifiers[simple_name,STATUS,BUILD],
-  numbers[42,3.14,-1e10],
-  booleans[true,false],
-  null[null],
-  defined_operators_in_expressions[A→B,X∨Y,P∧Q]
+  "bare_identifiers[simple_name,STATUS,BUILD]",
+  "numbers[42,3.14,-1e10]",
+  "booleans[true,false]",
+  "null[null]",
+  "defined_operators_in_expressions[A→B,X∨Y,P∧Q]"
 ]
-
 §4::STRUCTURE
-INDENT::2_spaces_per_level[no_tabs_ever]
-KEYS::[A-Z,a-z,0-9,_][start_with_letter_or_underscore]
-SECTION_NAMES::preserve_exactly[§1::NAME_not_§1::N][no_compression_allowed]
+INDENT::"2_spaces_per_level[no_tabs_ever]"
+KEYS::"[A-Z,a-z,0-9,_][start_with_letter_or_underscore]"
+SECTION_NAMES::"preserve_exactly[§1::NAME_not_§1::N][no_compression_allowed]"
 NESTING::indent_creates_child_relationship
 BLANK_LINES::allowed_for_readability
-EMPTY_BLOCK::KEY:[valid_with_no_children]
-
+EMPTY_BLOCK::"KEY:[valid_with_no_children]"
 §5::MODES
 DATA:
-  PATTERN::KEY::value
+  PATTERN::"KEY::value"
   LEVELS::L1∨L2
-  BRACKETS::lists[a,b,c]∨inline_maps[k::v,k2::v2]
-  INLINE_MAP_NESTING::forbidden[values_must_be_atoms]
+  BRACKETS::"lists[a,b,c]∨inline_maps[k::v,k2::v2]"
+  INLINE_MAP_NESTING::"forbidden[values_must_be_atoms]"
   // BLOCK NOTATION GUIDANCE (Issue #303):
   // When a structure requires nesting (maps containing maps), use block
   // notation with single-colon (:) and indented children instead.
   // Primary use case: agent §2::BEHAVIOR definitions (CONDUCT, PROTOCOL).
   // See §7::CANONICAL_EXAMPLES for before/after examples.
-  NESTING_RULE::hierarchical_content_MUST_use_block_notation[single_colon_with_indent]
-  USE::instances[sessions,configs,runtime_state]
-
+  NESTING_RULE::"hierarchical_content_MUST_use_block_notation[single_colon_with_indent]"
+  USE::"instances[sessions,configs,runtime_state]"
 SCHEMA:
-  PATTERN::KEY::["example"∧CONSTRAINT→§TARGET]
+  PATTERN::"KEY::['example'∧CONSTRAINT→§TARGET]"
   LEVELS::L3∨L4
-  BRACKETS::holographic_container[value∧constraints→target]
-  USE::definitions[types,validation_rules,extraction_routing]
-
+  BRACKETS::"holographic_container[value∧constraints→target]"
+  USE::"definitions[types,validation_rules,extraction_routing]"
 §6::NEVER
 ERRORS::[
   tabs,
-  any_whitespace_around_::,
+  "any_whitespace_around_::",
   newline_in_quoted_string,
-  bare_flow[KEY→value],
-  wrong_case[True,False,NULL],
-  missing_final_===END===,
-  ∧_outside_brackets,
-  chained_tension[A⇌B⇌C],
-  vs_without_boundaries[SpeedvsQuality]
+  "bare_flow[KEY→value]",
+  "wrong_case[True,False,NULL]",
+  "missing_final_===END===",
+  "∧_outside_brackets",
+  "chained_tension[A⇌B⇌C]",
+  "vs_without_boundaries[SpeedvsQuality]"
 ]
-
 §6b::VALIDATION_CHECKLIST
-// Quick validation checklist for OCTAVE documents (Issue #107)
+  // Quick validation checklist for OCTAVE documents (Issue #107)
 ENVELOPE::[
-  starts_with_===NAME===,
+  "starts_with_===NAME===",
   META_block_with_TYPE_and_VERSION,
-  ends_with_===END===
+  "ends_with_===END==="
 ]
 STRUCTURE::[
-  2_space_indent_per_level,
+  "2_space_indent_per_level",
   no_tabs_anywhere,
   keys_unique_per_block,
   no_whitespace_around_double_colon
@@ -268,11 +266,10 @@ LITERAL_ZONES::[
   content_between_fences_verbatim,
   empty_literal_zone_is_valid
 ]
-
 §7::CANONICAL_EXAMPLES
-// Reference patterns only. Not standalone documents.
-
+  // Reference patterns only. Not standalone documents.
 DATA_PATTERN:
+  ```
   ID::sess_abc123
   STATUS::ACTIVE
   PHASE::B2
@@ -282,78 +279,78 @@ DATA_PATTERN:
   BLOCKERS::issue_1∨issue_2
   QUALITY::[tests::5/5,lint::ok,coverage::"87%"]
   PATH::src⧺components⧺auth
-
+  ```
 // TENSION PATTERN (binary only, followed by resolution)
-OPERATIONAL_TENSION::Speed⇌Quality→Balanced_Delivery
+OPERATIONAL_TENSION::[Speed⇌Quality→Balanced_Delivery]
 TRADE_OFF::[Latency⇌Accuracy,Cost⇌Quality]
-
 // SYNTHESIS PATTERN (emergent combination)
 APPROACH::Architecture⊕Implementation⊕Testing
-
 // INLINE_MAP_NESTING (Forbidden pattern — Issue #303)
 // Inline maps (::[] brackets) cannot contain nested maps or lists-of-maps.
 // Enforced by E_NESTED_INLINE_MAP. Hierarchical content MUST use block
 // notation (single-colon : with indented children).
-//
 // PRIMARY USE CASE: Agent §2::BEHAVIOR definitions.
 // Agent CONDUCT/PROTOCOL blocks require nested structures. These MUST
 // use block notation, never inline map nesting.
-//
-// WRONG (triggers E_NESTED_INLINE_MAP):
-//   CONDUCT::[
-//     MODE::CONVERGENT,
-//     PROTOCOL::[
-//       MUST_ALWAYS::[...],
-//       MUST_NEVER::[...]
-//     ]
-//   ]
-//
-// CORRECT (block notation with single-colon):
-//   CONDUCT:
-//     MODE::CONVERGENT
-//     PROTOCOL:
-//       MUST_ALWAYS::[...]
-//       MUST_NEVER::[...]
-//
 // RULE: If a value contains KEY::VALUE pairs (a map), it is not an atom.
 // Non-atom values cannot appear inside inline maps. Use block notation.
-BAD::[config::[nested::value]]
-GOOD:
-  CONFIG:
-    NESTED::value
+INLINE_MAP_NESTING:
+  ```
+  WRONG (triggers E_NESTED_INLINE_MAP):
+    CONDUCT::[
+      MODE::CONVERGENT,
+      PROTOCOL::[
+        MUST_ALWAYS::[...],
+        MUST_NEVER::[...]
+      ]
+    ]
 
+  CORRECT (block notation with single-colon):
+    CONDUCT:
+      MODE::CONVERGENT
+      PROTOCOL:
+        MUST_ALWAYS::[...]
+        MUST_NEVER::[...]
+
+  BAD::[config::[nested::value]]
+  GOOD:
+    CONFIG:
+      NESTED::value
+  ```
 SCHEMA_PATTERN:
-  ID::["user_123"∧REQ∧REGEX["^user_\\w+$"]→§INDEXER]
+  ID::["user_123"∧REQ∧REGEX["^user_\w+$"]→§INDEXER]
   STATUS::["ACTIVE"∧REQ∧ENUM[ACTIVE,SUSPENDED]→§META]
   EMAIL::["user@example.com"∧REQ∧TYPE[STRING]→§INDEXER]
   ROLES::[["admin","viewer"]∧OPT∧TYPE[LIST]→§INDEXER]
   NOTES::["Optional context"∧OPT→§SELF]
-
 BLOCK_INHERITANCE_PATTERN:
   RISKS[→§RISK_LOG]:
     CRITICAL::["auth_bypass"∧REQ]
     WARNING::["rate_limit"∧OPT→§SELF]
-
-// LITERAL ZONE PATTERN (Issue #235): Fenced code block preserving content exactly.
-// Use 3+ backticks as fence; closing fence must match opening length.
-// Content is raw: no NFC normalization, no escape processing, tabs allowed.
-// Empty literal zone is distinct from absent value (I2: deterministic absence).
-// Fence-length scaling: use N+1 backticks to wrap content with N-backtick fences.
 LITERAL_ZONE_PATTERN:
-  CODE::backtick_python_fence[python_info_tag][verbatim_python_code]
-  CONFIG::backtick_json_fence[json_info_tag][verbatim_json_content]
-  EMPTY_LITERAL::backtick_fence[empty_content][distinct_from_absent]
-  SCALED_FENCE::4_backtick_fence[wraps_content_containing_3_backtick_fences]
-
-// ANNOTATION PATTERN (semantic facet qualifier on identifiers)
-ARCHETYPE_EXAMPLE::[ATHENA<strategic_wisdom>,ODYSSEUS<navigation>,HERMES<translation>]
-SINGLE_ANNOTATION::ATHENA<strict>
-
-// PRECEDENCE EXAMPLES
+  // LITERAL ZONE PATTERN (Issue #235): Fenced code block preserving content exactly.
+  // Use 3+ backticks as fence; closing fence must match opening length.
+  // Content is raw: no NFC normalization, no escape processing, tabs allowed.
+  // Empty literal zone is distinct from absent value (I2: deterministic absence).
+  // Fence-length scaling: use N+1 backticks to wrap content with N-backtick fences.
+  CODE::"backtick_python_fence[python_info_tag][verbatim_python_code]"
+  CONFIG::"backtick_json_fence[json_info_tag][verbatim_json_content]"
+  EMPTY_LITERAL::"backtick_fence[empty_content][distinct_from_absent]"
+  SCALED_FENCE::"4_backtick_fence[wraps_content_containing_3_backtick_fences]"
+ANNOTATION_PATTERN:
+  // ANNOTATION PATTERN (semantic facet qualifier on identifiers)
+  ARCHETYPE_EXAMPLE::[
+    ATHENA<strategic_wisdom>,
+    ODYSSEUS<navigation>,
+    HERMES<translation>
+  ]
+  SINGLE_ANNOTATION::ATHENA<strict>
+  // PRECEDENCE EXAMPLES
 PARSE_AS:
-  A⊕B→C::"(A⊕B)→C"         // synthesis binds tighter
-  A⇌B→C::"(A⇌B)→C"         // tension binds tighter
-  A→B→C::"A→(B→C)"         // flow is right-associative
-  [A∧B∧C]::"[(A∧B)∧C]"       // constraints chain left
-
+  ```
+  A⊕B→C    ⇒ (A⊕B)→C        synthesis binds tighter
+  A⇌B→C    ⇒ (A⇌B)→C        tension binds tighter
+  A→B→C    ⇒ A→(B→C)        flow is right-associative
+  [A∧B∧C]  ⇒ [(A∧B)∧C]      constraints chain left
+  ```
 ===END===

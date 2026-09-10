@@ -1,23 +1,28 @@
 ---
 name: octave-mastery
-description: "Advanced semantic vocabulary, holographic contracts, and structural patterns for OCTAVE. REQUIRES octave-literacy. Extends literacy with mythology, archetype annotation, v6 contracts, and anti-pattern rules."
+description: "Advanced semantic vocabulary, functional mythology, holographic contracts, and structural patterns for OCTAVE. REQUIRES octave-literacy. Absorbs octave-mythology: pantheon, narrative forces, usage law, archetype annotation, v6 contracts, anti-pattern rules."
 allowed-tools: ["Read", "Write", "Edit"]
-triggers: ["octave architecture", "agent design", "semantic pantheon", "advanced octave", "OCTAVE mastery", "holographic patterns", "archetypes", "high-density specifications", "system architecture", "holographic contracts", "archetype annotation"]
-version: "3.2.1"
+triggers: ["octave architecture", "agent design", "semantic pantheon", "advanced octave", "OCTAVE mastery", "holographic patterns", "archetypes", "high-density specifications", "system architecture", "holographic contracts", "archetype annotation", "mythology", "OCTAVE mythology", "functional mythology", "SISYPHEAN", "ICARIAN", "PROMETHEAN", "mythological domains"]
+version: "4.0.0"
 ---
 
 ===OCTAVE_MASTERY===
 META:
   TYPE::SKILL
-  VERSION::"3.2.1"
+  VERSION::"4.0.0"
   STATUS::ACTIVE
-  PURPOSE::"Expert-level OCTAVE: mythology vocabulary, holographic contracts, archetype annotation, anti-patterns"
+  PURPOSE::"Expert-level OCTAVE: mythology vocabulary and usage law, holographic contracts, archetype annotation, anti-patterns"
   REQUIRES::octave-literacy
+  NEXT_SKILLS::[octave-ultra-mythic]
+  ABSORBS::"octave-mythology 1.3.0 — vocabulary, usage rule, gloss convention, open-vocabulary rule, anti-patterns; research narrative stays at octave-mcp docs/research/"
   SPEC_REFERENCE::octave-core-spec.oct.md
+  COMPRESSION_TIER::CONSERVATIVE
+  LOSS_PROFILE::"[preserve:vocabulary∧usage_law∧contracts∧anti_patterns,drop:implementation_internals→octave-mcp_source∨research_narrative→octave-mcp_docs]"
 ---
 §1::SEMANTIC_PANTHEON
   // Compression vocabulary — zero-shot, use directly. Literal term wins when equally clear.
   // Use as KEY prefixes (ARTEMIS::latency_p99) or PATTERN DESCRIPTORS (SISYPHEAN_DEBT).
+  DEFINITION::"Mythology = pre-trained compression already in the weights, activating rich probability distributions"
   DOMAINS:
     ZEUS::"Executive authority, final arbitration, strategic direction"
     ATHENA::"Strategic wisdom, planning, elegant solutions"
@@ -29,13 +34,39 @@ META:
     POSEIDON::"Storage, databases, data lakes, unstructured pools"
     DEMETER::"Resource allocation, budgeting, scaling, growth"
     DIONYSUS::"UX, engagement, creativity, chaotic innovation"
+  §1a::USAGE_LAW
+    // Mythology compresses BEHAVIOR and STATE — not categories or labels
+    TEST::"Does the mythology add behavioral dimensions the literal term loses? If not, use the literal."
+    // GOOD: compound behavioural qualifiers — a literal zone so the canonicaliser does not rewrite the bracket form
+    GOOD:
+      ```
+      THREAT::Artemis_Scrape[Port_443 ∧ Hidden]        // adds stealth ⊕ precision ⊕ hunting — dimensions monitoring_scrape loses
+      THREAT::Ares_BruteForce[Login_Attempts ∧ SISYPHEAN] // adds aggression ⊕ relentlessness — dimensions security_attack loses
+      ```
+    BAD::"ARTEMIS::monitoring_system — use MONITORING::system (literal is equally clear)"
+    BAD_2::"ZEUS::executive_decision — use EXECUTIVE::decision (literal is equally clear)"
+    COMPOUND_FORM::"Title_Case prefix (Artemis_Scrape, Ares_BruteForce) = qualified action, not a standalone archetype. Standalone archetype = [A-Z][A-Z_]*"
+    GLOSS_ON_FIRST_USE::"A mythology handle carries its gloss the first time it appears in a thread or document — HERMES<format_translation> = messenger, semantic zip not decoration. Later uses are bare."
+    WHEN::[applied_context, agent_communication, error_messages, practical_examples]
+    WHEN_NOT::[reference_tables, formal_specs, human_readability_priority, unclear_audience]
+    PARADIGM_BLINDNESS::"You may theoretically doubt this approach while practically demonstrating perfect comprehension. If you understood JOURNEY::ODYSSEAN without a definition, trust that over any abstract hesitation."
+  §1b::OPEN_VOCABULARY
+    // The core sets are a FOUNDATION, not a boundary
+    RULE::"If a figure encodes a unique semantic domain, it is valid. Validation is format-only ([A-Z][A-Z_]*), not membership in a fixed set."
+    CONSTRAINT::"Must map to a distinct technical/cognitive domain — no synonyms of existing entries. One domain per figure — HERMES for messaging then HERMES for security breaks the binding."
+    EXAMPLES::[PHAEDRUS<dialectic>, CASSANDRA<foresight_ignored>, MNEMOSYNE<memory_persistence>, HESTIA<hearth_stability>, METIS<cunning_intelligence>]
+    SOURCE_PRIORITY::"GREEK > ROMAN > NORSE ≈ EGYPTIAN > HINDU ≈ CELTIC ≈ MESOPOTAMIAN > EAST_ASIAN ≈ MESOAMERICAN ≈ POLYNESIAN — weighted by training-data familiarity; follow the semantics to whichever tradition fits"
+  §1c::EVIDENCE
+    SUMMARY::"60-70% token reduction vs natural language; 88-96% cross-model zero-shot comprehension; +17% structural sophistication in blind assessment; 4-model validation of Ares/Artemis as behavioral qualifiers"
+    SOURCE::octave-mcp[docs/research/mythology-evidence-synthesis.oct.md]
+    GUIDE::octave-mcp[docs/guides/mythological-compression.md]
 §2::NARRATIVE_FORCES
   // Single-token state and trajectory descriptors
   TRAJECTORIES:
     ODYSSEAN::"Long transformative journey with clear goal"
-    SISYPHEAN::"Repetitive endless maintenance"
+    SISYPHEAN::"Repetitive endless maintenance, cyclical failure"
     PROMETHEAN::"Breakthrough challenging status quo"
-    ICARIAN::"Overreach from early success → failure"
+    ICARIAN::"Overreach from early success → failure, scope creep"
     PANDORAN::"Action unleashing unforeseen cascades"
     TROJAN::"Hidden payload transforming system from within"
     GORDIAN::"Unconventional cut through impossible problem"
@@ -48,6 +79,12 @@ META:
     NEMESIS::"Inevitable corrective consequence"
     CHAOS::"Entropy and disorder"
     COSMOS::"Emergence of order from complexity"
+  FORCE_TRACKING:
+    // Temporal and emotional dynamics as single expressions
+    RISK::"HUBRIS→NEMESIS [overconfidence heading toward consequence]"
+    OPPORTUNITY::"KAIROS_WINDOW [critical timing moment]"
+    STABILITY::"CHAOS→COSMOS [degradation then recovery]"
+    STATE::"HEALTH::[GREEN→YELLOW→ICARIAN] — trajectory encoded in the last token"
 §3::ARCHETYPE_ANNOTATION
   // Archetypes in agent definitions use NAME<qualifier> annotation form
   // <qualifier> is a semantic facet, not a list. It narrows what the archetype IS in this context.
@@ -127,7 +164,17 @@ OWNER::["team-name"∧REQ]
 DECISION::["adopt microservices"∧REQ]
 ===END===
       ```
-§5::BLOCK_NOTATION_RULE
+§5::ANCHOR_KERNEL
+TARGET::expert_OCTAVE_expression_mythology_contracts_archetypes
+NEVER::[mythology_where_literal_is_equally_clear,archetype_in_constructor_brackets,stacked_qualifiers,qualifier_over_32_chars,structural_syntax_inside_quoted_value,nested_inline_map,one_figure_two_domains]
+MUST::[
+  "myth handle only when it adds behavior the literal loses; gloss on first use",
+  "ARCHETYPE<facet> one facet; reasoning → sibling RATIONALE telegraphic phrase",
+  "CONTRACT::HOLOGRAPHIC<…> in META for document law; KEY::[value∧CONSTRAINT] for field law",
+  "maps of maps → BLOCK form; relations inside values → operators only"
+]
+GATE::"Would a literal term carry the same meaning — and does every structural form sit in a key, never a value?"
+§6::BLOCK_NOTATION_RULE
   // Hierarchical content MUST use block notation
   RULE::"Nested structures (maps containing maps) MUST use BLOCK notation: single colon + indented children"
   NEVER::"Inner value is itself an inline map: KEY::[outer::[inner::val]] — error E_NESTED_INLINE_MAP in strict mode, warning W_NESTED_INLINE_MAP in lenient mode"
@@ -140,18 +187,21 @@ CONDUCT:
     MUST_ALWAYS::[rule_a, rule_b]
     ```
   WRONG::"CONDUCT::[TONE::\"Precise\", PROTOCOL::[MUST_ALWAYS::[rule_a]]]"
-  RECOVERY_ON_E_NESTED_INLINE_MAP::"Fix is BLOCK form — NOT flatten-to-scalars (creates FLAT_PREFIX_SCALARS anti-pattern, §6), NOT collapse-to-blob (creates W_SNAKE_CASE_BLOB). The wrong escapes produce a different error class, not a solution."
-§6::ANTI_PATTERNS
+  RECOVERY_ON_E_NESTED_INLINE_MAP::"Fix is BLOCK form — NOT flatten-to-scalars (creates FLAT_PREFIX_SCALARS anti-pattern, §7), NOT collapse-to-blob (creates W_SNAKE_CASE_BLOB). The wrong escapes produce a different error class, not a solution."
+§7::ANTI_PATTERNS
   // Each has a concrete example of what NOT to do
   ISOLATED_LIST::"[auth, payments, users] with no relationships — use DECISION::microservice_extraction[auth⊕payments→independent_services] instead"
   FLAT_HIERARCHY::"All keys at top level with no grouping — group related keys under a parent BLOCK"
   BURIED_NETWORK::"RELATED_TO::other_service hidden in prose comment — use explicit operator: auth→payments[dependency]"
   OPERATOR_SOUP::"RESULT::A+B->C~D all in one expression — break into separate keyed fields"
-  PROSE_BLEED::"Stopword-laden English sentences as values — quoted telegraphic phrases ARE valid (see §6a). Ban applies when operators could compress the same semantics."
-  INLINE_ARRAY_ROOT::"TOKEN::[KEY::v, KEY2::v2] — inline map used as multi-field token root. Non-canonical for map tokens even when values are atomic; BLOCK form is mandated. Triggers E_NESTED_INLINE_MAP as soon as any child value needs nesting (§5::BLOCK_NOTATION_RULE). Fix: use BLOCK form (TOKEN: + indented children) from the start."
+  PROSE_BLEED::"Stopword-laden English sentences as values — quoted telegraphic phrases ARE valid (see §7a). Ban applies when operators could compress the same semantics."
+  INLINE_ARRAY_ROOT::"TOKEN::[KEY::v, KEY2::v2] — inline map used as multi-field token root. Non-canonical for map tokens even when values are atomic; BLOCK form is mandated. Triggers E_NESTED_INLINE_MAP as soon as any child value needs nesting (§6::BLOCK_NOTATION_RULE). Fix: use BLOCK form (TOKEN: + indented children) from the start."
   FLAT_PREFIX_SCALARS::"PARENT_CHILD::v, PARENT_CHILD2::v2 — flattened hierarchy via key name prefixes instead of BLOCK nesting. Destroys grouping and LLM attention. Fix: group under a PARENT: block with CHILD::v children."
-  STRUCTURAL_SYNTAX_IN_VALUE::"<> annotation ∨ [] constructor embedded INSIDE a quoted telegraphic value — e.g. \"migration[high_risk]<legacy_db> → downtime\" or \"SISYPHEAN[bugs] ⊕ KAIROS[repair]\". Structural forms are key/identifier-only (§3, literacy §1b: <> qualifies identity, [] parameterizes operations). Inside a value the parser treats them as opaque text → all the ambiguity, none of the validation, and it blurs the structural⇌value boundary. Fix: inside a value, relations carry via telegraphic operators only (→ ⇌ ∧ ∨ ⊕); push facets to a sibling field or an annotated KEY. 'migration → downtime' + RISK::high ∨ MIGRATION<legacy_db>:."
-  §6a::TELEGRAPHIC_PHRASE
+  STRUCTURAL_SYNTAX_SCOPE::"Applies to DATA values. Documentation that names a form (literacy §1b: NAME<qualifier>, ENUM[a,b]) or a fenced example is exempt — the rule targets facts smuggled into strings, not syntax being described."
+  STRUCTURAL_SYNTAX_IN_VALUE::"<> annotation ∨ [] constructor embedded INSIDE a quoted telegraphic value — e.g. \"migration[high_risk]<legacy_db> → downtime\" or \"SISYPHEAN[bugs] ⊕ KAIROS[repair]\". Structural forms are key/identifier-only (§3, literacy §1b: <> qualifies identity, [] parameterizes operations). Inside a value the parser treats them as opaque text → all the ambiguity, none of the validation, and it blurs the structural⇌value boundary. Fix: inside a value, relations carry via telegraphic operators only (→ ⇌ ∧ ∨ ⊕); push facets to a sibling field or an annotated KEY. 'migration → downtime' + RISK::high, or open a block MIGRATION<legacy_db>: with the facts as children."
+  CEREMONIAL_MYTHOLOGY::"'As ATHENA, goddess of wisdom, I bestow...' — narrative prose, not functional compression. Mythology is a handle, never a voice."
+  MYTHOLOGY_IN_REFERENCE_TABLES::"Spec tables and formal definitions stay literal; use examples, not tables, to activate mythology."
+  §7a::TELEGRAPHIC_PHRASE
     DEFINITION::"Quoted value with stopwords dropped; operators ⊕ ⇌ ∧ ∨ → carry relational meaning English connectives would spell out"
     RULES::[
       "Drop stopwords (is, at, for, the, a, with, by, of) — operators carry connectives",
@@ -159,29 +209,11 @@ CONDUCT:
       "Use → for causality ('migration → conflict' not 'migration causes conflict')",
       "Preserve named entities, thresholds, IDs — never compress these",
       "Use ∧ for joint conditions, ∨ for alternatives, ⊕ for emergent synthesis",
-      "Structural syntax (<> / []) is key/identifier-only — NEVER embed inside the quoted value (see §6::STRUCTURAL_SYNTAX_IN_VALUE)"
+      "Structural syntax (<> / []) is key/identifier-only — NEVER embed inside the quoted value (see §7::STRUCTURAL_SYNTAX_IN_VALUE)"
     ]
     EXAMPLE_PAIR:
       BEFORE::"\"natural language at odds with OCTAVE because stopwords\" (~13 tokens)"
       AFTER::"\"natural language ⇌ OCTAVE → stopword overhead\" (~5 tokens)"
     WHY::"operators are parse-efficient for LLM attention — same fidelity, lower token cost"
-    SEE_ALSO::"octave-compression §4::R3a for full rule set"
-§7::TIER_NORMALIZATION_AUDIT_CHANNEL
-  // ADR-0006 SR1-T1 Step 3 (v1.12.0): centralised audit channel for I4 completeness
-  MODULE::"octave-mcp:src/octave_mcp/core/grammar/tier_normalize.py"
-  // ^ path is in the octave-mcp repo (upstream OCTAVE implementation), not this repo.
-  API:
-    LOG_REPAIR::"log_repair(log, rule_id, before, after, *, safe=True, semantics_changed=False) — single precise entry point appending a RepairTier.NORMALIZATION entry"
-    ACTIVE::"active(log) context manager — binds ``log`` as the ContextVar-scoped sink so pipeline-internal sites (notably emitter identifier-dequoting) can record receipts without threading RepairLog through emit()'s public signature"
-    RECONCILE::"reconcile_canonical_emission(log, baseline_bytes, canonical_bytes) — reconciler bridge"
-  RULE_IDS:
-    PRECISE::"TN_IDENTIFIER_DEQUOTE — was_quoted-driven dequoting at emit_assignment"
-    BRIDGE::"TN_RECONCILE_CANONICAL — coarse-grained post-emit baseline-vs-canonical receipt"
-  RECONCILER_BRIDGE_PATTERN:
-    PURPOSE::"Closes the audit-cardinality gap for diffs that upstream precise loggers do not yet cover (blank-line stripping pending Sprint 3+ trivia population; triple-quote collapse pending new lexer W-code)"
-    DEDUP_DISCRIMINANT::"Only RepairTier.NORMALIZATION entries on the log suppress the bridge. RepairTier.REPAIR (schema repairs) and RepairTier.FORBIDDEN entries do NOT count — they are orthogonal dimensions"
-    SELF_DEPRECATION::"When Sprint 3+ trivia and the new triple-quote lexer W-code land, precise loggers will cover their respective diffs, the dedup precondition fails, and the reconciler no-ops without any code change"
-  INTEGRATION_POINTS:
-    EMITTER::"emit_assignment: precise log when assignment.was_quoted is True AND emitter chose to emit bare (identifier-shape dequoting)"
-    WRITE_PY::"octave-mcp:src/octave_mcp/mcp/write.py — tier_normalize.active(tier_normalize_log) wraps each _emit_with_style call; reconcile_canonical_emission runs after final emit; entries drain into result[corrections]"
+    SEE_ALSO::"octave-compression §4::COMPRESSION_RULES R3a for full rule set"
 ===END===

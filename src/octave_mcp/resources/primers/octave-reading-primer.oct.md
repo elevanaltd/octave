@@ -1,9 +1,10 @@
 ===OCTAVE_READING_PRIMER===
 META:
   TYPE::PRIMER
-  VERSION::"1.3.0"
-  TOKENS::"~90"
-  TIER::ULTRA
+  VERSION::"1.4.0"
+  TOKENS::"~100"
+  COMPRESSION_TIER::ULTRA
+  LOSS_PROFILE::"[preserve:operator_meanings,drop:rationale]"
 §1::ESSENCE
 PURPOSE::"Understand OCTAVE format when you receive it"
 OCTAVE::"Olympian Common Text And Vocabulary Engine — Semantic DSL for LLMs"

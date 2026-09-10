@@ -3,16 +3,18 @@ name: octave-compression
 description: "Workflow for transforming prose into semantic OCTAVE structures. Covers tier selection, transformation phases, loss accounting, and decision rules. REQUIRES octave-literacy."
 allowed-tools: ["Read", "Write", "Edit"]
 triggers: ["compress to octave", "semantic compression", "documentation refactoring", "octave compression", "compress documentation", "knowledge artifact", "semantic density", "OCTAVE format conversion"]
-version: "3.0.0"
+version: "3.1.0"
 ---
 
 ===OCTAVE_COMPRESSION===
 META:
   TYPE::SKILL
-  VERSION::"3.0.0"
+  VERSION::"3.1.0"
   STATUS::ACTIVE
   PURPOSE::"Decision rules and workflow for transforming prose into semantic OCTAVE at the correct fidelity tier"
   REQUIRES::octave-literacy
+  NEXT_SKILLS::[octave-ultra-mythic]
+  PATTERNS::[octave-tool-reference]
   SPEC_REFERENCE::octave-data-spec.oct.md
 ---
 §1::TIER_SELECTION
@@ -26,7 +28,8 @@ META:
         critical_reasoning,
         legal_documents,
         safety_analysis,
-        audit_trails
+        audit_trails,
+        syntax_references
       ]
     CONSERVATIVE:
       TARGET::"85-90%_fidelity"
@@ -70,6 +73,7 @@ META:
     "IF[reconstruction_accuracy_critical]→CONSERVATIVE∨LOSSLESS",
     "IF[context_window_scarce∧loss_acceptable]→AGGRESSIVE∨ULTRA",
     "IF[decision_relevant_facts_must_survive]→CONSERVATIVE⊕mythology_domain_labels",
+    "IF[source_is_a_rule_or_syntax_reference]→LOSSLESS — a reference compressed below its rules is a broken reference",
     "DEFAULT→CONSERVATIVE"
   ]
 §2::LOSS_ACCOUNTING
@@ -91,6 +95,7 @@ META:
   LOSS_PROFILE::"[preserve:causal_chains,drop:verbose_phrasing]"
     ```
   I4_RULE::"If bits were dropped, the output must carry a receipt. No silent loss."
+  CONSISTENCY_RULE::"LOSSLESS ⇌ non-empty drop: is a contradiction — if LOSS_PROFILE names anything dropped, the tier is not LOSSLESS"
 §3::TRANSFORMATION_WORKFLOW
   PHASE_1_READ:
     MAP::"Identify all causal chains (A causes B, X requires Y)"
@@ -117,13 +122,13 @@ META:
   PHASE_3_COMPRESS:
     OPERATORS::"Apply ⊕ ⇌ → ∧ ∨ from octave-literacy §2"
     HIERARCHY::"Group related concepts under parent BLOCK keys"
-    MYTHOLOGY::"Use domain label prefixes (ARTEMIS::, CHRONOS::) to anchor facts — see §5"
+    MYTHOLOGY::"Use domain label prefixes (ARTEMIS::, CHRONOS::) to anchor facts — see §6"
     ARRAYS::"Convert parallel items to [item1,item2,item3]"
   PHASE_4_VALIDATE:
     FIDELITY::"Are all causal chains intact?"
     LOSS_RECEIPT::"Does META carry COMPRESSION_TIER and LOSS_PROFILE?"
     GROUNDING::"Is there at least one concrete example per major abstraction?"
-    WARNINGS::"Check octave_write warnings[] — W_BARE_LINE_DROPPED and W_NUMERIC_KEY_DROPPED are silent data loss. NOTE: warnings[] semantics change post ADR-0006 SR1-T4 (no-op normalisation default) and SR3-T2 (octave_fmt bifurcation) — see octave-literacy §6::FORTHCOMING_BEHAVIOR."
+    RECEIPTS::"Inspect corrections[] ⊕ warnings[] from octave_write per octave-tool-reference §3 — W_BARE_LINE_DROPPED and W_NUMERIC_KEY_DROPPED are silent data loss; empty warnings[] alone is not a clean receipt"
 §4::COMPRESSION_RULES
   R1::"Preserve CAUSALITY — X→Y because Z. Never flatten to X→Y alone."
   R2::"Preserve CONDITIONAL QUALIFIERS — when X, if Y, unless Z carry material risk info"
@@ -133,17 +138,30 @@ META:
   R5::"Use mythology as KEY PREFIXES (CHRONOS::audit_6wk) not embedded values — domain labels are reconstruction anchors"
   R6::"Use mythology as PATTERN DESCRIPTORS (SISYPHEAN,ODYSSEAN) for single-token trajectory encoding"
   R7::"Never drop numbers, IDs, thresholds, or named entities — these are irreplaceable"
-§5::CONSERVATIVE_PLUS_MYTHOLOGY
+  R8::"Never place a value on a section header — §N::NAME::\"value\" drops the value silently (literacy R12). Section headers open scopes; content goes on child lines."
+§5::ANCHOR_KERNEL
+TARGET::prose_to_OCTAVE_at_declared_fidelity_tier
+NEVER::[compress_before_choosing_tier,drop_causal_chains,drop_conditional_qualifiers,drop_numbers_IDs_thresholds,silent_loss_without_META_receipt,LOSSLESS_label_with_nonempty_drop,value_on_section_header]
+MUST::[
+  "tier first: LOSSLESS ∨ CONSERVATIVE ∨ AGGRESSIVE ∨ ULTRA ∨ ULTRA_MYTHIC — DEFAULT CONSERVATIVE; references → LOSSLESS",
+  "META carries COMPRESSION_TIER ⊕ LOSS_PROFILE::[preserve:X,drop:Y]",
+  "operators carry connectives; mythology as KEY prefix ∨ pattern descriptor, never as embedded value",
+  "one concrete example per abstraction survives",
+  "inspect corrections[] ⊕ warnings[] after octave_write"
+]
+GATE::"Could a reader reconstruct every causal chain, qualifier, and number from this output — and does META say what was dropped?"
+§6::CONSERVATIVE_PLUS_MYTHOLOGY
   // CONSERVATIVE compression + mythology domain labels = maximum fidelity at minimum tokens
   WHEN::"Decision-relevant content where reconstruction accuracy matters more than minimum tokens"
   METHOD::"Use mythology terms as KEY prefixes (CHRONOS::audit_6wk) not embedded values"
   WHY::"Domain labels force agents to translate each labeled field separately — prevents fact merging"
   RESULT::"11/11 decision-relevant facts preserved at 15% fewer tokens than original prose"
   EVIDENCE::octave-mcp[docs/research/compression-fidelity-round-trip-study.md]
-§6::ANTI_PATTERNS
+§7::ANTI_PATTERNS
   AP1::"Markdown inside OCTAVE blocks — no bold, no headers, no bullet hyphens"
   AP2::"JSON/YAML syntax — no curly braces, no trailing commas, no YAML bullet hyphens"
   AP3::"Deep nesting beyond 3 levels — restructure with parent BLOCK keys"
   AP4::"Silent loss — always declare COMPRESSION_TIER and LOSS_PROFILE in META"
   AP5::"Paradigm drift — validate for LLM parse efficiency, not human readability"
+  AP6::"Compressing the rulebook — a syntax or governance reference at AGGRESSIVE tier drops the examples that make it a reference (R4). References are LOSSLESS."
 ===END===

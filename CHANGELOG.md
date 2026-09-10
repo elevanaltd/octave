@@ -7,6 +7,91 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed — bundled OCTAVE skills realigned to upstream `_bundled_hub` (docs-only)
+
+`src/octave_mcp/resources/skills/` had drifted behind the upstream skill library
+(`HestAI-MCP/src/hestai_mcp/_bundled_hub/library/`). The bundled copies are now
+byte-identical to upstream. No parser, validator, or tool behaviour changes.
+
+- **Skill versions bumped**: octave-literacy 3.2.1→4.0.0, octave-mastery 3.2.1→4.0.0,
+  octave-compression 3.0.0→3.1.0, octave-ultra-mythic 1.3.0→2.0.0
+- **Added `octave-chatter` 1.1.0** — OCTAVE on the wire: reading and emitting OCTAVE in
+  agent-to-agent messages without authoring files
+- **Added `resources/patterns/octave-tool-reference.oct.md` 1.1.9** — the single home for
+  `octave_write` / `octave_validate` procedural behaviour (modes, receipt gates,
+  changes-mode semantics, warning remediation), verified against octave-mcp 1.15.0.
+  This is where the tool-behaviour text removed from octave-literacy and octave-mastery
+  now lives.
+- **The major bumps are section renumbering**, not content loss: every skill gains a
+  uniform `§5::ANCHOR_KERNEL`, shifting the sections after it. octave-literacy's
+  `§8::UNIVERSAL_GOVERNANCE_GRAMMAR` becomes `§7::GOVERNANCE_AUTHORING`. Cross-references
+  written against the old numbering need updating.
+
+### Changed — spec + primer structural migration (docs-only)
+
+- **`octave-core-spec.oct.md` 6.0.0 → 6.0.1.** Structural migration, no semantic change. The file
+  could not be amended by `octave_write` at all: bare `===END===` tokens sat inside unquoted body
+  values, and since the lexer matches `===END===` anywhere, a strict parse ended the document at
+  line 60 — `§7::CANONICAL_EXAMPLES` and everything after it was invisible to the AST. Body values
+  containing envelope tokens are now quoted, operator/precedence tables and non-parseable examples
+  are fenced as literal zones, the `ASSEMBLY` fields are grouped into a block, and the descriptive
+  `CONTRACT`/`GRAMMAR` facets move from inline maps in META to a new `§0::HOLOGRAPHIC_PRINCIPLE`
+  (META keeps them in annotation form). Two keys were being lexed as something other than keys and
+  are renamed: `NULL::` → `NULL_VALUE::` (lexed as the null literal) and `vs::` → `VS_ALIAS::`
+  (lexed as `⇌`). `TEACHES` drops the retired `§skills/octave-mythology`. STRICT repairs 33 → 0.
+- **`octave-data-spec.oct.md` 6.0.0 → 6.0.1.** Structural migration. The file was the octave-literacy
+  R13 trap: `KEY::` (empty value) written where `KEY:` (block opener) was meant — `COMPRESSION_INTENT::`,
+  `SELECTION_GUIDE::`, `METADATA_REQUIREMENT::`, `TIER_SELECTION::`, `WORKING_EXAMPLES::` — so every
+  indented child hoisted to file top level. Five `TIER::X[...]` records collided there: **37 same-scope
+  duplicate keys, last-write-wins, silently dropped**. The tiers are now one block per tier under `TIERS:`
+  (mirroring octave-compression 3.1.0 §1), and same-scope duplicates are 0. Two phantom top-level
+  assignments the hoisting had manufactured (`compress_examples`, `compress_narratives`, split out of
+  bare-flow `METHOD::` values) are gone — this is the `W_STRUCT_003: 2 assignment(s) removed` on the write
+  receipt, and it removes damage rather than content. `REQUIRES::octave-mythology` → `octave-ultra-mythic`
+  (the tier requires the tier skill, which declares its own `[octave-mastery, octave-compression]`).
+- **`octave-data-spec.oct.md` §7 example paths corrected, not pruned.** The references pointed at
+  `examples/post-octave-5-examples/`, which was flattened to `examples/` in the public-release restructure —
+  the files are live, only the paths were stale. `LOCATION` → `examples/`, the AGGRESSIVE entry →
+  `survey-octave-5-aggressive.oct.md` (renamed from `-compressed`), and the guide →
+  `examples/README.md` (the tier-selection matrix; `compression-comparison/` is now
+  `compression-comparisons/` and holds no README). All seven referenced paths now resolve.
+- **Primer `TIER` → `COMPRESSION_TIER`, plus `LOSS_PROFILE`, across all six primers.** `TIER` was
+  drift: the primer spec's own META uses `COMPRESSION_TIER`, and octave-compression §2 makes
+  `LOSS_PROFILE` mandatory alongside it.
+- **`octave-literacy-primer` 6.3.0 → 6.4.0.** `OUT::A→B` → `OUT::[A→B]` (the primer's own one-shot
+  taught `W_BARE_FLOW`, now DISCARDING per octave-tool-reference §3). Adds the two silent-loss
+  traps to its example fence: R12 (a §-header never carries a value) and R13 (an empty `KEY::`
+  opens no block — children below hoist out).
+- **`octave-mastery-primer` 6.2.0 → 7.0.0.** Rewritten against octave-mastery 4.0.0. The old
+  one-shot `VALIDATOR[input]→PROCESSOR[data]` used constructor brackets on archetypes, which
+  mastery §3 forbids; `CONTRACT[]` is now `CONTRACT::HOLOGRAPHIC<…>`.
+- **`octave-ultra-mythic-primer` 6.3.0 → 7.0.0.** Rewritten against octave-ultra-mythic 2.0.0. Old
+  one-shot `ARCHITECT[ATLAS]::NEVER[IMPL]` was the exact anti-pattern that skill's §8 names; now
+  `ARCHITECT<ATLAS>`.
+- **`octave-mythology-primer` 6.2.0 → 6.3.0.** Retained (the spec defines a primer as one workflow,
+  not a mirror of a skill). Fixes the same constructor-bracket-on-archetype error in its legend and
+  one-shot: `ZEUS⊕ATLAS[executive_architect]` → `ZEUS<leader>⊕ATLAS<system_builder>`.
+- **`octave-compression-primer` 6.4.0 → 6.5.0.** Adds the `ULTRA_MYTHIC` tier line for parity with
+  octave-compression 3.1.0 §1.
+- **`octave-reading-primer` 1.3.0 → 1.4.0.** META only.
+
+### Known gap
+
+All six primers report three `E007` warnings under STRICT (`META.TOKENS`, `META.COMPRESSION_TIER`,
+`META.LOSS_PROFILE`) — pre-existing and not introduced here. The builtin META schema
+(`src/octave_mcp/schemas/builtin/meta.oct.md`) admits only `TYPE, VERSION, STATUS, ID`, while
+octave-core-spec §1 and octave-literacy §3b both declare a wider optional set, and the validator's
+own `_check_meta_warnings` already treats `COMPRESSION_TIER`/`LOSS_PROFILE` as known fields.
+The schema is the party in the wrong; fixing it is a code change tracked separately.
+
+### Removed
+
+- **`octave-mythology` skill (1.3.0) retired.** Its pantheon, narrative forces, usage law,
+  gloss convention, open-vocabulary rule, and anti-patterns are absorbed wholesale into
+  **octave-mastery 4.0.0** (`§1a::USAGE_LAW`, `§1b::OPEN_VOCABULARY`, `§1c::EVIDENCE`; see
+  that skill's `ABSORBS` META field). Anything importing the skill by name must switch to
+  octave-mastery. The `octave-mythology-primer.oct.md` primer is **retained** and unaffected.
+
 ## [1.15.0] - 2026-05-31 - "STRATEGY_S3 DocumentMutator — changes-mode value semantics (HARD BREAK)"
 
 ### ⚠️ BREAKING — `octave_write` `changes` mode value semantics (GH#487, v1.15.0)
