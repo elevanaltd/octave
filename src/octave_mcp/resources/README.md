@@ -58,6 +58,7 @@ Ultra-compressed bootstrapping documents (30-60 tokens) for instant agent compet
 - **octave-compression-primer.oct.md** - Compress prose to OCTAVE
 - **octave-mastery-primer.oct.md** - Master OCTAVE patterns
 - **octave-mythology-primer.oct.md** - Map concepts to mythological atoms
+- **octave-reading-primer.oct.md** - Understand OCTAVE format on receipt (read-only register)
 - **octave-ultra-mythic-primer.oct.md** - Ultra-compress with 60% reduction
 
 ## Usage

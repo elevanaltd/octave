@@ -102,6 +102,7 @@ META:
     octave-ultra-mythic
   ]
   PRIMERS::"src/octave_mcp/resources/primers/"
+  PATTERNS::"src/octave_mcp/resources/patterns/"
 §11::MYTHOLOGY
   // OCTAVE's competitive moat — pre-trained compression already in the weights
   PRINCIPLE::"Mythological terms activate rich probability distributions from LLM training data"

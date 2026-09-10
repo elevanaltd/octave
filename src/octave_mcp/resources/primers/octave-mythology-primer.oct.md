@@ -1,7 +1,7 @@
 ===OCTAVE_MYTHOLOGY_PRIMER===
 META:
   TYPE::PRIMER
-  VERSION::"6.3.0"
+  VERSION::"6.3.1"
   TOKENS::"~270"
   COMPRESSION_TIER::ULTRA
   LOSS_PROFILE::"[preserve:atom_mappings,drop:rationale]"
@@ -40,7 +40,10 @@ ARTEMIS::session_mgmt_targeted
 DEMETER::"60%_budget_burned"
 §4::ONE_SHOT
 IN::"Leader who builds systems"
-OUT::"ZEUS<leader>⊕ATLAS<system_builder>"
+OUT:
+  ```
+  ZEUS<leader>⊕ATLAS<system_builder>
+  ```
 §5::VALIDATE
 MUST::[
   valid_OCTAVE,

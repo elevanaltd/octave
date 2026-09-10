@@ -52,7 +52,7 @@ START::"===NAME===[first_line,exact_match]"
 // Both segments follow identifier rules: [A-Za-z_][A-Za-z0-9_]*
 // Examples: ===MY_DOC===, ===PATTERN:MIP_BUILD===, ===SKILL:MY_SKILL===
 META::"required[TYPE,VERSION][immediately_after_start]"
-META_OPTIONAL::"[CONTRACT,GRAMMAR][v6_holographic_contracts]"
+META_OPTIONAL::"[STATUS,UPDATED,TOKENS,COMPRESSION_TIER,LOSS_PROFILE,CONTRACT,GRAMMAR][v6_holographic_contracts; matches octave-literacy §3b META_COMMON_OPTIONAL. The builtin META schema admits only TYPE/VERSION/STATUS/ID — known validator gap, tracked separately]"
 SEPARATOR::"---[optional_for_discovery,signals_metadata_boundary]"
 END::"===END===[last_line,exact_match,mandatory]"
 DUPLICATES::keys_must_be_unique_per_block

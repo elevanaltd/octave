@@ -78,14 +78,31 @@ byte-identical to upstream. No parser, validator, or tool behaviour changes.
 ### Known gap
 
 All six primers are **INVALID under STRICT**: three `E007` unknown-field errors each
-(`META.TOKENS`, `META.COMPRESSION_TIER`, `META.LOSS_PROFILE`). They surface in both `warnings[]`
-and `validation_errors[]`, with `validation_status: INVALID` and `valid: false`. Pre-existing and
-not introduced here — the same three fired before this branch. Under STANDARD all six are
-`VALIDATED`. The builtin META schema
+(`META.TOKENS`, `META.COMPRESSION_TIER`, `META.LOSS_PROFILE`), surfacing in both `warnings[]` and
+`validation_errors[]` with `validation_status: INVALID` and `valid: false`. Under STANDARD all six
+are `VALIDATED`.
+
+The corpus was **already invalid before this branch, and this branch increases the count**.
+Measured across the six primers via `ValidateTool(schema=META, profile=STRICT)`:
+base `main` = **12** E007 (`TOKENS`, `TIER` — two each); this branch = **18** (`TOKENS`,
+`COMPRESSION_TIER`, `LOSS_PROFILE` — three each). `TIER` → `COMPRESSION_TIER` is a rename, but
+`LOSS_PROFILE` is **newly added here** and is the third error. It is added because
+octave-compression §2 makes `LOSS_PROFILE` mandatory wherever `COMPRESSION_TIER` is declared, and
+`core/validator.py::_check_meta_warnings` fires `W_META_001` without it — so omitting it trades one
+defect for another. `octave-core-spec` §1 `META_OPTIONAL` has been widened in this PR to match
+octave-literacy §3b, which makes the *spec* consistent; the *schema* remains the outstanding gap. The builtin META schema
 (`src/octave_mcp/schemas/builtin/meta.oct.md`) admits only `TYPE, VERSION, STATUS, ID`, while
 octave-core-spec §1 and octave-literacy §3b both declare a wider optional set, and the validator's
 own `_check_meta_warnings` already treats `COMPRESSION_TIER`/`LOSS_PROFILE` as known fields.
-The schema is the party in the wrong; fixing it is a code change tracked separately.
+The schema is the party in the wrong; fixing it is a code change tracked in **#514**.
+
+Other defects found during this work and tracked rather than fixed here: **#510** (emitter
+dequotes scalars containing `→`, output re-parses as `bare_flow` — I1 idempotency), **#511**
+(META comments dropped, block-adjacent comments reparented), **#512** (`W_STRUCT_003` absent from
+`warnings[]`), **#515** (`octave-core-spec` §6b keys shadow §1/§2/§3/§4 section names — latent, no
+measured loss), **#516** (tier `TARGET` values disagree between `octave-data-spec` and
+`octave-compression`, and the spec contradicts itself), **#517** (`changes`-mode auto-creates keys
+at unresolvable paths contrary to `NO_AUTO_CREATE`).
 
 ### Removed
 
