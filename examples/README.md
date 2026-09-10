@@ -34,7 +34,7 @@ Same source document compressed to four different fidelity tiers:
 
 #### AGGRESSIVE Tier (70% Compression)
 
-- **File:** [`survey-octave-5-compressed.oct.md`](survey-octave-5-compressed.oct.md)
+- **File:** [`survey-octave-5-aggressive.oct.md`](survey-octave-5-aggressive.oct.md)
 - **Tokens:** ~1,800
 - **Loss:** ~30% (narrative depth, edge cases, historical context)
 - **Use:** Context window scarcity, quick reference, decision support

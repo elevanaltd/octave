@@ -1,9 +1,10 @@
 ===OCTAVE_MYTHOLOGY_PRIMER===
 META:
   TYPE::PRIMER
-  VERSION::"6.2.0"
+  VERSION::"6.3.1"
   TOKENS::"~270"
-  TIER::ULTRA
+  COMPRESSION_TIER::ULTRA
+  LOSS_PROFILE::"[preserve:atom_mappings,drop:rationale]"
 §1::ESSENCE
 PURPOSE::"Map concepts→mythological"
 OCTAVE::"Olympian Common Text And Vocabulary Engine — Semantic DSL for LLMs"
@@ -25,7 +26,7 @@ TIME_PRESSURE → CHRONOS
 §3::SYNTAX
 OPERATORS::
 ```
-::    assign / atom-binding (ATOM[role]::archetype)
+::    assign / atom-binding (ROLE::ARCHETYPE<facet>)
 →     becomes / maps to
 ⊕     unify atoms
 ⇌     opposing forces
@@ -39,7 +40,10 @@ ARTEMIS::session_mgmt_targeted
 DEMETER::"60%_budget_burned"
 §4::ONE_SHOT
 IN::"Leader who builds systems"
-OUT::"ZEUS⊕ATLAS[executive_architect]"
+OUT:
+  ```
+  ZEUS<leader>⊕ATLAS<system_builder>
+  ```
 §5::VALIDATE
 MUST::[
   valid_OCTAVE,

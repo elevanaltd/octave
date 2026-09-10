@@ -1,42 +1,50 @@
 ===OCTAVE_MASTERY_PRIMER===
 META:
   TYPE::PRIMER
-  VERSION::"6.2.0"
-  TOKENS::"~270"
-  TIER::ULTRA
+  VERSION::"7.0.0"
+  TOKENS::"~280"
+  COMPRESSION_TIER::ULTRA
+  LOSS_PROFILE::"[preserve:forms∧usage_law,drop:rationale∨vocabulary_tables]"
 §1::ESSENCE
-PURPOSE::"Master OCTAVE patterns"
+PURPOSE::"Write expert OCTAVE — archetype facets, holographic constraints, mythology as compression"
 OCTAVE::"Olympian Common Text And Vocabulary Engine — Semantic DSL for LLMs"
-METHOD::patterns→archetypes→holographic
+METHOD::[archetype_facet→holographic_constraint→mythic_handle]
 §2::MAP
-EXAMPLES::
-```
-PATTERN→NAME[signature]
-ARCHETYPE→EXECUTOR∨VALIDATOR∨SYNTHESIZER
-HOLOGRAPHIC→[field∧constraint→target]
-REGISTER→CREATE∨UPDATE∨DELETE
-```
+EXAMPLES:
+  ```
+  identity      → NAME<facet>              HEPHAESTUS<faithful_transcription>
+  NAME[facet]   → constructor, never an archetype
+  field_rule    → KEY::["value"∧CONSTRAINT→§TARGET]
+  document_law  → META CONTRACT::HOLOGRAPHIC<latest@local>
+  behavior      → SISYPHEAN∨ICARIAN∨KAIROS   only when the literal loses behavior
+  nested_map    → KEY: + indented children   never KEY::[K::[…]]
+  ```
 §3::SYNTAX
-OPERATORS::
-```
-::    assign (no spaces around)
-→     flow / sequence
-⊕     synthesis / combine
-⇌     tension / opposition
-∧     conjunction / all-required
-∨     disjunction / alternative
-§     target_reference
-CONTRACT[]  enforcement
-```
+OPERATORS:
+  ```
+  ::    assign (no spaces around)
+  →     flow / sequence
+  ⊕     synthesis / combine
+  ⇌     tension / opposition
+  ∧     conjunction / all-required
+  ∨     disjunction / alternative
+  <>    facet on an identity
+  []    args on an operation ∨ constraint container
+  §     target_reference
+  ```
 §4::ONE_SHOT
-IN::"System validates input then processes"
-OUT::"VALIDATOR[input]→PROCESSOR[data]::CONTRACT[valid∧processed]"
+IN::"System validates input then processes it; status must be ACTIVE or DRAFT"
+OUT:
+  ```
+  FLOW::[VALIDATOR<input>→PROCESSOR<data>]
+  STATUS::["ACTIVE"∧ENUM[ACTIVE,DRAFT]]
+  ```
 §5::VALIDATE
 MUST::[
   valid_OCTAVE,
   "preserve_§_names_verbatim",
-  patterns_applied,
-  archetypes_used,
-  holographic_valid
+  facet_in_angle_brackets,
+  constraint_inside_brackets,
+  mythology_only_where_literal_loses_behavior
 ]
 ===END===

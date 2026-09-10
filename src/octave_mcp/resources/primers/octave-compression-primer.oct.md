@@ -1,9 +1,10 @@
 ===OCTAVE_COMPRESSION_PRIMER===
 META:
   TYPE::PRIMER
-  VERSION::"6.4.0"
+  VERSION::"6.5.0"
   TOKENS::"~300"
-  TIER::ULTRA
+  COMPRESSION_TIER::ULTRA
+  LOSS_PROFILE::"[preserve:tier_rules∧transforms,drop:rationale]"
 §1::ESSENCE
 PURPOSE::"Compress prose→OCTAVE with tier judgment"
 OCTAVE::"Olympian Common Text And Vocabulary Engine — Semantic DSL for LLMs"
@@ -16,6 +17,7 @@ audit∨critical→LOSSLESS[drop::none]
 research∨design→CONSERVATIVE[drop::redundancy]
 quick_ref→AGGRESSIVE[drop::nuance]
 extreme_scarcity→ULTRA[drop::narrative]
+identity∨binding→ULTRA_MYTHIC[drop::narrative,keep::soul∧constraints]
 ```
 TRANSFORMS::
 ```

@@ -36,11 +36,20 @@ OCTAVE vocabulary definitions.
 ### `/skills/`
 Complete OCTAVE skills with full documentation and examples (~500-800 tokens).
 
-- **octave-literacy/** - Basic OCTAVE syntax and structure
+- **octave-literacy/** - Basic OCTAVE syntax, canonical forms, and governance-artefact grammar
 - **octave-compression/** - Compression workflows and tiers
-- **octave-mastery/** - Advanced patterns and archetypes
-- **octave-mythology/** - Mythological encoding patterns
+- **octave-mastery/** - Advanced patterns, archetypes, and the mythology vocabulary
+- **octave-chatter/** - OCTAVE on the wire: reading and emitting OCTAVE in agent-to-agent messages
 - **octave-ultra-mythic/** - Ultra-high density compression
+
+The **octave-mythology** skill was retired; its vocabulary, usage law, and
+anti-patterns are absorbed into **octave-mastery** (see its `ABSORBS` META field).
+
+### `/patterns/`
+Procedural patterns that compose with the skills.
+
+- **octave-tool-reference.oct.md** - Contract for `octave_write` / `octave_validate`:
+  modes, receipt gates, changes-mode semantics, and warning remediation
 
 ### `/primers/`
 Ultra-compressed bootstrapping documents (30-60 tokens) for instant agent competence.
@@ -49,6 +58,7 @@ Ultra-compressed bootstrapping documents (30-60 tokens) for instant agent compet
 - **octave-compression-primer.oct.md** - Compress prose to OCTAVE
 - **octave-mastery-primer.oct.md** - Master OCTAVE patterns
 - **octave-mythology-primer.oct.md** - Map concepts to mythological atoms
+- **octave-reading-primer.oct.md** - Understand OCTAVE format on receipt (read-only register)
 - **octave-ultra-mythic-primer.oct.md** - Ultra-compress with 60% reduction
 
 ## Usage
