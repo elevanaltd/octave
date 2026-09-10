@@ -130,7 +130,7 @@ RECOMMENDATION::prefer_canonical_unicode_in_emission
 CONTAINER::"[a,b,c][bare_brackets_are_lists]"
 CONSTRUCTOR::"NAME[args][e.g._REGEX[pattern]_ENUM[a,b]]"
 ANNOTATION::"NAME<qualifier>[e.g._ATHENA<strategic_wisdom>_ODYSSEUS<navigation>]"
-HOLOGRAPHIC::"['value'∧CONSTRAINT→§TARGET][schema_mode]"
+HOLOGRAPHIC::"[\"value\"∧CONSTRAINT→§TARGET][schema_mode]"
 RULE::"NAME[...]_is_constructor|bare_[...]_is_container|NAME<...>_is_annotation"
 LITERAL_FENCE::"backtick_fence[3_or_more_backticks][optional_info_tag][fenced_code_block]"
 FENCE_SCALING::"N_backticks_where_N_is_3_or_more[inner_content_may_contain_shorter_fences]"
@@ -212,7 +212,7 @@ DATA:
   NESTING_RULE::"hierarchical_content_MUST_use_block_notation[single_colon_with_indent]"
   USE::"instances[sessions,configs,runtime_state]"
 SCHEMA:
-  PATTERN::"KEY::['example'∧CONSTRAINT→§TARGET]"
+  PATTERN::"KEY::[\"example\"∧CONSTRAINT→§TARGET]"
   LEVELS::L3∨L4
   BRACKETS::"holographic_container[value∧constraints→target]"
   USE::"definitions[types,validation_rules,extraction_routing]"

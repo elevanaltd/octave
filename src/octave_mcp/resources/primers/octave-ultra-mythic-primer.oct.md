@@ -1,7 +1,7 @@
 ===ULTRA_MYTHIC_PRIMER===
 META:
   TYPE::PRIMER
-  VERSION::"7.0.0"
+  VERSION::"7.0.1"
   TOKENS::"~280"
   COMPRESSION_TIER::ULTRA
   LOSS_PROFILE::"[preserve:NEVER_constraints∧delegation,drop:rationale]"
@@ -30,6 +30,7 @@ OPERATORS:
   ∧        conjunction / all-required
   ∨        disjunction / alternative
   <>       archetype facet
+  []       args on an operation
   NEVER[]  constraint
   ```
 §4::ONE_SHOT

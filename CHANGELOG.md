@@ -77,8 +77,11 @@ byte-identical to upstream. No parser, validator, or tool behaviour changes.
 
 ### Known gap
 
-All six primers report three `E007` warnings under STRICT (`META.TOKENS`, `META.COMPRESSION_TIER`,
-`META.LOSS_PROFILE`) — pre-existing and not introduced here. The builtin META schema
+All six primers are **INVALID under STRICT**: three `E007` unknown-field errors each
+(`META.TOKENS`, `META.COMPRESSION_TIER`, `META.LOSS_PROFILE`). They surface in both `warnings[]`
+and `validation_errors[]`, with `validation_status: INVALID` and `valid: false`. Pre-existing and
+not introduced here — the same three fired before this branch. Under STANDARD all six are
+`VALIDATED`. The builtin META schema
 (`src/octave_mcp/schemas/builtin/meta.oct.md`) admits only `TYPE, VERSION, STATUS, ID`, while
 octave-core-spec §1 and octave-literacy §3b both declare a wider optional set, and the validator's
 own `_check_meta_warnings` already treats `COMPRESSION_TIER`/`LOSS_PROFILE` as known fields.
