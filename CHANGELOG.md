@@ -65,12 +65,17 @@ byte-identical to upstream. No parser, validator, or tool behaviour changes.
 - **`octave-mastery-primer` 6.2.0 → 7.0.0.** Rewritten against octave-mastery 4.0.0. The old
   one-shot `VALIDATOR[input]→PROCESSOR[data]` used constructor brackets on archetypes, which
   mastery §3 forbids; `CONTRACT[]` is now `CONTRACT::HOLOGRAPHIC<…>`.
-- **`octave-ultra-mythic-primer` 6.3.0 → 7.0.0.** Rewritten against octave-ultra-mythic 2.0.0. Old
+- **`octave-ultra-mythic-primer` 6.3.0 → 7.0.1.** Rewritten against octave-ultra-mythic 2.0.0. Old
   one-shot `ARCHITECT[ATLAS]::NEVER[IMPL]` was the exact anti-pattern that skill's §8 names; now
-  `ARCHITECT<ATLAS>`.
-- **`octave-mythology-primer` 6.2.0 → 6.3.0.** Retained (the spec defines a primer as one workflow,
+  `ARCHITECT<ATLAS>`. 7.0.1 adds the generic `[]` operator row to §3 — §2 and §4 use
+  `DELEGATE[IMPL_LEAD]` but §3 defined only `NEVER[]`, so the syntax reference did not cover the
+  bracket form it relies on.
+- **`octave-mythology-primer` 6.2.0 → 6.3.1.** Retained (the spec defines a primer as one workflow,
   not a mirror of a skill). Fixes the same constructor-bracket-on-archetype error in its legend and
-  one-shot: `ZEUS⊕ATLAS[executive_architect]` → `ZEUS<leader>⊕ATLAS<system_builder>`.
+  one-shot: `ZEUS⊕ATLAS[executive_architect]` → `ZEUS<leader>⊕ATLAS<system_builder>`. 6.3.1 moves
+  that one-shot into a fenced literal so the `<facet>` forms are structural rather than opaque text
+  inside a quoted value (octave-mastery §7 `STRUCTURAL_SYNTAX_IN_VALUE`), matching the mastery and
+  ultra-mythic primers.
 - **`octave-compression-primer` 6.4.0 → 6.5.0.** Adds the `ULTRA_MYTHIC` tier line for parity with
   octave-compression 3.1.0 §1.
 - **`octave-reading-primer` 1.3.0 → 1.4.0.** META only.
