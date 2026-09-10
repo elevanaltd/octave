@@ -207,6 +207,18 @@ class PolicyDefinition:
             opts in for FINDINGS (an APPROVED review with TOTAL::0
             legitimately authors an empty §3); SKILL does NOT opt in for
             ANCHOR_KERNEL (an empty kernel block is malformed by intent).
+        frontmatter_presence: Whether the Zone 2 frontmatter *block* must be
+            present at all (GH#520). ``"REQUIRED"`` (default) preserves the
+            #244 contract: an absent block reports every REQUIRED field as
+            missing. ``"OPTIONAL"`` relaxes absence only — a document with no
+            frontmatter skips the required-field checks, while a document
+            that authors a frontmatter block must still satisfy every
+            REQUIRED field and every TYPE constraint. This encodes
+            octave-skills-spec v9.1 §7, where YAML is REQUIRED at platform
+            locations and OPTIONAL at the hub, in the only vocabulary a
+            path-blind validator can honour: presence, not deployment
+            location. Unrecognised values fail closed to ``"REQUIRED"`` and
+            emit ``W_MALFORMED_POLICY``.
     """
 
     version: str = "1.0"
@@ -215,6 +227,7 @@ class PolicyDefinition:
     required_section_ids: list[str] = field(default_factory=list)
     section_conditional_required: dict[str, list[str]] = field(default_factory=dict)
     section_allows_empty: set[str] = field(default_factory=set)
+    frontmatter_presence: str = "REQUIRED"
 
 
 @dataclass
@@ -286,6 +299,10 @@ class SchemaDefinition:
     turn_schema: dict[str, FieldDefinition] | None = None
 
 
+# GH#520: closed vocabulary for POLICY.FRONTMATTER_PRESENCE.
+_FRONTMATTER_PRESENCE_VALUES: frozenset[str] = frozenset({"REQUIRED", "OPTIONAL"})
+
+
 def _extract_policy(
     sections: list[Any],
 ) -> tuple[PolicyDefinition, str | None, list[SchemaExtractionWarning]]:
@@ -326,6 +343,27 @@ def _extract_policy(
                         ids, item_warnings = _parse_string_list_audited(child.value, "REQUIRED_SECTION_IDS")
                         policy.required_section_ids = ids
                         warnings.extend(item_warnings)
+                    elif child.key == "FRONTMATTER_PRESENCE":
+                        # GH#520: closed-set discriminator for whether the
+                        # Zone 2 block itself may be absent. Fails closed to
+                        # REQUIRED on an unrecognised value so a typo can
+                        # never silently disable Zone 2 coverage (PROD::I5),
+                        # and logs the deviation (PROD::I4).
+                        presence = str(child.value).strip('"').upper()
+                        if presence in _FRONTMATTER_PRESENCE_VALUES:
+                            policy.frontmatter_presence = presence
+                        else:
+                            warnings.append(
+                                SchemaExtractionWarning(
+                                    code="W_MALFORMED_POLICY",
+                                    message=(
+                                        f"POLICY.FRONTMATTER_PRESENCE must be one of "
+                                        f"{sorted(_FRONTMATTER_PRESENCE_VALUES)}; got {presence!r}. "
+                                        f"Falling back to REQUIRED."
+                                    ),
+                                    field_path="POLICY.FRONTMATTER_PRESENCE",
+                                )
+                            )
                     elif child.key == "SECTION_ALLOWS_EMPTY":
                         # GH-426 (cubic P2 fix on PR #446): per-schema opt-in
                         # for the walker's empty-section pass-through. Sections

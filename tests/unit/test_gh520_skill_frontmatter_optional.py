@@ -177,9 +177,9 @@ class TestPlatformEnforcementPreserved:
             "A SKILL that authors YAML frontmatter must still satisfy every "
             f"REQUIRED field; 'description' was not reported. Got {fm_errors!r} (GH#520)."
         )
-        assert "frontmatter.allowed-tools" in missing, (
-            f"'allowed-tools' must still be enforced when frontmatter is present. Got {fm_errors!r}"
-        )
+        assert (
+            "frontmatter.allowed-tools" in missing
+        ), f"'allowed-tools' must still be enforced when frontmatter is present. Got {fm_errors!r}"
 
     def test_complete_frontmatter_still_validates(self) -> None:
         """A dual-deployed SKILL with complete frontmatter remains valid."""
@@ -225,8 +225,7 @@ class TestFrontmatterPresencePolicyEngine:
 
         errors = validate_frontmatter(None, self._schema(None))
         assert [e.code for e in errors] == ["E_FM_REQUIRED"], (
-            f"Default FRONTMATTER_PRESENCE must remain REQUIRED so other schemas are "
-            f"unaffected; got {errors!r}"
+            f"Default FRONTMATTER_PRESENCE must remain REQUIRED so other schemas are " f"unaffected; got {errors!r}"
         )
 
     def test_present_but_incomplete_reported_when_presence_optional(self) -> None:
@@ -249,8 +248,7 @@ class TestFrontmatterPresencePolicyEngine:
 
         errors = validate_frontmatter("", self._schema("OPTIONAL"))
         assert [e.code for e in errors] == ["E_FM_REQUIRED"], (
-            f"An empty-but-present frontmatter block must still surface missing "
-            f"required fields; got {errors!r}"
+            f"An empty-but-present frontmatter block must still surface missing " f"required fields; got {errors!r}"
         )
 
     def test_type_validation_survives_optional_presence(self) -> None:
@@ -312,6 +310,25 @@ class TestFrontmatterPresencePolicyEngine:
         assert schema.policy.frontmatter_presence == "OPTIONAL"
 
 
+# Empirically surfaced while taking GH#520 to GREEN, and deliberately NOT
+# fixed here: two hub skills author ``allowed-tools: "*"`` (a scalar) where
+# the SKILL schema declares ``TYPE::LIST``. That is a separate schema/reality
+# mismatch about the *shape* of a present field — not the #520 question of
+# whether the frontmatter block must exist at all. Relaxing the type to make
+# these pass would be scope creep and would weaken Zone 2 for every skill.
+#
+# Allowlist precedent: KNOWN_MISSING_SECTION_1_GAPS in test_skill_schema.py
+# (PR #437 lineage). The pinned-diagnostic test below asserts the warning DOES
+# still fire, so the entry auto-retires the moment the gap is closed upstream
+# or the schema is corrected under its own issue.
+KNOWN_ALLOWED_TOOLS_SCALAR_GAPS: frozenset[str] = frozenset(
+    {
+        "build-anti-patterns",
+        "build-philosophy",
+    }
+)
+
+
 class TestOnDiskHubCorpusHasNoFrontmatterErrors:
     """Integration: no on-disk hub SKILL is rejected for lacking YAML."""
 
@@ -337,10 +354,47 @@ class TestOnDiskHubCorpusHasNoFrontmatterErrors:
         ids=lambda p: p.parent.name,
     )
     def test_hub_skill_file_emits_no_frontmatter_errors(self, skill_path: Path) -> None:
+        """No hub SKILL may be rejected for an ABSENT frontmatter block."""
         content = skill_path.read_text(encoding="utf-8")
         result = _validate_content(content)
-        fm_errors = _frontmatter_errors(result)
-        assert not fm_errors, (
+        required_errors = [e for e in _frontmatter_errors(result) if e.get("code") == "E_FM_REQUIRED"]
+        assert not required_errors, (
             f"{skill_path.parent.name}/SKILL.md is a hub skill; skills-spec v9.1 §7 "
-            f"makes YAML OPTIONAL there. Got {fm_errors!r} (GH#520)."
+            f"makes YAML OPTIONAL there. Got {required_errors!r} (GH#520)."
+        )
+
+    @pytest.mark.parametrize(
+        "skill_path",
+        [p for p in _skill_files() if p.parent.name not in KNOWN_ALLOWED_TOOLS_SCALAR_GAPS],
+        ids=lambda p: p.parent.name,
+    )
+    def test_hub_skill_file_emits_no_frontmatter_type_errors(self, skill_path: Path) -> None:
+        """Type checking on PRESENT fields must remain clean outside the allowlist."""
+        content = skill_path.read_text(encoding="utf-8")
+        result = _validate_content(content)
+        type_errors = [e for e in _frontmatter_errors(result) if e.get("code") == "E_FM_TYPE"]
+        assert not type_errors, (
+            f"{skill_path.parent.name}/SKILL.md surfaces an unexpected Zone 2 type " f"error. Got {type_errors!r}."
+        )
+
+    @pytest.mark.parametrize("skill_dirname", sorted(KNOWN_ALLOWED_TOOLS_SCALAR_GAPS))
+    def test_known_allowed_tools_scalar_gap_surfaces_diagnostic(self, skill_dirname: str) -> None:
+        """Pin the separate ``allowed-tools`` shape gap (PROD::I5 visibility).
+
+        These skills author ``allowed-tools: "*"`` against a schema declaring
+        ``TYPE::LIST``. GH#520 does not touch it: presence-conditional
+        relaxation covers whether the block exists, never the shape of a
+        field inside it. If this test starts failing, the gap has been closed
+        upstream (or the schema corrected under its own issue) — remove the
+        entry from ``KNOWN_ALLOWED_TOOLS_SCALAR_GAPS``.
+        """
+        skill_path = _SKILLS_DIR / skill_dirname / "SKILL.md"
+        if not skill_path.exists():
+            pytest.skip(f"{skill_dirname}/SKILL.md no longer exists on disk")
+
+        result = _validate_content(skill_path.read_text(encoding="utf-8"))
+        type_errors = [e for e in _frontmatter_errors(result) if e.get("code") == "E_FM_TYPE"]
+        assert type_errors, (
+            f"{skill_dirname}/SKILL.md: expected E_FM_TYPE for scalar 'allowed-tools'; "
+            f"got {_frontmatter_errors(result)!r}"
         )
