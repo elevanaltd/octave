@@ -238,6 +238,62 @@ class TestFrontmatterPresencePolicyEngine:
             f"incomplete present block; got {errors!r}"
         )
 
+    def test_empty_frontmatter_block_still_enforced(self) -> None:
+        """TMG-required: present-but-vacuous is presence, not absence.
+
+        ``---\\n---`` authors a frontmatter block and leaves it empty. That
+        is the "present but incomplete" case taken to its limit, so the
+        required fields must still be reported.
+        """
+        from octave_mcp.core.grammar.entry import validate_frontmatter
+
+        errors = validate_frontmatter("", self._schema("OPTIONAL"))
+        assert [e.code for e in errors] == ["E_FM_REQUIRED"], (
+            f"An empty-but-present frontmatter block must still surface missing "
+            f"required fields; got {errors!r}"
+        )
+
+    def test_type_validation_survives_optional_presence(self) -> None:
+        """TMG-required: OPTIONAL relaxes presence only, never type checking."""
+        from octave_mcp.core.grammar.entry import validate_frontmatter
+
+        errors = validate_frontmatter("name: 42\n", self._schema("OPTIONAL"))
+        assert [e.code for e in errors] == ["E_FM_TYPE"], (
+            f"A present field of the wrong type must still surface E_FM_TYPE under "
+            f"FRONTMATTER_PRESENCE::OPTIONAL; got {errors!r}"
+        )
+
+    def test_invalid_presence_value_is_audited_and_fails_closed(self) -> None:
+        """TMG-required: an unrecognised POLICY value must not silently relax.
+
+        PROD::I4 requires the malformed shape to be logged (W_MALFORMED_POLICY)
+        and PROD::I5 requires the validator to keep the stricter verdict it
+        can actually justify, so an invalid value falls back to REQUIRED.
+        """
+        from octave_mcp.core.parser import parse
+        from octave_mcp.core.schema_extractor import extract_schema_from_document
+
+        doc = parse(
+            "===TEST_SCHEMA===\n"
+            "META:\n"
+            "  TYPE::SCHEMA\n"
+            '  VERSION::"1.0"\n'
+            "POLICY:\n"
+            '  VERSION::"1.0"\n'
+            "  FRONTMATTER_PRESENCE::BANANA\n"
+            "===END===\n"
+        )
+        schema = extract_schema_from_document(doc)
+        codes = [w.code for w in schema.warnings]
+        assert "W_MALFORMED_POLICY" in codes, (
+            f"An unrecognised FRONTMATTER_PRESENCE value must emit W_MALFORMED_POLICY "
+            f"(PROD::I4); got warnings={schema.warnings!r}"
+        )
+        assert schema.policy.frontmatter_presence == "REQUIRED", (
+            f"An unrecognised FRONTMATTER_PRESENCE value must fail closed to REQUIRED; "
+            f"got {schema.policy.frontmatter_presence!r}"
+        )
+
     def test_policy_extractor_reads_frontmatter_presence(self) -> None:
         from octave_mcp.core.parser import parse
         from octave_mcp.core.schema_extractor import extract_schema_from_document
@@ -258,6 +314,22 @@ class TestFrontmatterPresencePolicyEngine:
 
 class TestOnDiskHubCorpusHasNoFrontmatterErrors:
     """Integration: no on-disk hub SKILL is rejected for lacking YAML."""
+
+    def test_corpus_collection_floor(self) -> None:
+        """TMG-required: guard against a silent collection-path breakage.
+
+        The parametrized assertion below vacuously passes if the corpus
+        resolves to zero files (e.g. ``.hestai-sys`` unlinked in a fresh
+        worktree). Pin a floor so the empty case is loud.
+        """
+        files = _skill_files()
+        if not _SKILLS_DIR.exists():
+            pytest.skip(f"{_SKILLS_DIR} not present (gitignored delivery path)")
+        assert len(files) >= 50, (
+            f"Expected the hub skills corpus to hold at least 50 SKILL.md files; "
+            f"found {len(files)} under {_SKILLS_DIR}. A near-empty corpus makes the "
+            f"parametrized assertion below vacuous."
+        )
 
     @pytest.mark.parametrize(
         "skill_path",
