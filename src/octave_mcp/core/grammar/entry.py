@@ -92,6 +92,18 @@ def validate_frontmatter(
 
     errors: list[ValidationError] = []
 
+    # GH#520: POLICY.FRONTMATTER_PRESENCE::OPTIONAL declares that the Zone 2
+    # block itself may be absent — octave-skills-spec v9.1 §7 makes YAML
+    # OPTIONAL for hub skills, whose sole consumer (the anchor ceremony)
+    # reads OCTAVE META. The relaxation covers absence ONLY: a document that
+    # authors a frontmatter block still satisfies every REQUIRED field and
+    # every TYPE constraint below. PROD::I2 — "absent because not required
+    # here" and "present but incomplete" are different facts and the
+    # validator must not collapse them.
+    presence = getattr(schema.policy, "frontmatter_presence", "REQUIRED")
+    if raw_frontmatter is None and presence == "OPTIONAL":
+        return []
+
     # If frontmatter is absent but schema requires fields, report each required field
     if raw_frontmatter is None:
         for field_name, field_def in schema.frontmatter.items():
